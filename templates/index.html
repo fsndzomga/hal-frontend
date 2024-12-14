@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section - Full Viewport Height -->
+<div class="min-h-screen flex items-center bg-gradient-to-b from-white to-gray-50 relative">
+    <div class="mx-auto max-w-[1500]px w-full">
+        <div class="flex flex-col md:flex-row px-6">
+            <div class="flex-1 p-4 flex flex-col justify-center">
+                <div class="flex justify-start">
+                    <div>
+                        <h1 class="text-5xl mb-6 mx-4 mt-2 font-bold leading-tight">
+                            Holistic Agent Leaderboard
+                        </h1>
+                        <h3 class="text-2xl mb-8 mx-4 mt-2 text-gray-600">
+                            The standardized, cost-aware, and third-party leaderboard for evaluating agents.
+                        </h3>
+                        <div class="flex gap-6 mx-4 mb-8">
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="text-3xl font-bold text-blue-600 mb-2 text-center">{{ total_agents }}</div>
+                                <div class="text-gray-600 text-center">Agents</div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="text-3xl font-bold text-blue-600 mb-2 text-center">{{ total_benchmarks }}</div>
+                                <div class="text-gray-600 text-center">Benchmarks</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-4 mx-4">
+                            <a href="#leaderboards" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
+                                View Leaderboards ↓
+                            </a>
+                            <a href="https://github.com/benediktstroebl/hal-harness" class="inline-block px-8 py-4 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-lg font-semibold">
+                                GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-4 mt-6 md:mt-0 md:w-1/3">
+                <img src="{{ url_for('static', filename='hero.png') }}" alt="HAL Hero" class="object-cover w-full h-full">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Leaderboards Section -->
+<div id="leaderboards" class="min-h-[500px] bg-gradient-to-b from-gray-50 to-white relative">
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <h2 class="text-4xl font-bold mb-16 text-center">HAL Leaderboards</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <a href="{{ url_for('swebench') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">SWE-bench Verified</h3>
+                    <p class="text-gray-600">
+                        Evaluating code generation and bug fixing capabilities across real-world scenarios
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('usaco') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-blue-200">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">USACO</h3>
+                    <p class="text-gray-600">
+                        Testing algorithmic problem-solving capabilities on competitive programming tasks
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('appworld') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">AppWorld</h3>
+                    <p class="text-gray-600">
+                        Evaluating interactive coding capabilities in a controlled world of apps and people
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-100 to-transparent"></div>
+</div>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+<!-- Who is it for? Section -->
+<div class="min-h-[800px] py-24 bg-gradient-to-b from-white to-gray-50 relative">
+    <div class="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-gray-100 to-transparent"></div>
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Who is it for?</h2>
+            <p class="text-xl text-gray-600">HAL serves four key user groups in the AI ecosystem</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-blue-600">
+                <h3 class="text-xl font-bold mb-4 text-blue-600">Downstream Users & Procurers</h3>
+                <p class="text-gray-600 mb-6">Customers looking to deploy agents can get visibility into existing benchmarks, know developers building useful agents, and identify the state of the art for both cost and accuracy for their tasks of interest.</p>
+                <div class="flex gap-3">
+                    <a href="#leaderboards" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">View Leaderboards</a>
+                </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-blue-600">
+                <h3 class="text-xl font-bold mb-4 text-blue-600">Agent Benchmark Developers</h3>
+                <p class="text-gray-600 mb-6">Reporting results on a centralized leaderboard could allow improved visibility into agent benchmarks that measure real-world utility.</p>
+                <div class="flex gap-3">
+                    <a href="https://github.com/benediktstroebl/hal-harness" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">Add a Benchmark</a>
+                </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-blue-600">
+                <h3 class="text-xl font-bold mb-4 text-blue-600">Agent Developers</h3>
+                <p class="text-gray-600 mb-6">HAL allows for easy reproduction of past agents, clear comparison with past baselines, and a straightforward way to compete on a leaderboard.</p>
+                <div class="flex gap-3">
+                    <a href="https://github.com/benediktstroebl/hal-harness" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">Submit an Agent</a>
+                    <a href="#leaderboards" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">View Leaderboards</a>
+                </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-blue-600">
+                <h3 class="text-xl font-bold mb-4 text-blue-600">Safety Researchers</h3>
+                <p class="text-gray-600 mb-6">Understanding agent capabilities on real-world safety threats and their associated costs is crucial. For example, Cybench evaluations could provide insights into agent performance and affordability for potential adversaries.</p>
+                <div class="flex gap-3">
+                    <a href="#leaderboards" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">View Cybench</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-100 to-transparent"></div>
+</div>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+<!-- Pareto Frontier Section -->
+<div class="min-h-[800px] py-24 bg-gradient-to-b from-gray-50 to-white relative">
+    <div class="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-gray-100 to-transparent"></div>
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Cost-controlled Agent Evaluations</h2>
+            <p class="text-xl text-gray-600">Understanding the Cost-Performance Trade-off</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="flex flex-col justify-center bg-white rounded-lg shadow-lg p-8">
+                <h3 class="text-2xl font-bold mb-10 text-blue-600 text-left text-top">Why the Pareto Frontier Matters</h3>
+                <ul class="space-y-4 text-lg text-gray-700 text-left">
+                    <li class="flex items-start">
+                        <span class="text-blue-600 mr-2">•</span>
+                        <span>Unbounded cost</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-600 mr-2">•</span>
+                        <span>Agents can be 100x more expensive while only being 1% better</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-600 mr-2">•</span>
+                        <span>Downstream developers can't tell the difference from 1D leaderboards</span>
+                    </li>
+                </ul>
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <a href="{{ url_for('usaco') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                        View full USACO leaderboard
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-3">
+                <div class="mb-8">
+                    <svg width="100%" height="400" viewBox="0 0 400 300" class="mx-auto">
+                        <!-- Grid and Axes -->
+                        <defs>
+                            <pattern id="smallGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" stroke-width="0.5"/>
+                            </pattern>
+                        </defs>
+                        <rect width="320" height="240" x="40" y="20" fill="url(#smallGrid)"/>
+                        
+                        <!-- Axes -->
+                        <line x1="40" y1="260" x2="360" y2="260" stroke="#333" stroke-width="2"/>
+                        <line x1="40" y1="260" x2="40" y2="20" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Axis Labels -->
+                        <text x="200" y="290" text-anchor="middle" class="text-sm">Cost ($)</text>
+                        <text x="30" y="140" text-anchor="middle" transform="rotate(-90 30,140)" class="text-sm">Performance (%)</text>
+                        
+                        <!-- Data Points -->
+                        <circle cx="120" cy="180" r="6" fill="#3B82F6"/>
+                        <circle cx="130" cy="100" r="6" fill="#3B82F6"/>
+                        <circle cx="300" cy="90" r="6" fill="#3B82F6"/>
+                        
+                        <!-- Point Labels -->
+                        <text x="110" y="165" text-anchor="end" class="text-sm font-medium">Agent A</text>
+                        <text x="130" y="85" text-anchor="end" class="text-sm font-medium">Agent B</text>
+                        <text x="300" y="75" text-anchor="end" class="text-sm font-medium">Agent C</text>
+                        
+                        <!-- Pareto Frontier -->
+                        <path d="M 120 180 L 130 100 L 300 90" stroke="#10B981" stroke-width="2" stroke-dasharray="4" fill="none"/>
+                        
+                        <!-- Legend -->
+                        <circle cx="60" cy="40" r="4" fill="#3B82F6"/>
+                        <text x="75" y="44" class="text-xs">Agents</text>
+                        <line x1="120" y1="40" x2="160" y2="40" stroke="#10B981" stroke-width="2" stroke-dasharray="4"/>
+                        <text x="170" y="44" class="text-xs">Pareto Frontier</text>
+                        
+                        <!-- Annotations -->
+                        <path d="M 240 140 L 200 100" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+                        <text x="250" y="150" class="text-xs">Better cost-performance</text>
+                        <text x="250" y="165" class="text-xs">trade-off</text>
+                    </svg>
+                </div>
+                    
+                    <!-- Arrow marker definition -->
+                    <svg width="0" height="0">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+                
+                <!-- Arrow marker definition -->
+                <svg width="0" height="0">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                        </marker>
+                    </defs>
+                </svg>
+
+            </div>
+        </div>
+    </div>
+    <div class="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-100 to-transparent"></div>
+</div>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+<!-- HAL Harness Section -->
+<div class="py-24 bg-white">
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">The HAL Evaluation Harness</h2>
+            <p class="text-xl text-gray-600">A unified framework for reproducible agent evaluation</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Unified Evaluation</h3>
+                <ul class="space-y-3 text-gray-600">
+                    <li>Single CLI across all benchmarks</li>
+                    <li>Standardized metrics and logging</li>
+                    <li>Flexible execution environments</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Comprehensive Monitoring</h3>
+                <ul class="space-y-3 text-gray-600">
+                    <li>Detailed cost tracking</li>
+                    <li>Full agent traces and logs</li>
+                    <li>Weave integration for metrics</li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Developer Friendly</h3>
+                <ul class="space-y-3 text-gray-600">
+                    <li>Easy agent integration</li>
+                    <li>Modular architecture</li>
+                    <li>Automatic dependency management</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center">
+            <a href="https://github.com/benediktstroebl/hal-harness" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
+                Get Started with HAL →
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Parse the USACO data from Flask
+    const scatter_plot_data = JSON.parse('{{ scatter_plot|safe }}');
+    
+    // Use the actual USACO data for the plot
+    Plotly.newPlot('usacoScatterPlot', scatter_plot_data.data, {
+        ...scatter_plot_data.layout,
+        title: 'USACO Agent Performance vs Cost',
+        margin: { t: 40, r: 40, b: 60, l: 60 }
+    });
+    
+    window.addEventListener('resize', function() {
+        Plotly.Plots.resize('usacoScatterPlot');
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HAL: Holistic Agent Leaderboard{% endblock %}</title>
+    <meta name="description" content="{% block description %}The Holistic Agent Leaderboard (HAL) serves as a living benchmark for transparency in AI agent evaluation. Providing broad coverage across multiple benchmarks and standardized evaluation metrics.{% endblock %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+    <style>
+        .force-show .absolute {
+            display: block !important;
+        }
+        .dropdown-visible {
+            display: block !important;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownButton = document.querySelector('[data-dropdown-toggle]');
+            const dropdownMenu = document.querySelector('[data-dropdown-menu]');
+            
+            dropdownButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                dropdownMenu.classList.toggle('dropdown-visible');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.remove('dropdown-visible');
+                }
+            });
+        });
+    </script>
+</head>
+<body class="block">
+    <div id="root">
+        <nav class="navbar h-24 px-8 md:px-12 bg-base-100 max-w[1500]px fixed w-full top-0 z-50 bg-white border-b border-gray-200">
+            <div class="flex justify-between items-center h-full">
+                <div class="flex items-center">
+                    <a class="text-4xl font-bold" href="/">HAL</a>
+                    {% block nav_title %}{% endblock %}
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <div class="relative">
+                        <button data-dropdown-toggle class="text-gray-700 hover:text-blue-600 transition-colors">
+                            Leaderboards
+                            <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div data-dropdown-menu class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
+                            <div class="py-1">
+                                <a href="{{ url_for('swebench') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">SWE-bench</a>
+                                <a href="{{ url_for('usaco') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">USACO</a>
+                                <a href="{{ url_for('appworld') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">AppWorld</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://github.com/benediktstroebl/hal-harness/tree/main/agents" class="text-gray-700 hover:text-blue-600 transition-colors">Add Agent</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness/tree/main/hal/benchmarks" class="text-gray-700 hover:text-blue-600 transition-colors">Add Benchmark</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness" class="text-gray-700 hover:text-blue-600 transition-colors">GitHub</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness#about-hal" class="text-gray-700 hover:text-blue-600 transition-colors">About</a>
+                    <a href="{{ url_for('creators') }}" class="text-gray-700 hover:text-blue-600 transition-colors">Creators</a>
+                </div>
+                <!-- Mobile menu button -->
+                <button class="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <main class="pt-24">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

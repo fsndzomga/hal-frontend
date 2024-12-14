@@ -1,0 +1,275 @@
+# This file contains metadata about agents for different benchmarks.
+# Format: 
+#   benchmark_name:
+#     - agent_name: "Name of the agent"
+#       verification_date: YYYY-MM-DD  # Optional verification date
+#       url: "https://..."  # Optional link to agent code/paper
+
+gaia:
+  - agent_name: "Inspect ReAct Agent (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
+  - agent_name: "Inspect ReAct Agent (gpt-4o-2024-11-20)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
+  - agent_name: "Inspect ReAct Agent (claude-3-5-sonnet-20241022)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
+  - agent_name: "Inspect ReAct Agent (Meta-Llama-3.1-405B-Instruct-Turbo)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
+  - agent_name: "Inspect ReAct Agent (o1-mini-2024-09-12)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
+
+cybench:
+  - agent_name: "Inspect ReAct Agent (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+  - agent_name: "Inspect ReAct Agent (gpt-4o-2024-11-20)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+  - agent_name: "Inspect ReAct Agent (claude-3-5-sonnet-20241022)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+  - agent_name: "Inspect ReAct Agent (o1-mini-2024-09-12)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+  - agent_name: "Inspect ReAct Agent (Meta-Llama-3.1-405B-Instruct-Turbo)"
+    verification_date: 2024-11-30
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+
+swebench_verified:
+  - agent_name: "Moatless (gpt-4o-2024-08-06)"
+    verification_date: 2024-10-30
+    url: "https://github.com/aorwall/moatless-tools"
+  - agent_name: "Agentless (o1-mini-2024-09-12)"
+    verification_date: 2024-10-30
+    url: "https://github.com/OpenAutoCoder/Agentless"
+  - agent_name: "Moatless (claude-3-5-sonnet-20241022)"
+    verification_date: 2024-11-30
+    url: "https://github.com/aorwall/moatless-tools"
+  - agent_name: "Agentless (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-11-30
+    url: "https://github.com/OpenAutoCoder/Agentless"
+
+swebench_verified_mini:
+  - agent_name: "Agentless (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-17
+    url: "https://github.com/OpenAutoCoder/Agentless"
+  - agent_name: "SWE-agent (gpt-4o-mini-2024-07-18) (Cost Limit: $1)"
+    verification_date: 2024-08-19
+    url: "https://github.com/princeton-nlp/SWE-agent"
+  - agent_name: "Moatless (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-10-30
+    url: "https://github.com/aorwall/moatless-tools"
+  - agent_name: "Moatless (gpt-4o-2024-08-06)"
+    verification_date: 2024-10-30
+    url: "https://github.com/aorwall/moatless-tools"
+  - agent_name: "Moatless (claude-3-5-sonnet-20241022)"
+    verification_date: 2024-10-30
+    url: "https://github.com/aorwall/moatless-tools"
+  - agent_name: "Agentless (o1-mini-2024-09-12)"
+    verification_date: 2024-10-30
+    url: "https://github.com/OpenAutoCoder/Agentless"
+
+corebench_easy:
+  - agent_name: "AutoGPT (GPT-4o)"
+    verification_date: 2024-09-28
+    url: "https://github.com/princeton-nlp/SWE-bench"
+  - agent_name: "AutoGPT (GPT-4o-mini)"
+    verification_date: 2024-09-28
+    url: "https://github.com/princeton-nlp/SWE-bench"
+  - agent_name: "CORE-Agent (GPT-4o)"
+    verification_date: 2024-09-28
+    url: "https://github.com/princeton-nlp/SWE-bench"
+  - agent_name: "CORE-Agent (GPT-4o-mini)"
+    verification_date: 2024-09-28
+    url: "https://github.com/princeton-nlp/SWE-bench"
+
+corebench_medium:
+  - agent_name: "AutoGPT (GPT-4o)"
+    verification_date: 2024-09-28
+    url: "https://github.com/Significant-Gravitas/AutoGPT"
+  - agent_name: "AutoGPT (GPT-4o-mini)"
+    verification_date: 2024-09-28
+    url: "https://github.com/Significant-Gravitas/AutoGPT"
+  - agent_name: "CORE-Agent (GPT-4o)"
+    verification_date: 2024-09-28
+    url: "https://github.com/siegelz/core-bench"
+  - agent_name: "CORE-Agent (GPT-4o-mini)"
+    verification_date: 2024-09-28
+    url: "https://github.com/siegelz/core-bench"
+
+corebench_hard:
+  - agent_name: "AutoGPT (GPT-4o)"
+    verification_date: 2024-09-28
+    url: "https://github.com/Significant-Gravitas/AutoGPT"
+  - agent_name: "AutoGPT (GPT-4o-mini)"
+    verification_date: 2024-09-28
+    url: "https://github.com/Significant-Gravitas/AutoGPT"
+  - agent_name: "CORE-Agent (GPT-4o)"
+    verification_date: 2024-09-28
+    url: "https://github.com/siegelz/core-bench"
+  - agent_name: "CORE-Agent (GPT-4o-mini)"
+    verification_date: 2024-09-28
+    url: "https://github.com/siegelz/core-bench"
+  - agent_name: "CORE-Agent (o1-mini)"
+    verification_date: 2024-09-28
+    url: "https://github.com/siegelz/core-bench"
+
+usaco:
+  - agent_name: "USACO Reflexion + Episodic (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-20
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Reflexion + Episodic + Semantic (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-20
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Reflexion (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-20
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Episodic (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-12
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Reflexion + Semantic (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-20
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Zero-shot (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-11
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Semantic (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-12
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Reflexion + Episodic + Semantic (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-25
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Reflexion + Episodic (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-25
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Reflexion + Semantic (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-25
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Episodic Retrial (2x) (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-25
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Episodic Retrial (3x) (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-25
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Episodic Retrial (2x) (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-25
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Episodic Retrial (5x) (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-25
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Episodic Warming (3 Steps) (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Episodic (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Semantic (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Zero-shot Retrial (2x) (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Zero-shot Retrial (3x) (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Zero-shot Retrial (5x) (gpt-4o-mini-2024-07-18)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Zero-shot (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Zero-Shot (claude-3-5-sonnet-20241022)"
+    verification_date: 2024-11-30
+    url: "https://github.com/princeton-nlp/USACO"
+    
+appworld_test_normal:
+  - agent_name: "ReAct (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "IPFunCall (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "IPFunCall (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "ReAct (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (meta-llama/Llama-3-70b-chat-hf)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "ReAct (meta-llama/Llama-3-70b-chat-hf)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (deepseek-ai/deepseek-coder-33b-instruct)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (meta-llama/Llama-3-70b-chat-hf)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "ReAct (deepseek-ai/deepseek-coder-33b-instruct)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (deepseek-ai/deepseek-coder-33b-instruct)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+
+appworld_test_challenge:
+  - agent_name: "ReAct (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "IPFunCall (gpt-4o-2024-05-13)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "IPFunCall (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "ReAct (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (gpt-4-turbo-2024-04-09)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (meta-llama/Llama-3-70b-chat-hf)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "ReAct (meta-llama/Llama-3-70b-chat-hf)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "FullCodeRefl (deepseek-ai/deepseek-coder-33b-instruct)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (meta-llama/Llama-3-70b-chat-hf)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "ReAct (deepseek-ai/deepseek-coder-33b-instruct)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"
+  - agent_name: "PlanExec (deepseek-ai/deepseek-coder-33b-instruct)"
+    verification_date: 2024-12-03
+    url: "https://appworld.dev/"

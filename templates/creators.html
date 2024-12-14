@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}HAL: Creators{% endblock %}
+
+{% block description %}Meet the team behind HAL - The Holistic Agent Leaderboard{% endblock %}
+
+{% block nav_title %}
+<span class="text-2xl ml-4">/ Creators</span>
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-[1500]px px-8 py-16">
+    <div class="mb-16">
+        <h1 class="text-4xl font-bold mb-8">Core Team</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-bold mb-2">Benedikt Stroebl</h2>
+                <p class="text-gray-600 mb-4">PhD Student, Princeton University</p>
+                <a href="https://benediktstroebl.github.io" class="text-blue-600 hover:text-blue-800" target="_blank">Website →</a>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-bold mb-2">Sayash Kapoor</h2>
+                <p class="text-gray-600 mb-4">PhD Student, Princeton University</p>
+                <a href="https://www.cs.princeton.edu/~sayashk/" class="text-blue-600 hover:text-blue-800" target="_blank">Website →</a>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-bold mb-2">Arvind Narayanan</h2>
+                <p class="text-gray-600 mb-4">Professor of Computer Science, Princeton University</p>
+                <a href="https://www.cs.princeton.edu/~arvindn/" class="text-blue-600 hover:text-blue-800" target="_blank">Website →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-16">
+        <h2 class="text-4xl font-bold mb-8">Contributors</h2>
+        <div class="bg-white rounded-xl shadow-md p-8">
+            <p class="text-gray-600 mb-8">We're grateful to the network of contributors to HAL:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for contributor in contributors %}
+                <div class="flex items-center space-x-3">
+                    <div>
+                        <div class="font-medium">{{ contributor.name }}</div>
+                        <div class="text-sm text-gray-500">{{ contributor.affiliation }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gray-50 rounded-xl p-8">
+        <h2 class="text-2xl font-bold mb-4">Want to Contribute?</h2>
+        <p class="text-gray-600 mb-6">
+            HAL is an open-source project and we welcome contributions from the community. 
+            If you've contributed to HAL and would like to be added to this list, please reach out.
+        </p>
+        <div class="flex space-x-4">
+            <a href="https://github.com/benediktstroebl/hal-harness-harness/blob/main/CONTRIBUTING.md" 
+               class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Contribution Guidelines
+            </a>
+            <a href="https://github.com/benediktstroebl/hal-harness-harness" 
+               class="inline-block px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+                GitHub Repository
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,10 @@
+venv/*
+**/__pycache__/*
+evals_live/*
+.DS_Store
+app_old.py
+creators.md
+cost_explanation.md
+benchmark_submission.md
+config.py
+utils/db_old.py
