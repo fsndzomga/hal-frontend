@@ -67,32 +67,9 @@
     <!-- Results Section -->
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Results</h2>
-        
-        <!-- Visualization Section -->
-        <div class="space-y-8 mb-12">
-            <!-- Cost vs Accuracy Plot -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-semibold mb-2">Accuracy vs. Cost Frontier</h3>
-                <p class="text-sm text-gray-500 mb-4">
-                    This plot shows the relationship between an agent's performance and its operational cost.
-                    The Pareto frontier (dashed line) represents the current state-of-the-art trade-off.
-                </p>
-                <div id="costAccuracyPlot" class="w-full h-[400px]"></div>
-            </div>
-
-            <!-- Task Success Heatmap -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-semibold mb-2">Task Success Heatmap</h3>
-                <p class="text-sm text-gray-500 mb-4">
-                    The heatmap visualizes success rates across different programming languages and task types,
-                    helping identify strengths and weaknesses of each agent.
-                </p>
-                <div id="taskSuccessHeatmap" class="w-full h-[400px]"></div>
-            </div>
-        </div>
 
         <!-- Leaderboard Table -->
-        <div class="bg-white rounded-xl shadow-md p-8">
+        <div class="bg-white rounded-xl shadow-md p-8 mb-8">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-semibold">Leaderboard</h3>
                 <div class="text-sm text-gray-500">Last updated: {{ last_updated }}</div>
@@ -171,6 +148,103 @@
                 </table>
             </div>
         </div>
+        
+        <!-- Visualization Section -->
+        <div class="space-y-8 mb-12">
+            <!-- Cost vs Accuracy Plot -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-2">Accuracy vs. Cost Frontier</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    This plot shows the relationship between an agent's performance and its operational cost.
+                    The Pareto frontier (dashed line) represents the current state-of-the-art trade-off.
+                </p>
+                <div id="costAccuracyPlot" class="w-full h-[400px]"></div>
+            </div>
+
+            <!-- Task Success Heatmap -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-2">Task Success Heatmap</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    The heatmap visualizes success rates across different programming languages and task types,
+                    helping identify strengths and weaknesses of each agent.
+                </p>
+                <div id="taskSuccessHeatmap" class="w-full h-[400px]"></div>
+            </div>
+        </div>
+
+        <!-- Token Pricing Configuration -->
+        <div class="bg-white rounded-xl shadow-md p-8">
+            <h3 class="text-xl font-semibold mb-2">Token Pricing Configuration</h3>
+            <p class="text-sm text-gray-500 mb-6">
+                Adjust token prices to see how they affect the total cost calculations in the leaderboard and plots.
+            </p>
+            <form id="pricingForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {% for model, prices in pricing.items() %}
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-medium text-gray-900">{{ model }}</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Active</span>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Input Token Price</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">$</span>
+                                    </div>
+                                    <input type="number" 
+                                           step="0.01" 
+                                           min="0" 
+                                           name="{{ model }}_prompt" 
+                                           value="{{ prices.prompt_tokens }}"
+                                           class="pl-7 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                           placeholder="0.00">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-400 text-xs">/1M tokens</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Output Token Price</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">$</span>
+                                    </div>
+                                    <input type="number" 
+                                           step="0.01" 
+                                           min="0" 
+                                           name="{{ model }}_completion" 
+                                           value="{{ prices.completion_tokens }}"
+                                           class="pl-7 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                           placeholder="0.00">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-400 text-xs">/1M tokens</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-8 flex items-center justify-between">
+                    <button type="button" 
+                            id="updatePricing" 
+                            class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" id="updateSpinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Update Results
+                    </button>
+                    <button type="button" 
+                            id="resetPricing" 
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Reset to Defaults
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Additional Resources -->
@@ -231,6 +305,134 @@
     }, {
         responsive: true,
         displayModeBar: false
+    });
+    
+    // Handle pricing updates
+    document.getElementById('updatePricing').addEventListener('click', async function() {
+        const form = document.getElementById('pricingForm');
+        const formData = new FormData(form);
+        const spinner = document.getElementById('updateSpinner');
+        
+        // Convert form data to pricing configuration object
+        const pricing = {};
+        for (const [key, value] of formData.entries()) {
+            const [model, type] = key.split('_');
+            if (!pricing[model]) {
+                pricing[model] = {};
+            }
+            pricing[model][type === 'prompt' ? 'prompt_tokens' : 'completion_tokens'] = parseFloat(value);
+        }
+        
+        try {
+            // Show loading state
+            this.disabled = true;
+            spinner.classList.remove('hidden');
+            
+            // Send pricing update request
+            const response = await fetch('/update_pricing/swebench_verified', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(pricing),
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            
+            // Update leaderboard
+            const leaderboardBody = document.querySelector('tbody');
+            leaderboardBody.innerHTML = data.leaderboard.map((row, index) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${index + 1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                            ${row['URL'] ? 
+                                `<a href="${row['URL']}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                    ${row['Agent Name']}
+                                    <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>` 
+                                : row['Agent Name']
+                            }
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${row['Verified'] ? '<span class="text-green-600">✓</span>' : ''}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${parseFloat(row['Accuracy']) >= 0.3 ? 'bg-green-100 text-green-800' :
+                              parseFloat(row['Accuracy']) >= 0.1 ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'}">
+                            ${(parseFloat(row['Accuracy'])).toFixed(2)}%
+                            ${row['Accuracy CI'] && row['Accuracy CI'] !== 'None' ? 
+                                `<span class="text-gray-500 ml-1">(${row['Accuracy CI']})</span>` : ''}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        $${parseFloat(row['Total Cost']).toFixed(2)}
+                        ${row['Total Cost CI'] && row['Total Cost CI'] !== 'None' ? 
+                            `<span class="text-gray-400 text-xs">(${row['Total Cost CI']})</span>` : ''}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${row['Runs']}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        ${row['Traces'] ? 
+                            `<a href="${row['Traces']}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                Download
+                                <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                            </a>` 
+                            : '<span class="text-gray-400">N/A</span>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Update scatter plot
+            Plotly.react('costAccuracyPlot', data.scatter_plot.data, {
+                ...data.scatter_plot.layout,
+                margin: { t: 10, r: 10, b: 40, l: 60 },
+                width: null,
+                height: null
+            }, {
+                responsive: true,
+                displayModeBar: false
+            });
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to update pricing. Please try again.');
+        } finally {
+            // Reset button state
+            this.disabled = false;
+            spinner.classList.add('hidden');
+        }
+    });
+
+    // Handle reset pricing
+    document.getElementById('resetPricing').addEventListener('click', function() {
+        const form = document.getElementById('pricingForm');
+        const defaultPricing = {{ pricing|tojson }};
+        
+        // Reset all input fields to their default values
+        for (const [model, prices] of Object.entries(defaultPricing)) {
+            const promptInput = form.querySelector(`input[name="${model}_prompt"]`);
+            const completionInput = form.querySelector(`input[name="${model}_completion"]`);
+            
+            if (promptInput) promptInput.value = prices.prompt_tokens;
+            if (completionInput) completionInput.value = prices.completion_tokens;
+        }
+        
+        // Trigger the update
+        document.getElementById('updatePricing').click();
     });
     
     // Resize plots when window is resized

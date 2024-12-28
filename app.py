@@ -50,6 +50,12 @@ def create_app():
 
     @app.route('/swebench')
     def swebench():
+        # Get models used in SWE-bench benchmark
+        swebench_models = preprocessor.get_models_for_benchmark('swebench_verified')
+        
+        # Filter pricing to only show models used in SWE-bench
+        pricing = {model: DEFAULT_PRICING[model] for model in swebench_models if model in DEFAULT_PRICING}
+        
         # Get data for SWE-bench
         results_df = preprocessor.get_parsed_results_with_costs('swebench_verified')
         print(results_df)
@@ -83,7 +89,8 @@ def create_app():
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
             heatmap=heatmap_json,
-            last_updated=last_updated
+            last_updated=last_updated,
+            pricing=pricing
         )
 
     @app.route('/usaco')
@@ -162,6 +169,12 @@ def create_app():
 
     @app.route('/appworld')
     def appworld():
+        # Get models used in AppWorld benchmark
+        appworld_models = preprocessor.get_models_for_benchmark('appworld_test_normal')
+        
+        # Filter pricing to only show models used in AppWorld
+        pricing = {model: DEFAULT_PRICING[model] for model in appworld_models if model in DEFAULT_PRICING}
+        
         # Get data for AppWorld
         results_df = preprocessor.get_parsed_results_with_costs('appworld_test_normal')
         
@@ -196,7 +209,8 @@ def create_app():
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
             heatmap=heatmap_json,
-            last_updated=last_updated
+            last_updated=last_updated,
+            pricing=pricing
         )
 
     @app.route('/creators')

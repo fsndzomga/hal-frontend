@@ -1,0 +1,65 @@
+/* Custom Colors */
+.text-primary {
+    color: #3498db;
+}
+
+.bg-primary {
+    background-color: #3498db;
+}
+
+.hover\:bg-primary-dark:hover {
+    background-color: #2980b9;
+}
+
+/* Override Tailwind classes */
+.text-blue-600 {
+    color: #3498db !important;
+}
+
+.hover\:text-blue-800:hover {
+    color: #2980b9 !important;
+}
+
+/* Override Tailwind classes */
+.border-blue-600 {
+    border-color: #3498db !important;
+}
+
+.hover\:border-blue-800:hover {
+    border-color: #2980b9 !important;
+}
+
+/* SVG Elements */
+.data-point {
+    fill: #3498db;
+}
+
+.legend-point {
+    fill: #3498db;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    transition-property: color, background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+/* Stats */
+.stat-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #3498db;
+    margin-bottom: 0.5rem;
+    text-align: center;
+} 

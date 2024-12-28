@@ -16,16 +16,16 @@
                         </h3>
                         <div class="flex gap-6 mx-4 mb-8">
                             <div class="bg-white p-6 rounded-lg shadow-md">
-                                <div class="text-3xl font-bold text-blue-600 mb-2 text-center">{{ total_agents }}</div>
+                                <div class="stat-value">{{ total_agents }}</div>
                                 <div class="text-gray-600 text-center">Agents</div>
                             </div>
                             <div class="bg-white p-6 rounded-lg shadow-md">
-                                <div class="text-3xl font-bold text-blue-600 mb-2 text-center">{{ total_benchmarks }}</div>
+                                <div class="stat-value">{{ total_benchmarks }}</div>
                                 <div class="text-gray-600 text-center">Benchmarks</div>
                             </div>
                         </div>
                         <div class="flex flex-col md:flex-row gap-4 mx-4">
-                            <a href="#leaderboards" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
+                            <a href="#leaderboards" class="btn-primary">
                                 View Leaderboards ↓
                             </a>
                             <a href="https://github.com/benediktstroebl/hal-harness" class="inline-block px-8 py-4 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-lg font-semibold">
@@ -35,8 +35,8 @@
                     </div>
                 </div>
             </div>
-            <div class="mx-4 mt-6 md:mt-0 md:w-1/3">
-                <img src="{{ url_for('static', filename='hero.png') }}" alt="HAL Hero" class="object-cover w-full h-full">
+            <div class="mx-4 mt-6 md:mt-0 md:w-1/2 xl:w-1/2 lg:max-w-[600px] max-w-[450px] mx-auto lg:mx-4">
+                <img src="{{ url_for('static', filename='hal_flow.png') }}" alt="HAL Hero" class="object-contain w-full h-full min-h-[500px]">
             </div>
         </div>
     </div>
@@ -115,10 +115,10 @@
             </div>
             
             <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-blue-600">
-                <h3 class="text-xl font-bold mb-4 text-blue-600">Agent Benchmark Developers</h3>
-                <p class="text-gray-600 mb-6">Reporting results on a centralized leaderboard could allow improved visibility into agent benchmarks that measure real-world utility.</p>
+                <h3 class="text-xl font-bold mb-4 text-blue-600">Benchmark Developers</h3>
+                <p class="text-gray-600 mb-6">Reporting results on a centralized leaderboard allows improved visibility into agent benchmarks that measure real-world utility.</p>
                 <div class="flex gap-3">
-                    <a href="https://github.com/benediktstroebl/hal-harness" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">Add a Benchmark</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness/tree/main/hal/benchmarks" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">Add a Benchmark</a>
                 </div>
             </div>
             
@@ -126,7 +126,7 @@
                 <h3 class="text-xl font-bold mb-4 text-blue-600">Agent Developers</h3>
                 <p class="text-gray-600 mb-6">HAL allows for easy reproduction of past agents, clear comparison with past baselines, and a straightforward way to compete on a leaderboard.</p>
                 <div class="flex gap-3">
-                    <a href="https://github.com/benediktstroebl/hal-harness" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">Submit an Agent</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness/tree/main/agents" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">Submit an Agent</a>
                     <a href="#leaderboards" class="text-sm px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors">View Leaderboards</a>
                 </div>
             </div>
@@ -151,16 +151,16 @@
     <div class="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-gray-100 to-transparent"></div>
     <div class="container mx-auto max-w-[1500]px px-8">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-4">Cost-controlled Agent Evaluations</h2>
-            <p class="text-xl text-gray-600">Understanding the Cost-Performance Trade-off</p>
+            <h2 class="text-4xl font-bold mb-4">Cost-Controlled Agent Evaluations</h2>
+            <p class="text-xl text-gray-600">Understanding the cost-performance trade-off</p>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div class="flex flex-col justify-center bg-white rounded-lg shadow-lg p-8">
-                <h3 class="text-2xl font-bold mb-10 text-blue-600 text-left text-top">Why the Pareto Frontier Matters</h3>
+                <h3 class="text-2xl font-bold mb-10 text-black-600 text-left text-top">Why looking at the Pareto frontier matters</h3>
                 <ul class="space-y-4 text-lg text-gray-700 text-left">
                     <li class="flex items-start">
                         <span class="text-blue-600 mr-2">•</span>
-                        <span>Unbounded cost</span>
+                        <span>The issue of unbounded cost</span>
                     </li>
                     <li class="flex items-start">
                         <span class="text-blue-600 mr-2">•</span>
@@ -200,9 +200,9 @@
                         <text x="30" y="140" text-anchor="middle" transform="rotate(-90 30,140)" class="text-sm">Performance (%)</text>
                         
                         <!-- Data Points -->
-                        <circle cx="120" cy="180" r="6" fill="#3B82F6"/>
-                        <circle cx="130" cy="100" r="6" fill="#3B82F6"/>
-                        <circle cx="300" cy="90" r="6" fill="#3B82F6"/>
+                        <circle cx="120" cy="180" r="6" class="data-point"/>
+                        <circle cx="130" cy="100" r="6" class="data-point"/>
+                        <circle cx="300" cy="90" r="6" class="data-point"/>
                         
                         <!-- Point Labels -->
                         <text x="110" y="165" text-anchor="end" class="text-sm font-medium">Agent A</text>
@@ -213,15 +213,15 @@
                         <path d="M 120 180 L 130 100 L 300 90" stroke="#10B981" stroke-width="2" stroke-dasharray="4" fill="none"/>
                         
                         <!-- Legend -->
-                        <circle cx="60" cy="40" r="4" fill="#3B82F6"/>
+                        <circle cx="60" cy="40" r="4" class="legend-point"/>
                         <text x="75" y="44" class="text-xs">Agents</text>
                         <line x1="120" y1="40" x2="160" y2="40" stroke="#10B981" stroke-width="2" stroke-dasharray="4"/>
                         <text x="170" y="44" class="text-xs">Pareto Frontier</text>
                         
                         <!-- Annotations -->
                         <path d="M 240 140 L 200 100" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
-                        <text x="250" y="150" class="text-xs">Better cost-performance</text>
-                        <text x="250" y="165" class="text-xs">trade-off</text>
+                        <text x="250" y="150" class="text-xs">Cost-performance</text>
+                        <text x="250" y="165" class="text-xs">frontier</text>
                     </svg>
                 </div>
                     
@@ -258,7 +258,12 @@
 <div class="py-24 bg-white">
     <div class="container mx-auto max-w-[1500]px px-8">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-4">The HAL Evaluation Harness</h2>
+            <div class="flex items-center justify-center gap-4 mb-4">
+                <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true">
+                    <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+                </svg>
+                <h2 class="text-4xl font-bold">The HAL Evaluation Harness</h2>
+            </div>
             <p class="text-xl text-gray-600">A unified framework for reproducible agent evaluation</p>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -272,9 +277,8 @@
                 </div>
                 <h3 class="text-xl font-bold mb-4">Unified Evaluation</h3>
                 <ul class="space-y-3 text-gray-600">
-                    <li>Single CLI across all benchmarks</li>
-                    <li>Standardized metrics and logging</li>
-                    <li>Flexible execution environments</li>
+                    <li>Single CLI across all benchmarks and agents</li>
+                    <li>Flexible execution environments for running parallel evaluations <span class="font-bold">locally</span> or in the <span class="font-bold">cloud</span></li>
                 </ul>
             </div>
 
@@ -285,11 +289,10 @@
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold mb-4">Comprehensive Monitoring</h3>
+                <h3 class="text-xl font-bold mb-4">Comprehensive Logging</h3>
                 <ul class="space-y-3 text-gray-600">
-                    <li>Detailed cost tracking</li>
-                    <li>Full agent traces and logs</li>
-                    <li>Weave integration for metrics</li>
+                    <li>Automatic logging of agent traces with <a href="https://wandb.ai/site/weave/" class="hover:text-blue-800 font-bold">W&B Weave</a></li>
+                    <li>Detailed cost tracking of token usage with minimal edits to agent code</li>
                 </ul>
             </div>
 
@@ -304,20 +307,113 @@
                 </div>
                 <h3 class="text-xl font-bold mb-4">Developer Friendly</h3>
                 <ul class="space-y-3 text-gray-600">
-                    <li>Easy agent integration</li>
-                    <li>Modular architecture</li>
-                    <li>Automatic dependency management</li>
+                    <li>Easy agent integration that <span class="font-bold">does not require a speciifc agent framework</span></li>
+                    <li>Modular architecture that allows for easy extentions with new benchmarks and agents</li>
                 </ul>
             </div>
         </div>
 
         <div class="mt-12 text-center">
-            <a href="https://github.com/benediktstroebl/hal-harness" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
+            <a href="https://github.com/benediktstroebl/hal-harness" class="btn-primary">
                 Get Started with HAL →
             </a>
         </div>
     </div>
 </div>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+<!-- Central Leaderboard Section -->
+<div class="py-24 bg-gradient-to-b from-white to-gray-50 relative">
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Unified Agent Benchmarking</h2>
+            <p class="text-xl text-gray-600">A central hub for discovering and comparing agent capabilities</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                        <path d="M21 5c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5c0 1.66 4 3 9 3s9-1.34 9-3"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Centralized Benchmarking</h3>
+                <p class="text-gray-600 mb-6">HAL brings together diverse agent benchmarks under one roof. We want to provide better visibility to new evaluations and establishing clear state-of-the-art baselines across different benchmarks.</p>
+                <ul class="space-y-3 text-gray-600">
+                    <li>• Standardized evalautions harness</li>
+                    <li>• Clear visibility of SOTA performance</li>
+                    <li>• Visibility for new benchmarks</li>
+                </ul>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Benchmark Discovery</h3>
+                <p class="text-gray-600 mb-6">Discover and compare agent performance across a growing collection of benchmarks, from code generation to harmfulness.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="font-bold text-2xl text-blue-600 mb-2">{{ total_benchmarks }}</div>
+                        <div class="text-sm text-gray-600">Active Benchmarks</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="font-bold text-2xl text-blue-600 mb-2">{{ total_agents }}</div>
+                        <div class="text-sm text-gray-600">Evaluated Agents</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+<!-- Trace Analysis Section -->
+<div class="py-24 bg-gradient-to-b from-gray-50 to-white relative">
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Agent Trace Access</h2>
+            <p class="text-xl text-gray-600">Enabling research while protecting benchmark integrity</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Complete Agent Traces</h3>
+                <p class="text-gray-600 mb-6">We make available the full traces of agent evaluations, including every single model call as logged by W&B Weave.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Encrypted Distribution</h3>
+                <p class="text-gray-600 mb-6">All agent traces are securely encrypted to prevent benchmark contamination.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
 {% endblock %}
 

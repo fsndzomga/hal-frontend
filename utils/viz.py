@@ -197,7 +197,8 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
 
     # Create agents using the values directly from the DataFrame
     # The DataFrame should already have aggregated values
-    agents = [Agent(row[x], row[y]) for _, row in df.iterrows()]
+    unique_agents = df['Agent Name'].unique()
+    agents = [Agent(df[df['Agent Name'] == agent]['Total Cost'].mean(), df[df['Agent Name'] == agent]['Accuracy'].mean()) for agent in unique_agents]
     pareto_frontier = compute_pareto_frontier(agents)
 
     fig = go.Figure()
