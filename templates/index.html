@@ -62,8 +62,22 @@
                 </div>
             </a>
 
+            <a href="{{ url_for('swebench_verified_mini') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">SWE-bench Verified Mini</h3>
+                    <p class="text-gray-600">
+                        A compact version of SWE-bench for quick agent evaluation
+                    </p>
+                </div>
+            </a>
+
             <a href="{{ url_for('usaco') }}" class="block">
-                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-blue-200">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                     <div class="mb-4">
                         <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
@@ -76,16 +90,114 @@
                 </div>
             </a>
 
-            <a href="{{ url_for('appworld') }}" class="block">
+            <a href="{{ url_for('appworld_test_normal') }}" class="block">
                 <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                     <div class="mb-4">
                         <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-2">AppWorld</h3>
+                    <h3 class="text-2xl font-bold mb-2">AppWorld Normal</h3>
                     <p class="text-gray-600">
                         Evaluating interactive coding capabilities in a controlled world of apps and people
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('appworld_test_challenge') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">AppWorld Challenge</h3>
+                    <p class="text-gray-600">
+                        Advanced interactive coding challenges in the AppWorld environment
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('corebench_easy') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">CORE-Bench Easy</h3>
+                    <p class="text-gray-600">
+                        Entry-level core reasoning and problem-solving tasks
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('corebench_medium') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">CORE-Bench Medium</h3>
+                    <p class="text-gray-600">
+                        Intermediate core reasoning and problem-solving challenges
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('corebench_hard') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">CORE-Bench Hard</h3>
+                    <p class="text-gray-600">
+                        Advanced core reasoning and problem-solving scenarios
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('gaia') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">GAIA</h3>
+                    <p class="text-gray-600">
+                        Testing agent capabilities in environmental and sustainability challenges
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('cybench') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Cybench</h3>
+                    <p class="text-gray-600">
+                        Evaluating agent behavior in cybersecurity scenarios
+                    </p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('agentharm') }}" class="block">
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="mb-4">
+                        <svg fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22,7H16.333V4a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v7H2a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V8A1,1,0,0,0,22,7ZM7.667,19H3V13H7.667Zm6.666,0H9.667V5h4.666ZM21,19H16.333V9H21Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">AgentHarm</h3>
+                    <p class="text-gray-600">
+                        Assessing agent safety and harm prevention capabilities
                     </p>
                 </div>
             </a>

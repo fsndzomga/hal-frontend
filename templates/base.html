@@ -53,9 +53,17 @@
                         </button>
                         <div data-dropdown-menu class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
                             <div class="py-1">
-                                <a href="{{ url_for('swebench') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">SWE-bench</a>
+                                <a href="{{ url_for('swebench') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">SWE-bench Verified</a>
+                                <a href="{{ url_for('swebench_verified_mini') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">SWE-bench Verified Mini</a>
                                 <a href="{{ url_for('usaco') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">USACO</a>
-                                <a href="{{ url_for('appworld') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">AppWorld</a>
+                                <a href="{{ url_for('appworld_test_normal') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">AppWorld Normal</a>
+                                <a href="{{ url_for('appworld_test_challenge') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">AppWorld Challenge</a>
+                                <a href="{{ url_for('corebench_easy') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">CORE-Bench Easy</a>
+                                <a href="{{ url_for('corebench_medium') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">CORE-Bench Medium</a>
+                                <a href="{{ url_for('corebench_hard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">CORE-Bench Hard</a>
+                                <a href="{{ url_for('gaia') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">GAIA</a>
+                                <a href="{{ url_for('cybench') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cybench</a>
+                                <a href="{{ url_for('agentharm') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">AgentHarm</a>
                             </div>
                         </div>
                     </div>

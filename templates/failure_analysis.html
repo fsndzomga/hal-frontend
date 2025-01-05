@@ -1,0 +1,136 @@
+<!-- Failure Report Section -->
+<div class="bg-white rounded-xl shadow-md p-8 mb-8">
+    <h3 class="text-xl font-semibold mb-2">Failure Analysis (Experimental)</h3>
+    <p class="text-sm text-gray-500 mb-6">
+        Select an agent to see a detailed breakdown of failure categories and their descriptions.
+        This analysis helps understand common failure patterns and areas for improvement. Failure reports are usually available for the top 2 agents.
+    </p>
+    
+    <div class="mb-6">
+        <label for="failureReportAgent" class="block text-sm font-medium text-gray-700">Select Agent</label>
+        <select id="failureReportAgent" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+            <!-- Options will be populated by JavaScript -->
+        </select>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Failure Categories Overview -->
+        <div>
+            <h4 class="text-lg font-medium mb-4">Failure Categories</h4>
+            <div id="failureCategoriesOverview" class="prose max-w-none">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Failure Categories Chart -->
+        <div>
+            <h4 class="text-lg font-medium mb-4">Distribution of Failures</h4>
+            <div id="failureCategoriesChart" class="w-full h-[400px]">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle failure report updates
+    async function loadAvailableAgents() {
+        try {
+            const response = await fetch('/available_agents/{{ benchmark_name }}');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const agents = await response.json();
+            const dropdown = document.getElementById('failureReportAgent');
+            
+            // Clear existing options
+            dropdown.innerHTML = '';
+            
+            // Add new options
+            agents.forEach(agent => {
+                const option = document.createElement('option');
+                option.value = agent;
+                option.textContent = agent;
+                dropdown.appendChild(option);
+            });
+            
+            // Trigger change event if there are agents
+            if (agents.length > 0) {
+                dropdown.dispatchEvent(new Event('change'));
+            } else {
+                document.getElementById('failureCategoriesOverview').innerHTML = 
+                    '<p class="text-gray-500">No agents with failure reports available.</p>';
+                document.getElementById('failureCategoriesChart').innerHTML = 
+                    '<p class="text-gray-500">No agents with failure reports available.</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('failureCategoriesOverview').innerHTML = 
+                '<p class="text-red-500">Failed to load available agents. Please try again.</p>';
+        }
+    }
+
+    // Load available agents on page load
+    loadAvailableAgents();
+
+    document.getElementById('failureReportAgent').addEventListener('change', async function() {
+        const agentName = this.value;
+        
+        try {
+            const response = await fetch(`/failure_report/{{ benchmark_name }}?agent=${encodeURIComponent(agentName)}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            
+            // Update failure categories overview
+            let overviewHtml = '';
+            if (data.failure_categories && data.failure_categories.length > 0) {
+                data.failure_categories.forEach(category => {
+                    overviewHtml += `
+                        <div class="mb-4">
+                            <h5 class="font-medium text-gray-900">${category.category_name}</h5>
+                            <p class="text-gray-600">${category.description}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                overviewHtml = '<p class="text-gray-500">No failure categories available for this agent.</p>';
+            }
+            document.getElementById('failureCategoriesOverview').innerHTML = overviewHtml;
+            
+            // Update failure categories chart
+            if (data.chart_data) {
+                Plotly.newPlot('failureCategoriesChart', data.chart_data.data, {
+                    ...data.chart_data.layout,
+                    margin: { t: 10, r: 10, b: 40, l: 200 },
+                    width: null,
+                    height: null
+                }, {
+                    responsive: true,
+                    displayModeBar: false
+                });
+            } else {
+                document.getElementById('failureCategoriesChart').innerHTML = 
+                    '<p class="text-center text-gray-500 mt-8">No chart data available for this agent.</p>';
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('failureCategoriesOverview').innerHTML = 
+                '<p class="text-red-500">Failed to load failure report. Please try again.</p>';
+            document.getElementById('failureCategoriesChart').innerHTML = 
+                '<p class="text-red-500">Failed to load failure chart. Please try again.</p>';
+        }
+    });
+
+    // Add resize handler for the chart
+    window.addEventListener('resize', function() {
+        const chart = document.getElementById('failureCategoriesChart');
+        if (chart && chart._fullLayout) {
+            Plotly.Plots.resize(chart);
+        }
+    });
+</script> 

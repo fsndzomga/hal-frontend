@@ -1,34 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}HAL: SWE-bench Verified Leaderboard{% endblock %}
+{% block title %}HAL: SWE-bench Verified Mini Leaderboard{% endblock %}
 
-{% block description %}SWE-bench Verified leaderboard for evaluating code generation and bug fixing capabilities of AI agents.{% endblock %}
+{% block description %}SWE-bench Verified Mini leaderboard for evaluating AI agents on a curated subset of verified software engineering tasks.{% endblock %}
 
 {% block nav_title %}
-<span class="text-2xl ml-4">/ SWE-bench Verified</span>
+<span class="text-2xl ml-4">/ SWE-bench Verified Mini</span>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <div class="bg-gradient-to-b from-blue-50 to-white">
     <div class="mx-auto max-w-[1500]px px-8 py-16">
-        <h1 class="text-4xl font-bold mb-4">SWE-bench Verified Benchmark</h1>
+        <h1 class="text-4xl font-bold mb-4">SWE-bench Verified Mini Benchmark</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
-            SWE-bench Verified evaluates AI agents on real-world programming tasks from open-source repositories,
-            focusing on code generation and bug fixing capabilities.
-        </p>
-        <p class="text-sm text-gray-500 mb-8 max-w-3xl">
-            Paper: <a href="https://arxiv.org/abs/2310.06770" class="text-blue-600 hover:text-blue-800">
-                SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a>
+            SWE-bench Verified Mini is a curated subset of the full SWE-bench dataset, focusing on verified software engineering tasks.
+            Each task has been manually verified and includes comprehensive test cases to ensure solution correctness.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">500</div>
+                <div class="text-3xl font-bold text-blue-600 mb-2">25</div>
                 <div class="text-gray-600">Verified Tasks</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">100%</div>
-                <div class="text-gray-600">Human Validated</div>
+                <div class="text-gray-600">Test Coverage</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
@@ -44,21 +40,21 @@
         <h2 class="text-3xl font-bold mb-8">Key Features</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Real-World Tasks</h3>
+                <h3 class="text-xl font-semibold mb-4">Verified Tasks</h3>
                 <p class="text-gray-600">
-                    All tasks are sourced from actual GitHub issues, representing genuine software engineering challenges.
+                    Each task has been manually verified and includes comprehensive test cases.
                 </p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Expert Validation</h3>
+                <h3 class="text-xl font-semibold mb-4">Real-world Code</h3>
                 <p class="text-gray-600">
-                    Every task has been reviewed and validated by experienced software engineers to ensure quality.
+                    Tasks are derived from real open-source projects and represent actual software engineering challenges.
                 </p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Diverse Challenges</h3>
+                <h3 class="text-xl font-semibold mb-4">Focused Evaluation</h3>
                 <p class="text-gray-600">
-                    Tasks cover various programming languages, frameworks, and problem types, from bug fixes to feature implementations.
+                    Curated subset allows for quick and reliable evaluation of agent capabilities.
                 </p>
             </div>
         </div>
@@ -92,7 +88,7 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ loop.index }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">
+                                <div class="text-sm">
                                     {% if row['URL'] %}
                                         <a href="{{ row['URL'] }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                             {{ row['Agent Name'] }}
@@ -112,8 +108,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {% if row['Accuracy']|float >= 0.3 %}bg-green-100 text-green-800
-                                    {% elif row['Accuracy']|float >= 0.1 %}bg-yellow-100 text-yellow-800
+                                    {% if row['Accuracy']|float >= 85 %}bg-green-100 text-green-800
                                     {% else %}bg-red-100 text-red-800{% endif %}">
                                     {{ "%.2f"|format(row['Accuracy']|float) }}%
                                     {% if row.get('Accuracy CI') and row['Accuracy CI'] != 'None' %}
@@ -158,7 +153,7 @@
                     This plot shows the relationship between an agent's performance and its operational cost.
                     The Pareto frontier (dashed line) represents the current state-of-the-art trade-off.
                 </p>
-                <div id="costAccuracyPlot" class="w-full h-[400px]"></div>
+                <div id="costAccuracyPlot" class="w-full h-[500px]"></div>
             </div>
 
             <!-- Task Success Heatmap -->
@@ -169,40 +164,6 @@
                     helping identify strengths and weaknesses of each agent.
                 </p>
                 <div id="taskSuccessHeatmap" class="w-full h-[500px]"></div>
-            </div>
-        </div>
-
-        <!-- Failure Report Section -->
-        <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-            <h3 class="text-xl font-semibold mb-2">Failure Analysis</h3>
-            <p class="text-sm text-gray-500 mb-6">
-                Select an agent to see a detailed breakdown of failure categories and their descriptions.
-                This analysis helps understand common failure patterns and areas for improvement.
-            </p>
-            
-            <div class="mb-6">
-                <label for="failureReportAgent" class="block text-sm font-medium text-gray-700">Select Agent</label>
-                <select id="failureReportAgent" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                    <!-- Options will be populated by JavaScript -->
-                </select>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Failure Categories Overview -->
-                <div>
-                    <h4 class="text-lg font-medium mb-4">Failure Categories</h4>
-                    <div id="failureCategoriesOverview" class="prose max-w-none">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Failure Categories Chart -->
-                <div>
-                    <h4 class="text-lg font-medium mb-4">Distribution of Failures</h4>
-                    <div id="failureCategoriesChart" class="w-full h-[400px]">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -288,7 +249,7 @@
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Getting Started</h3>
                 <p class="text-gray-600 mb-4">
-                    Want to evaluate your agent on SWE-bench? Follow our comprehensive guide to get started:
+                    Want to evaluate your agent on SWE-bench Verified Mini? Follow our comprehensive guide to get started:
                 </p>
                 <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Documentation
@@ -300,7 +261,7 @@
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Task Details</h3>
                 <p class="text-gray-600 mb-4">
-                    Browse the complete list of SWE-bench tasks, including problem descriptions and test cases:
+                    Browse the complete list of SWE-bench Verified Mini tasks and their requirements:
                 </p>
                 <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Tasks
@@ -363,7 +324,7 @@
             spinner.classList.remove('hidden');
             
             // Send pricing update request
-            const response = await fetch('/update_pricing/swebench_verified', {
+            const response = await fetch('/update_pricing/swebench_verified_mini', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -383,7 +344,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm">${index + 1}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">
+                        <div class="text-sm">
                             ${row['URL'] ? 
                                 `<a href="${row['URL']}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                     ${row['Agent Name']}
@@ -400,9 +361,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${parseFloat(row['Accuracy']) >= 0.3 ? 'bg-green-100 text-green-800' :
-                              parseFloat(row['Accuracy']) >= 0.1 ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'}">
+                            ${parseFloat(row['Accuracy']) >= 85 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                             ${(parseFloat(row['Accuracy'])).toFixed(2)}%
                             ${row['Accuracy CI'] && row['Accuracy CI'] !== 'None' ? 
                                 `<span class="text-gray-500 ml-1">(${row['Accuracy CI']})</span>` : ''}
@@ -473,103 +432,6 @@
     window.addEventListener('resize', function() {
         Plotly.Plots.resize('costAccuracyPlot');
         Plotly.Plots.resize('taskSuccessHeatmap');
-        Plotly.Plots.resize('failureCategoriesChart');
     });
-
-    // Handle failure report updates
-    async function loadAvailableAgents() {
-        try {
-            const response = await fetch('/available_agents/swebench_verified');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            
-            const agents = await response.json();
-            const dropdown = document.getElementById('failureReportAgent');
-            
-            // Clear existing options
-            dropdown.innerHTML = '';
-            
-            // Add new options
-            agents.forEach(agent => {
-                const option = document.createElement('option');
-                option.value = agent;
-                option.textContent = agent;
-                dropdown.appendChild(option);
-            });
-            
-            // Trigger change event if there are agents
-            if (agents.length > 0) {
-                dropdown.dispatchEvent(new Event('change'));
-            } else {
-                document.getElementById('failureCategoriesOverview').innerHTML = 
-                    '<p class="text-gray-500">No agents with failure reports available.</p>';
-                document.getElementById('failureCategoriesChart').innerHTML = 
-                    '<p class="text-gray-500">No agents with failure reports available.</p>';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('failureCategoriesOverview').innerHTML = 
-                '<p class="text-red-500">Failed to load available agents. Please try again.</p>';
-        }
-    }
-
-    // Load available agents on page load
-    loadAvailableAgents();
-
-    document.getElementById('failureReportAgent').addEventListener('change', async function() {
-        const agentName = this.value;
-        
-        try {
-            const response = await fetch(`/failure_report/swebench_verified?agent=${encodeURIComponent(agentName)}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            
-            const data = await response.json();
-            
-            // Update failure categories overview
-            let overviewHtml = '';
-            if (data.failure_categories && data.failure_categories.length > 0) {
-                data.failure_categories.forEach(category => {
-                    overviewHtml += `
-                        <div class="mb-4">
-                            <h5 class="font-medium text-gray-900">${category.category_name}</h5>
-                            <p class="text-gray-600">${category.description}</p>
-                        </div>
-                    `;
-                });
-            } else {
-                overviewHtml = '<p class="text-gray-500">No failure categories available for this agent.</p>';
-            }
-            document.getElementById('failureCategoriesOverview').innerHTML = overviewHtml;
-            
-            // Update failure categories chart
-            if (data.chart_data) {
-                Plotly.newPlot('failureCategoriesChart', data.chart_data.data, {
-                    ...data.chart_data.layout,
-                    margin: { t: 10, r: 10, b: 40, l: 200 },
-                    width: null,
-                    height: null
-                }, {
-                    responsive: true,
-                    displayModeBar: false
-                });
-            } else {
-                document.getElementById('failureCategoriesChart').innerHTML = 
-                    '<p class="text-center text-gray-500 mt-8">No chart data available for this agent.</p>';
-            }
-            
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('failureCategoriesOverview').innerHTML = 
-                '<p class="text-red-500">Failed to load failure report. Please try again.</p>';
-            document.getElementById('failureCategoriesChart').innerHTML = 
-                '<p class="text-red-500">Failed to load failure chart. Please try again.</p>';
-        }
-    });
-
-    // Trigger initial failure report load for the first agent
-    document.getElementById('failureReportAgent').dispatchEvent(new Event('change'));
 </script>
 {% endblock %} 
