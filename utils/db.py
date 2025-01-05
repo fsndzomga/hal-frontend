@@ -509,6 +509,8 @@ class TracePreprocessor:
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
                     
         # Calculate costs based on pricing config (prices are per 1M tokens)
+        print(df)
+        print(df.columns)
         df['total_cost'] = 0.0
         for model, prices in pricing_config.items():
             mask = df['model_name'] == model

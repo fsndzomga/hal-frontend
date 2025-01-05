@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, request
 from utils.db import TracePreprocessor, DEFAULT_PRICING
-from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard
+from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart
 import plotly.utils
 import json
 from datetime import datetime
@@ -136,7 +136,8 @@ def create_app():
             scatter_plot=scatter_plot_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
-            pricing=pricing
+            pricing=pricing,
+            benchmark_name='usaco'  # Add benchmark name for failure analysis
         )
 
     @app.route('/update_pricing/<benchmark>', methods=['POST'])
@@ -167,8 +168,8 @@ def create_app():
             'scatter_plot': scatter_plot_json
         })
 
-    @app.route('/appworld')
-    def appworld():
+    @app.route('/appworld_test_normal')
+    def appworld_test_normal():
         # Get models used in AppWorld benchmark
         appworld_models = preprocessor.get_models_for_benchmark('appworld_test_normal')
         
@@ -205,13 +206,357 @@ def create_app():
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
         return render_template(
-            'appworld.html',
+            'appworld_test_normal.html',
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
-            pricing=pricing
+            pricing=pricing,
+            benchmark_name='appworld_test_normal'  # Add benchmark name for failure analysis
         )
+
+    @app.route('/appworld_test_challenge')
+    def appworld_test_challenge():
+        # Get models used in AppWorld Challenge benchmark
+        appworld_models = preprocessor.get_models_for_benchmark('appworld_test_challenge')
+        pricing = {model: DEFAULT_PRICING[model] for model in appworld_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('appworld_test_challenge')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('appworld_test_challenge'),
+            'AppWorld Challenge'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'appworld_test_normal.html',  # Reuse the same template
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='appworld_test_challenge'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/corebench_easy')
+    def corebench_easy():
+        corebench_models = preprocessor.get_models_for_benchmark('corebench_easy')
+        pricing = {model: DEFAULT_PRICING[model] for model in corebench_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('corebench_easy')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('corebench_easy'),
+            'CORE-Bench-Easy'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'corebench.html',  # Will need to create this template
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            difficulty="Easy",
+            benchmark_name='corebench_easy'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/corebench_medium')
+    def corebench_medium():
+        corebench_models = preprocessor.get_models_for_benchmark('corebench_medium')
+        pricing = {model: DEFAULT_PRICING[model] for model in corebench_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('corebench_medium')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('corebench_medium'),
+            'CORE-Bench-Medium'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'corebench.html',
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            difficulty="Medium",
+            benchmark_name='corebench_medium'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/corebench_hard')
+    def corebench_hard():
+        corebench_models = preprocessor.get_models_for_benchmark('corebench_hard')
+        pricing = {model: DEFAULT_PRICING[model] for model in corebench_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('corebench_hard')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('corebench_hard'),
+            'CORE-Bench-Hard'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'corebench.html',
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            difficulty="Hard",
+            benchmark_name='corebench_hard'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/gaia')
+    def gaia():
+        gaia_models = preprocessor.get_models_for_benchmark('gaia')
+        pricing = {model: DEFAULT_PRICING[model] for model in gaia_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('gaia')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('gaia'),
+            'GAIA'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'gaia.html',  # Will need to create this template
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='gaia'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/cybench')
+    def cybench():
+        cybench_models = preprocessor.get_models_for_benchmark('cybench')
+        pricing = {model: DEFAULT_PRICING[model] for model in cybench_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('cybench')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('cybench'),
+            'Cybench'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'cybench.html',  # Will need to create this template
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='cybench'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/agentharm')
+    def agentharm():
+        agentharm_models = preprocessor.get_models_for_benchmark('agentharm')
+        pricing = {model: DEFAULT_PRICING[model] for model in agentharm_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('agentharm')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('agentharm'),
+            'AgentHarm'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'agentharm.html',  # Will need to create this template
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='agentharm'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/swebench_verified_mini')
+    def swebench_verified_mini():
+        swebench_models = preprocessor.get_models_for_benchmark('swebench_verified_mini')
+        pricing = {model: DEFAULT_PRICING[model] for model in swebench_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('swebench_verified_mini')
+        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('swebench_verified_mini'),
+            'SWE-bench Verified (Mini)'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'swebench.html',  # Reuse the same template as swebench
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            is_mini=True,
+            benchmark_name='swebench_verified_mini'  # Add benchmark name for failure analysis
+        )
+
+    @app.route('/failure_report/<benchmark>')
+    def failure_report(benchmark):
+        agent_name = request.args.get('agent')
+        if not agent_name:
+            return jsonify({'error': 'Agent name is required'}), 400
+            
+        # Get failure report for the agent
+        failure_report = preprocessor.get_failure_report(agent_name, benchmark)
+        if not failure_report:
+            return jsonify({
+                'failure_categories': [],
+                'chart_data': None
+            })
+            
+        # Create bar chart data
+        categories = []
+        counts = []
+        for category in failure_report['failure_categories']:
+            categories.append(category['category_name'])
+            # Count tasks in this category
+            count = sum(1 for _, classification in failure_report['task_classifications'].items() 
+                       if classification['category_id'] == str(len(categories)))
+            counts.append(count)
+            
+        chart = create_bar_chart(
+            categories,
+            counts,
+            "Number of Tasks",
+            "Failure Categories",
+            "Distribution of Failure Categories"
+        )
+        
+        return jsonify({
+            'failure_categories': failure_report['failure_categories'],
+            'chart_data': json.loads(json.dumps(chart, cls=plotly.utils.PlotlyJSONEncoder))
+        })
+
+    @app.route('/available_agents/<benchmark>')
+    def available_agents(benchmark):
+        # Get all agents for the benchmark
+        agents = preprocessor.get_all_agents(benchmark)
+        
+        # Filter to only agents with failure reports
+        agents_with_reports = [
+            agent for agent in agents 
+            if preprocessor.get_failure_report(agent, benchmark) is not None
+        ]
+        
+        return jsonify(agents_with_reports)
 
     @app.route('/creators')
     def creators():

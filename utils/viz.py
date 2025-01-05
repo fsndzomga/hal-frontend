@@ -130,7 +130,6 @@ def create_bar_chart(categories, values, x_label, y_label, title):
 
     text_labels = [f"({value/total_tasks:.1%} of failures)" for value in values]
 
-
     fig = go.Figure(data=[go.Bar(
         y=categories,
         x=values,
@@ -144,12 +143,17 @@ def create_bar_chart(categories, values, x_label, y_label, title):
                       'Affected Tasks: %{customdata}<extra></extra>'
     )])
 
+    # Calculate dynamic height based on number of categories
+    height = max(400, len(categories) * 50)  # At least 400px, or 50px per category
+
     fig.update_layout(
-        height=600,
+        height=height,  # Dynamic height
+        margin=dict(l=20, r=20, t=20, b=20),  # Reduced margins
         xaxis=dict(
             showline=True,
             linecolor='black',
-            showgrid=False
+            showgrid=False,
+            side='top'  # Move x-axis to top
         ),
         yaxis=dict(
             showline=True,
@@ -189,7 +193,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         # Look for model name in parentheses at the end
         if '(' in agent_name and ')' in agent_name:
             model = agent_name.split('(')[-1].rstrip(')')
-            if any(model_prefix in model.lower() for model_prefix in ['gpt-', 'claude-', 'gemini-', 'meta-llama']):
+            if any(model_prefix in model.lower() for model_prefix in ['gpt-', 'claude-', 'gemini-', 'meta-llama', 'openai', 'anthropic', 'o1-']):
                 return model.strip()
         return 'Other'
 
