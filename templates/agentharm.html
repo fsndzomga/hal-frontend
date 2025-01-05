@@ -2,7 +2,7 @@
 
 {% block title %}HAL: AgentHarm Leaderboard{% endblock %}
 
-{% block description %}AgentHarm leaderboard for evaluating AI agents on harmful behaviors across multiple categories, testing both harmful scenarios and benign counterparts.{% endblock %}
+{% block description %}AgentHarm leaderboard for evaluating AI agents on safety and harm prevention capabilities.{% endblock %}
 
 {% block nav_title %}
 <span class="text-2xl ml-4">/ AgentHarm</span>
@@ -14,19 +14,10 @@
     <div class="mx-auto max-w-[1500]px px-8 py-16">
         <h1 class="text-4xl font-bold mb-4">AgentHarm Benchmark</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
-            AgentHarm is a benchmark of base behaviors across harm categories like fraud, cybercrime, and harassment,
-            requiring multiple tool-based actions in sequence. The benchmark uses synthetic tools and includes both
-            harmful scenarios and benign counterparts for baseline capability testing.
+            AgentHarm evaluates AI agents on their ability to identify and prevent potential harmful actions,
+            focusing on safety and responsible behavior in various scenarios.
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">110</div>
-                <div class="text-gray-600">Base Behaviors</div>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">11</div>
-                <div class="text-gray-600">Harm Categories</div>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
                 <div class="text-gray-600">Agents Evaluated</div>
@@ -36,31 +27,6 @@
 </div>
 
 <div class="mx-auto max-w-[1500]px px-8 py-16">
-    <!-- Key Features Section -->
-    <div class="mb-16">
-        <h2 class="text-3xl font-bold mb-8">Key Features</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Comprehensive Coverage</h3>
-                <p class="text-gray-600">
-                    Tests behaviors across multiple harm categories with both harmful scenarios and benign counterparts.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Tool-based Actions</h3>
-                <p class="text-gray-600">
-                    Evaluates agents' ability to perform sequences of tool-based actions in synthetic environments.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Augmented Testing</h3>
-                <p class="text-gray-600">
-                    440 total tasks with augmentations to test robustness and consistency of agent behavior.
-                </p>
-            </div>
-        </div>
-    </div>
-
     <!-- Results Section -->
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Results</h2>
@@ -168,6 +134,9 @@
             </div>
         </div>
 
+        <!-- Failure Analysis Section -->
+        {% include 'failure_analysis.html' %}
+
         <!-- Token Pricing Configuration -->
         <div class="bg-white rounded-xl shadow-md p-8">
             <h3 class="text-xl font-semibold mb-2">Token Pricing Configuration</h3>
@@ -240,37 +209,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Additional Resources -->
-    <div class="mb-16">
-        <h2 class="text-3xl font-bold mb-8">Additional Resources</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Getting Started</h3>
-                <p class="text-gray-600 mb-4">
-                    Want to evaluate your agent on AgentHarm? Follow our comprehensive guide to get started:
-                </p>
-                <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
-                    View Documentation
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Task Details</h3>
-                <p class="text-gray-600 mb-4">
-                    Browse the complete list of AgentHarm tasks and their requirements:
-                </p>
-                <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
-                    View Tasks
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </a>
-            </div>
         </div>
     </div>
 </div>

@@ -2,7 +2,7 @@
 
 {% block title %}HAL: GAIA Leaderboard{% endblock %}
 
-{% block description %}GAIA leaderboard for evaluating General AI Assistants on real-world tasks requiring fundamental abilities like reasoning, multi-modality handling, and tool use.{% endblock %}
+{% block description %}GAIA leaderboard for evaluating AI agents on general artificial intelligence assessment tasks.{% endblock %}
 
 {% block nav_title %}
 <span class="text-2xl ml-4">/ GAIA</span>
@@ -14,18 +14,10 @@
     <div class="mx-auto max-w-[1500]px px-8 py-16">
         <h1 class="text-4xl font-bold mb-4">GAIA Benchmark</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
-            GAIA is a benchmark for General AI Assistants. It proposes real-world questions that require a set of fundamental abilities
-            such as reasoning, multi-modality handling, web browsing, and generally tool-use proficiency.
+            GAIA (General Artificial Intelligence Assessment) evaluates AI agents on a diverse set of tasks
+            designed to test general intelligence capabilities.
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">450+</div>
-                <div class="text-gray-600">Non-trivial Questions</div>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">3</div>
-                <div class="text-gray-600">Difficulty Levels</div>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
                 <div class="text-gray-600">Agents Evaluated</div>
@@ -35,31 +27,6 @@
 </div>
 
 <div class="mx-auto max-w-[1500]px px-8 py-16">
-    <!-- Key Features Section -->
-    <div class="mb-16">
-        <h2 class="text-3xl font-bold mb-8">Key Features</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Comprehensive Testing</h3>
-                <p class="text-gray-600">
-                    Evaluates multiple fundamental abilities including reasoning, multi-modality handling, and tool use proficiency.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Real-world Tasks</h3>
-                <p class="text-gray-600">
-                    Questions are based on real-world scenarios requiring practical problem-solving abilities.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Tiered Difficulty</h3>
-                <p class="text-gray-600">
-                    Three difficulty levels to assess agent capabilities, from basic tasks to complex challenges.
-                </p>
-            </div>
-        </div>
-    </div>
-
     <!-- Results Section -->
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Results</h2>
@@ -167,6 +134,9 @@
             </div>
         </div>
 
+        <!-- Failure Analysis Section -->
+        {% include 'failure_analysis.html' %}
+
         <!-- Token Pricing Configuration -->
         <div class="bg-white rounded-xl shadow-md p-8">
             <h3 class="text-xl font-semibold mb-2">Token Pricing Configuration</h3>
@@ -241,8 +211,10 @@
             </form>
         </div>
     </div>
+</div>
 
-    <!-- Additional Resources -->
+<!-- Additional Resources -->
+<div class="mx-auto max-w-[1500]px px-8 py-8">
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Additional Resources</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
