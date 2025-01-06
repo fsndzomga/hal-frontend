@@ -243,7 +243,7 @@ def create_app():
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
         return render_template(
-            'appworld_test_normal.html',  # Reuse the same template
+            'appworld_test_challenge.html',  # Reuse the same template
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
             heatmap=heatmap_json,
@@ -498,13 +498,12 @@ def create_app():
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
         return render_template(
-            'swebench.html',  # Reuse the same template as swebench
+            'swebench_verified_mini.html',  # Use the new template
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            is_mini=True,
             benchmark_name='swebench_verified_mini'  # Add benchmark name for failure analysis
         )
 
