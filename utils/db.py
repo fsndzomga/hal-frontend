@@ -71,7 +71,6 @@ AGGREGATION_RULES = {
     'accuracy_ci': 'first',
     'cost_ci': 'first',
     'run_id': 'first',
-    
 }
 
 # Define column display names
@@ -421,15 +420,24 @@ class TracePreprocessor:
         )
         
         df = df.drop(columns=['successful_tasks', 'failed_tasks'], axis=1)
-
+        
         if aggregate:
             df = df.groupby('agent_name').agg(AGGREGATION_RULES).reset_index()
-
+            
         # Rename columns using the display names mapping
         df = df.rename(columns=COLUMN_DISPLAY_NAMES)
         
+        
         # Sort by Accuracy in descending order
         df = df.sort_values('Accuracy', ascending=False)
+        
+        # Multiply accuracy by 100
+        df['Accuracy'] = df['Accuracy'] * 100
+        df['Scenario Goal Completion'] = df['Scenario Goal Completion'] * 100
+        df['Task Goal Completion'] = df['Task Goal Completion'] * 100
+        df['Level 1 Accuracy'] = df['Level 1 Accuracy'] * 100
+        df['Level 2 Accuracy'] = df['Level 2 Accuracy'] * 100
+        df['Level 3 Accuracy'] = df['Level 3 Accuracy'] * 100
         
         return df
     
@@ -581,6 +589,8 @@ class TracePreprocessor:
                 'AMP Parkinsons Disease Progression Prediction Score': 'mean',
                 'CIFAR10 Score': 'mean',
                 'IMDB Score': 'mean',
+                'Scenario Goal Completion': 'mean',
+                'Task Goal Completion': 'mean',
                 'Level 1 Accuracy': 'mean',
                 'Level 2 Accuracy': 'mean',
                 'Level 3 Accuracy': 'mean',
@@ -653,7 +663,7 @@ class TracePreprocessor:
                     SELECT DISTINCT benchmark_name, agent_name 
                     FROM parsed_results
                 '''
-                print(query)
+                
                 results = conn.execute(query).fetchall()
                 # Add each benchmark-agent pair to the set
                 total_agents.update(results)
