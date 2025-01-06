@@ -373,7 +373,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
                 "<b>Agent</b>: %{customdata[0]}",
                 "<b>Model</b>: " + model,
                 "<b>Total Cost</b>: $%{x:.1f}",
-                "<b>Accuracy</b>: %{y:.1%}<extra></extra>",
+                "<b>Accuracy</b>: %{y:.1f}%<extra></extra>",
             ]),
             hoverlabel=dict(bgcolor="white", font_size=12, font_family="Arial"),
         ))
