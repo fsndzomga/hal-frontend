@@ -6,6 +6,7 @@ import textwrap
 import numpy as np
 import pandas as pd
 from scipy import stats
+from plotly.subplots import make_subplots
 
 
 def create_leaderboard(df, ci_metrics = None):
@@ -52,11 +53,18 @@ def create_task_success_heatmap(df, benchmark_name):
     
     if benchmark_name == "SWE-bench Verified (Mini)":
         total_tasks = 50 # TODO - remove hardcoding
+
+    # Calculate best agent performance per task
+    best_agent_performance = pivot_df.max(axis=0)
     
-    # Add the new row to the pivot table
+    # Calculate the difference between best agent and tasks solved
+    performance_gap = best_agent_performance - tasks_solved
+    
+    # Add the tasks solved row to the pivot table
     tasks_solved_df = pd.DataFrame(tasks_solved).T
     tasks_solved_df.index = [f'<b>Tasks Solved: {tasks_solved.sum()}/{total_tasks} (Any Agent)</b>']
-    # print number of tasks solved
+    
+    # Combine rows for the heatmap
     pivot_df = pd.concat([pivot_df, tasks_solved_df])
 
     num_agents = len(pivot_df.index)
@@ -66,36 +74,53 @@ def create_task_success_heatmap(df, benchmark_name):
     # Create a custom colorscale
     colorscale=[[0, 'white'], [1, '#3498db']]
 
-    # Create the heatmap
-    fig = go.Figure(data=go.Heatmap(
-        z=pivot_df.values,
-        y=pivot_df.index,
-        x=pivot_df.columns,
-        colorscale=colorscale,
-        showscale=False,
-        hovertemplate='<b>Agent:</b> %{y}<br>' +
-                      '<b>Task:</b> %{x}<br>' +
-                      '<b>Status:</b> %{z}<extra></extra>'
-    ))
+    # Create figure with subplots - one for heatmap, one for summary
+    fig = make_subplots(
+        rows=2, cols=1,
+        row_heights=[0.8, 0.2],
+        vertical_spacing=0.1,
+        subplot_titles=('Task ID', 'Performance Gap')
+    )
+    
+    # Add heatmap to first subplot
+    fig.add_trace(
+        go.Heatmap(
+            z=pivot_df.values,
+            y=pivot_df.index,
+            x=pivot_df.columns,
+            colorscale=colorscale,
+            showscale=False,
+            hovertemplate='<b>Agent:</b> %{y}<br>' +
+                         '<b>Task:</b> %{x}<br>' +
+                         '<b>Status:</b> %{z}<extra></extra>'
+        ),
+        row=1, col=1
+    )
+
+    # Calculate summary statistics
+    tasks_solved_count = tasks_solved.sum()
+    best_agent_accuracy = agent_accuracy.iloc[0]  # Get the best agent's overall accuracy
+    best_agent_solved = int(best_agent_accuracy * total_tasks)  # Convert to number of tasks
+    
+    # Add bar chart for summary
+    fig.add_trace(
+        go.Bar(
+            x=[tasks_solved_count, best_agent_solved],
+            y=['Any agent', 'Best agent'],
+            orientation='h',
+            text=[f'{tasks_solved_count}/{total_tasks} ({tasks_solved_count/total_tasks:.1%})',
+                  f'{best_agent_solved}/{total_tasks} ({best_agent_accuracy:.1%})'],
+            textposition='auto',
+            marker_color=['#3498db', '#2ecc71'],
+            showlegend=False,
+            hovertemplate='%{text}<extra></extra>'
+        ),
+        row=2, col=1
+    )
     
     # Update the layout
     fig.update_layout(
-        xaxis_title='Task ID',
-        height=total_height + 50,  # Add extra space for the new row
-        yaxis=dict(
-            autorange='reversed',
-            showticklabels=True,
-            showline=True,
-            linecolor='black',
-            showgrid=False
-        ),
-        xaxis=dict(
-            side='top',
-            showticklabels=False,
-            showline=True,
-            linecolor='black',
-            showgrid=False
-        ),
+        height=total_height + 150,  # Add extra space for the summary
         plot_bgcolor='white',
         paper_bgcolor='white',
         hoverlabel=dict(
@@ -115,9 +140,50 @@ def create_task_success_heatmap(df, benchmark_name):
                 'toggleSpikelines', 'lasso2d', 'lasso', 'select2d', 'select'
             ]
         ),
-        dragmode='pan'
+        dragmode='pan',
+        margin=dict(t=50, l=150, r=50, b=20),  # Increased left margin for bar labels
+        showlegend=False
     )
     
+    # Update yaxis properties for heatmap
+    fig.update_yaxes(
+        autorange='reversed',
+        showticklabels=True,
+        showline=True,
+        linecolor='black',
+        showgrid=False,
+        row=1, col=1
+    )
+    
+    # Update xaxis properties for heatmap
+    fig.update_xaxes(
+        title='',
+        side='top',
+        showticklabels=False,
+        showline=True,
+        linecolor='black',
+        showgrid=False,
+        row=1, col=1
+    )
+    
+    # Update axes properties for bar chart
+    fig.update_yaxes(
+        showticklabels=True,
+        showline=True,
+        linecolor='black',
+        showgrid=False,
+        row=2, col=1
+    )
+    
+    fig.update_xaxes(
+        range=[0, total_tasks],
+        showticklabels=True,
+        showline=True,
+        linecolor='black',
+        showgrid=False,
+        row=2, col=1
+    )
+
     return fig
 
 def create_bar_chart(categories, values, x_label, y_label, title):
