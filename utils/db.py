@@ -38,6 +38,8 @@ PARSED_RESULTS_COLUMNS = {
     'level_3_accuracy': 'REAL',
     'task_goal_completion': 'REAL',  # New column
     'scenario_goal_completion': 'REAL',  # New column
+    'combined_scorer_inspect_evals_avg_refusals': 'REAL',
+    'combined_scorer_inspect_evals_avg_score_non_refusals': 'REAL',
     'accuracy_ci': 'TEXT',  # Using TEXT since it stores formatted strings like "-0.123/+0.456"
     'cost_ci': 'TEXT',
 }
@@ -65,6 +67,8 @@ AGGREGATION_RULES = {
     'level_3_accuracy': 'mean',
     'task_goal_completion': 'mean',
     'scenario_goal_completion': 'mean',
+    'combined_scorer_inspect_evals_avg_refusals': 'mean',
+    'combined_scorer_inspect_evals_avg_score_non_refusals': 'mean',
     'Verified': 'first',
     'Runs': 'first',
     'Traces': 'first',
@@ -100,6 +104,8 @@ COLUMN_DISPLAY_NAMES = {
     'scenario_goal_completion': 'Scenario Goal Completion',
     'accuracy_ci': 'Accuracy CI',
     'cost_ci': 'Total Cost CI',
+    'combined_scorer_inspect_evals_avg_refusals': 'Refusals',
+    'combined_scorer_inspect_evals_avg_score_non_refusals': 'Non-Refusal Harm Score',
 }
 
 DEFAULT_PRICING = {
@@ -427,10 +433,6 @@ class TracePreprocessor:
         # Rename columns using the display names mapping
         df = df.rename(columns=COLUMN_DISPLAY_NAMES)
         
-        
-        # Sort by Accuracy in descending order
-        df = df.sort_values('Accuracy', ascending=False)
-        
         # Multiply accuracy by 100
         df['Accuracy'] = df['Accuracy'] * 100
         df['Scenario Goal Completion'] = df['Scenario Goal Completion'] * 100
@@ -438,6 +440,8 @@ class TracePreprocessor:
         df['Level 1 Accuracy'] = df['Level 1 Accuracy'] * 100
         df['Level 2 Accuracy'] = df['Level 2 Accuracy'] * 100
         df['Level 3 Accuracy'] = df['Level 3 Accuracy'] * 100
+        df['Refusals'] = df['Refusals'] * 100
+        df['Non-Refusal Harm Score'] = df['Non-Refusal Harm Score'] * 100
         
         return df
     
@@ -535,6 +539,7 @@ class TracePreprocessor:
         """Get parsed results with recalculated costs based on token usage"""
         # Get base results with URLs
         results_df = self.get_parsed_results(benchmark_name, aggregate=False)
+        benchmark_name = results_df['benchmark_name'].iloc[0]
         
         # Get token usage with new costs
         token_costs = self.get_token_usage_with_costs(benchmark_name, pricing_config)
@@ -599,14 +604,19 @@ class TracePreprocessor:
                 'Runs': 'first',
                 'Accuracy CI': 'first',
                 'Total Cost CI': 'first',
-                'URL': 'first'  # Preserve URL
+                'URL': 'first',
+                'Refusals': 'mean',
+                'Non-Refusal Harm Score': 'mean'  # Preserve URL
             })
         
         # Round the cost values to 2 decimal places for consistency
         results_df['Total Cost'] = results_df['Total Cost'].round(2)
         
         # Sort by Accuracy in descending order
-        results_df = results_df.sort_values('Accuracy', ascending=False)
+        if benchmark_name == 'agentharm':
+            results_df = results_df.sort_values('Accuracy', ascending=True)
+        else:
+            results_df = results_df.sort_values('Accuracy', ascending=False)
         
         return results_df
 
