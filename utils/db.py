@@ -509,8 +509,6 @@ class TracePreprocessor:
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
                     
         # Calculate costs based on pricing config (prices are per 1M tokens)
-        print(df)
-        print(df.columns)
         df['total_cost'] = 0.0
         for model, prices in pricing_config.items():
             mask = df['model_name'] == model
@@ -532,7 +530,7 @@ class TracePreprocessor:
         
         # Get token usage with new costs
         token_costs = self.get_token_usage_with_costs(benchmark_name, pricing_config)
-                
+    
         # Group token costs by agent
         agent_costs = token_costs.groupby('agent_name')['total_cost'].sum().reset_index()
 
@@ -554,6 +552,10 @@ class TracePreprocessor:
                 
         # if Total Cost is NaN, set it to the value from total_cost_temp if it exists
         results_df['Total Cost'] = results_df['Total Cost'].fillna(results_df['total_cost_temp'])
+        
+        # If there is no token usage data, set Total Cost to total_cost from results key
+        if len(token_costs) < 1:
+            results_df['Total Cost'] = results_df['Total Cost'].fillna(results_df['total_cost_temp'])
         
         # Drop temp column
         results_df = results_df.drop('agent_name_temp', axis=1)
