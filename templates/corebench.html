@@ -100,9 +100,7 @@
                                 {% endif %}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {% if row['Accuracy']|float >= 85 %}bg-green-100 text-green-800
-                                    {% else %}bg-red-100 text-red-800{% endif %}">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                     {{ "%.2f"|format(row['Accuracy']|float) }}%
                                     {% if row.get('Accuracy CI') and row['Accuracy CI'] != 'None' %}
                                         <span class="text-gray-500 ml-1">({{ row['Accuracy CI'] }})</span>
@@ -356,8 +354,7 @@
                         ${row['Verified'] ? '<span class="text-green-600">✓</span>' : ''}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${parseFloat(row['Accuracy']) >= 85 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                             ${(parseFloat(row['Accuracy'])).toFixed(2)}%
                             ${row['Accuracy CI'] && row['Accuracy CI'] !== 'None' ? 
                                 `<span class="text-gray-500 ml-1">(${row['Accuracy CI']})</span>` : ''}
