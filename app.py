@@ -144,29 +144,67 @@ def create_app():
     def update_pricing(benchmark):
         pricing = request.json
         
-        # Get updated results with new pricing
-        results_df = preprocessor.get_parsed_results_with_costs(benchmark, pricing)
-        
-        # Create updated leaderboard
-        leaderboard_df = create_leaderboard(results_df, benchmark_name=benchmark)
-        
-        # Create updated scatter plot
-        scatter_plot = create_scatter_plot(
-            results_df,
-            "Total Cost",
-            "Accuracy",
-            "Total Cost (in USD)",
-            "Accuracy",
-            ["Agent Name"]
-        )
-        
-        # Convert scatter plot to JSON
-        scatter_plot_json = json.loads(json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder))
-        
-        return jsonify({
-            'leaderboard': leaderboard_df.to_dict('records'),
-            'scatter_plot': scatter_plot_json
-        })
+        if benchmark == 'agentharm':
+            # Get updated results with new pricing for both benchmarks
+            results_df = preprocessor.get_parsed_results_with_costs('agentharm', pricing)
+            results_df_benign = preprocessor.get_parsed_results_with_costs('agentharm_benign', pricing)
+            
+            # Create updated leaderboards
+            leaderboard_df = create_leaderboard(results_df, benchmark_name='agentharm')
+            leaderboard_df_benign = create_leaderboard(results_df_benign, benchmark_name='agentharm_benign')
+            
+            # Create updated scatter plots
+            scatter_plot = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+            scatter_plot_benign = create_scatter_plot(
+                results_df_benign,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+            
+            # Convert scatter plots to JSON
+            scatter_plot_json = json.loads(json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder))
+            scatter_plot_benign_json = json.loads(json.dumps(scatter_plot_benign, cls=plotly.utils.PlotlyJSONEncoder))
+            
+            return jsonify({
+                'leaderboard': leaderboard_df.to_dict('records'),
+                'leaderboard_benign': leaderboard_df_benign.to_dict('records'),
+                'scatter_plot': scatter_plot_json,
+                'scatter_plot_benign': scatter_plot_benign_json
+            })
+        else:
+            # Get updated results with new pricing
+            results_df = preprocessor.get_parsed_results_with_costs(benchmark, pricing)
+            
+            # Create updated leaderboard
+            leaderboard_df = create_leaderboard(results_df, benchmark_name=benchmark)
+            
+            # Create updated scatter plot
+            scatter_plot = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+            
+            # Convert scatter plot to JSON
+            scatter_plot_json = json.loads(json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder))
+            
+            return jsonify({
+                'leaderboard': leaderboard_df.to_dict('records'),
+                'scatter_plot': scatter_plot_json
+            })
 
     @app.route('/appworld_test_normal')
     def appworld_test_normal():
@@ -440,12 +478,21 @@ def create_app():
 
     @app.route('/agentharm')
     def agentharm():
+        # Get models and pricing for both benchmarks
         agentharm_models = preprocessor.get_models_for_benchmark('agentharm')
-        pricing = {model: DEFAULT_PRICING[model] for model in agentharm_models if model in DEFAULT_PRICING}
+        agentharm_benign_models = preprocessor.get_models_for_benchmark('agentharm_benign')
+        all_models = list(set(agentharm_models + agentharm_benign_models))
+        pricing = {model: DEFAULT_PRICING[model] for model in all_models if model in DEFAULT_PRICING}
         
+        # Get results for both benchmarks
         results_df = preprocessor.get_parsed_results_with_costs('agentharm')
-        leaderboard_df = create_leaderboard(results_df, benchmark_name='agentharm')
+        results_df_benign = preprocessor.get_parsed_results_with_costs('agentharm_benign')
         
+        # Create leaderboards for both benchmarks
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='agentharm')
+        leaderboard_df_benign = create_leaderboard(results_df_benign, benchmark_name='agentharm_benign')
+        
+        # Create scatter plots for both benchmarks
         scatter_plot = create_scatter_plot(
             results_df,
             "Total Cost",
@@ -454,24 +501,42 @@ def create_app():
             "Accuracy",
             ["Agent Name"]
         )
+        scatter_plot_benign = create_scatter_plot(
+            results_df_benign,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        scatter_plot_benign_json = json.dumps(scatter_plot_benign, cls=plotly.utils.PlotlyJSONEncoder)
         
+        # Create heatmaps for both benchmarks
         heatmap = create_task_success_heatmap(
             preprocessor.get_task_success_data('agentharm'),
             'AgentHarm'
         )
+        heatmap_benign = create_task_success_heatmap(
+            preprocessor.get_task_success_data('agentharm_benign'),
+            'AgentHarm Benign'
+        )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        heatmap_benign_json = json.dumps(heatmap_benign, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
         return render_template(
-            'agentharm.html',  # Will need to create this template
+            'agentharm.html',
             leaderboard=leaderboard_df.to_dict('records'),
+            leaderboard_benign=leaderboard_df_benign.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_benign=scatter_plot_benign_json,
             heatmap=heatmap_json,
+            heatmap_benign=heatmap_benign_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='agentharm'  # Add benchmark name for failure analysis
+            benchmark_name='agentharm'
         )
 
     @app.route('/swebench_verified_mini')

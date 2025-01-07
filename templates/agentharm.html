@@ -60,10 +60,10 @@
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Results</h2>
 
-        <!-- Leaderboard Table -->
+        <!-- Main Leaderboard Table -->
         <div class="bg-white rounded-xl shadow-md p-8 mb-8">
             <div class="flex justify-between items-center mb-2">
-                <h3 class="text-xl font-semibold">Leaderboard</h3>
+                <h3 class="text-xl font-semibold">Leaderboard (Harmful Tasks)</h3>
             </div>
             <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
                 <div>Results are evaluated on the public test set with attack technique set to 'No attack'.</div>
@@ -158,6 +158,105 @@
                 </table>
             </div>
         </div>
+
+        <!-- Benign Leaderboard Table -->
+        <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xl font-semibold">Leaderboard (Benign)</h3>
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+                <div>Results are evaluated on the public test set with benign behaviors.</div>
+                <div>Last updated: {{ last_updated }}</div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verified</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harm Score</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Refusals</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Non-Refusal Harm Score</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost (USD)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Runs</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traces</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for row in leaderboard_benign %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ loop.index }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm">
+                                    {% if row['URL'] %}
+                                        <a href="{{ row['URL'] }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                            {{ row['Agent Name'] }}
+                                            <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                            </svg>
+                                        </a>
+                                    {% else %}
+                                        {{ row['Agent Name'] }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {% if row['Verified'] %}
+                                    <span class="text-green-600">✓</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    {{ "%.2f"|format(row['Accuracy']|float) }}%
+                                    {% if row.get('Accuracy CI') and row['Accuracy CI'] != 'None' %}
+                                        <span class="text-gray-500 ml-1">({{ row['Accuracy CI'] }})</span>
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    {{ "%.2f"|format(row['Refusals']|float) }}%
+                                    {% if row.get('Refusals CI') and row['Refusals CI'] != 'None' %}
+                                        <span class="text-gray-500 ml-1">({{ row['Refusals CI'] }})</span>
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    {{ "%.2f"|format(row['Non-Refusal Harm Score']|float) }}%
+                                    {% if row.get('Non-Refusal Harm Score CI') and row['Non-Refusal Harm Score CI'] != 'None' %}
+                                        <span class="text-gray-500 ml-1">({{ row['Non-Refusal Harm Score CI'] }})</span>
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${{ "%.2f"|format(row['Total Cost']|float) }}
+                                {% if row.get('Total Cost CI') and row['Total Cost CI'] != 'None' %}
+                                    <span class="text-gray-400 text-xs">({{ row['Total Cost CI'] }})</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ row['Runs'] }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                {% if row.get('Traces') %}
+                                    <a href="{{ row['Traces'] }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                        Download
+                                        <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                    </a>
+                                {% else %}
+                                    <span class="text-gray-400">N/A</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
         
         <!-- Visualization Section -->
         <div class="space-y-8 mb-12">
@@ -166,14 +265,14 @@
                 <h3 class="text-xl font-semibold mb-2">Accuracy vs. Cost Frontier</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     This plot shows the relationship between an agent's performance and its operational cost.
-                    The Pareto frontier (dashed line) represents the current state-of-the-art trade-off.
+                    The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
                 </p>
                 <div id="costAccuracyPlot" class="w-full h-[500px]"></div>
             </div> -->
 
             <!-- Saturation Heatmap -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-semibold mb-2">Refusal Heatmap</h3>
+                <h3 class="text-xl font-semibold mb-2">Refusal Heatmap (Harmful Tasks)</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     Unlike other benchmarks that show success rates, this heatmap visualizes refusal rates across different task categories and difficulty levels,
                     helping identify where agents appropriately refuse potentially harmful tasks.
@@ -261,7 +360,7 @@
     </div>
 </div>
 
-<div class="mx-auto max-w-[1500px] px-8">
+<div class="mx-auto max-w-[1500]px px-8">
     <!-- Additional Resources -->
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Additional Resources</h2>
@@ -299,19 +398,11 @@
 <script>
     // Parse the JSON data from Flask
     const scatter_plot_data = JSON.parse('{{ scatter_plot|safe }}');
+    const scatter_plot_benign_data = JSON.parse('{{ scatter_plot_benign|safe }}');
     const heatmap_data = JSON.parse('{{ heatmap|safe }}');
+    const heatmap_benign_data = JSON.parse('{{ heatmap_benign|safe }}');
     
     // Initialize plots with adjusted margins
-    // Plotly.newPlot('costAccuracyPlot', scatter_plot_data.data, {
-    //     ...scatter_plot_data.layout,
-    //     margin: { t: 10, r: 10, b: 40, l: 60 },
-    //     width: null,  // Make plot responsive
-    //     height: null  // Make plot responsive
-    // }, {
-    //     responsive: true,
-    //     displayModeBar: false
-    // });
-    
     Plotly.newPlot('taskSuccessHeatmap', heatmap_data.data, {
         ...heatmap_data.layout,
         margin: { t: 10, r: 10, b: 40, l: 60 },
@@ -358,9 +449,73 @@
             
             const data = await response.json();
             
-            // Update leaderboard
+            // Update main leaderboard
             const leaderboardBody = document.querySelector('tbody');
             leaderboardBody.innerHTML = data.leaderboard.map((row, index) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${index + 1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm">
+                            ${row['URL'] ? 
+                                `<a href="${row['URL']}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                    ${row['Agent Name']}
+                                    <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>` 
+                                : row['Agent Name']
+                            }
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${row['Verified'] ? '<span class="text-green-600">✓</span>' : ''}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${(parseFloat(row['Accuracy'])).toFixed(2)}%
+                            ${row['Accuracy CI'] && row['Accuracy CI'] !== 'None' ? 
+                                `<span class="text-gray-500 ml-1">(${row['Accuracy CI']})</span>` : ''}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${(parseFloat(row['Refusals'])).toFixed(2)}%
+                            ${row['Refusals CI'] && row['Refusals CI'] !== 'None' ? 
+                                `<span class="text-gray-500 ml-1">(${row['Refusals CI']})</span>` : ''}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${(parseFloat(row['Non-Refusal Harm Score'])).toFixed(2)}%
+                            ${row['Non-Refusal Harm Score CI'] && row['Non-Refusal Harm Score CI'] !== 'None' ? 
+                                `<span class="text-gray-500 ml-1">(${row['Non-Refusal Harm Score CI']})</span>` : ''}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        $${parseFloat(row['Total Cost']).toFixed(2)}
+                        ${row['Total Cost CI'] && row['Total Cost CI'] !== 'None' ? 
+                            `<span class="text-gray-400 text-xs">(${row['Total Cost CI']})</span>` : ''}
+                        </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${row['Runs']}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        ${row['Traces'] ? 
+                            `<a href="${row['Traces']}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                Download
+                                <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                            </a>` 
+                            : '<span class="text-gray-400">N/A</span>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Update benign leaderboard
+            const benignLeaderboardBody = document.querySelectorAll('tbody')[1];
+            benignLeaderboardBody.innerHTML = data.leaderboard_benign.map((row, index) => `
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm">${index + 1}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -422,17 +577,6 @@
                 </tr>
             `).join('');
             
-            // Update scatter plot
-            // Plotly.react('costAccuracyPlot', data.scatter_plot.data, {
-            //     ...data.scatter_plot.layout,
-            //     margin: { t: 10, r: 10, b: 40, l: 60 },
-            //     width: null,
-            //     height: null
-            // }, {
-            //     responsive: true,
-            //     displayModeBar: false
-            // });
-            
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to update pricing. Please try again.');
@@ -446,7 +590,7 @@
     // Handle reset pricing
     document.getElementById('resetPricing').addEventListener('click', function() {
         const form = document.getElementById('pricingForm');
-        const defaultPricing = {{ pricing|tojson }};
+        const defaultPricing = {{ pricing|tojson|safe }};
         
         // Reset all input fields to their default values
         for (const [model, prices] of Object.entries(defaultPricing)) {
@@ -463,7 +607,6 @@
     
     // Resize plots when window is resized
     window.addEventListener('resize', function() {
-        // Plotly.Plots.resize('costAccuracyPlot');
         Plotly.Plots.resize('taskSuccessHeatmap');
     });
 </script>
