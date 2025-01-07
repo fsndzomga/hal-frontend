@@ -71,7 +71,6 @@ def create_task_success_heatmap(df, benchmark_name):
     
     # Calculate task success rate (first take mean success rate by task and agent, then take mean success rate by task)
     task_success_rate = df.groupby(['Task ID', 'Agent Name'])['Success'].mean().unstack().mean(axis=1).sort_values(ascending=False)
-    print(task_success_rate)
     
     # Pivot the dataframe to create a matrix of agents vs tasks
     pivot_df = df.pivot(index='Agent Name', columns='Task ID', values='Success')
@@ -131,12 +130,12 @@ def create_task_success_heatmap(df, benchmark_name):
             colorscale=colorscale,
             showscale=True,
             colorbar=dict(
-                title="Success Rate",
+                title="Fraction of Runs",
                 tickformat=".0%"
             ),
             hovertemplate='<b>Agent:</b> %{y}<br>' +
                          '<b>Task:</b> %{x}<br>' +
-                         '<b>Success Rate:</b> %{z:.1%}<extra></extra>'
+                         '<b>Fraction of Runs:</b> %{z:.1%}<extra></extra>'
         ),
         row=1, col=1
     )
