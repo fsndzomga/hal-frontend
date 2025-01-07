@@ -2,7 +2,7 @@
 
 {% block content %}
 <!-- Hero Section - Full Viewport Height -->
-<div class="min-h-screen flex items-center bg-gradient-to-b from-white to-gray-50 relative">
+<div class="min-h-screen flex items-center bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
     <div class="mx-auto max-w-[1500]px w-full">
         <div class="flex flex-col md:flex-row px-6">
             <div class="flex-1 p-4 flex flex-col justify-center">
@@ -42,9 +42,68 @@
     </div>
 </div>
 
+<!-- Unified Agent Benchmarking Section -->
+<div class="py-24 bg-gradient-to-b from-gray-50 to-white relative">
+    <div class="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-gray-100 to-transparent"></div>
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Unified Agent Benchmarking</h2>
+            <p class="text-xl text-gray-600">Towards simple, standardized and reproducible agent evaluations</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                        <path d="M21 5c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5c0 1.66 4 3 9 3s9-1.34 9-3"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">The Problem with Agent Evaluations</h3>
+                <p class="text-gray-600 mb-6">Current agent evaluations suffer from:</p>
+                <ul class="space-y-3 text-gray-600">
+                    <li>• Inconsistent harnesses used across evaluations make it hard to compare results</li>
+                    <li>• Irreproducible results due to non-standardized evaluation setups prone to bugs</li>
+                    <li>• Running new agents is time-consuming due to lack of simple evaluation frameworks</li>
+                    <li>• Lack of cost tracking and reporting</li>
+                </ul>
+                <p class="text-sm text-gray-500 mt-4">For a detailed analysis of these issues, see <a href="https://arxiv.org/abs/2407.01502" class="text-blue-600 hover:text-blue-800">AI agents that matter (Kapoor et al., 2024)</a></p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-4">HAL's Solution</h3>
+                <p class="text-gray-600 mb-6">HAL provides a unified evaluation framework that ensures:</p>
+                <ul class="space-y-3 text-gray-600 mb-6">
+                    <li>• Standardized evaluation harness across various benchmarks</li>
+                    <li>• Easy integration of new agents and benchmarks with unified CLI</li>
+                    <li>• Automatic cost tracking and reporting</li>
+                </ul>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="font-bold text-2xl text-blue-600 mb-2">{{ total_benchmarks }}</div>
+                        <div class="text-sm text-gray-600">Active Benchmarks</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="font-bold text-2xl text-blue-600 mb-2">{{ total_agents }}</div>
+                        <div class="text-sm text-gray-600">Evaluated Agents</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section Divider -->
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
 <!-- Leaderboards Section -->
-<div id="leaderboards" class="min-h-[500px] bg-gradient-to-b from-gray-50 to-white relative">
+<div id="leaderboards" class="py-24 bg-gradient-to-b from-gray-50 to-white relative">
     <div class="container mx-auto max-w-[1500]px px-8 pb-16">
         <h2 class="text-4xl font-bold mb-16 text-center">HAL Leaderboards</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -354,65 +413,6 @@
 <!-- Section Divider -->
 <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
-<!-- Unified Agent Benchmarking Section -->
-<div class="py-24 bg-gradient-to-b from-gray-50 to-white relative">
-    <div class="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-gray-100 to-transparent"></div>
-    <div class="container mx-auto max-w-[1500]px px-8">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-4">Unified Agent Benchmarking</h2>
-            <p class="text-xl text-gray-600">Towards simple, standardized and reproducible agent evaluations</p>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div class="bg-white p-8 rounded-xl shadow-lg">
-                <div class="mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                        <path d="M21 5c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                        <path d="M3 5c0 1.66 4 3 9 3s9-1.34 9-3"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold mb-4">The Problem with Agent Evaluations</h3>
-                <p class="text-gray-600 mb-6">Current agent evaluations suffer from:</p>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Inconsistent harnesses used across evaluations make it hard to compare results</li>
-                    <li>• Irreproducible results due to non-standardized evaluation setups prone to bugs</li>
-                    <li>• Running new agents is time-consuming due to lack of simple evaluation frameworks</li>
-                    <li>• Lack of cost tracking and reporting</li>
-                </ul>
-            </div>
-            <div class="bg-white p-8 rounded-xl shadow-lg">
-                <div class="mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                        <line x1="4" y1="22" x2="4" y2="15"></line>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold mb-4">HAL's Solution</h3>
-                <p class="text-gray-600 mb-6">HAL provides a unified evaluation framework that ensures:</p>
-                <ul class="space-y-3 text-gray-600 mb-6">
-                    <li>• Standardized evaluation harness across various benchmarks</li>
-                    <li>• Easy integration of new agents and benchmarks with unified CLI</li>
-                    <li>• Automatic cost tracking and reporting</li>
-                </ul>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <div class="font-bold text-2xl text-blue-600 mb-2">{{ total_benchmarks }}</div>
-                        <div class="text-sm text-gray-600">Active Benchmarks</div>
-                    </div>
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <div class="font-bold text-2xl text-blue-600 mb-2">{{ total_agents }}</div>
-                        <div class="text-sm text-gray-600">Evaluated Agents</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Section Divider -->
-<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-
 <!-- HAL Harness Section -->
 <div class="py-24 bg-gradient-to-b from-white to-gray-50 relative">
     <div class="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-gray-100 to-transparent"></div>
@@ -521,7 +521,7 @@
 
         <div class="mt-12 text-center">
             <a href="#leaderboards" class="btn-primary">
-                Download Agent Traces on Leaderboards →
+                Download on Leaderboards →
             </a>
         </div>
     </div>
