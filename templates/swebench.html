@@ -166,40 +166,9 @@
                 </p>
                 <div id="taskSuccessHeatmap" class="w-full h-[500px]"></div>
             </div>
-        </div>
 
-        <!-- Failure Report Section -->
-        <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-            <h3 class="text-xl font-semibold mb-2">Failure Analysis</h3>
-            <p class="text-sm text-gray-500 mb-6">
-                Select an agent to see a detailed breakdown of failure categories and their descriptions.
-                This analysis helps understand common failure patterns and areas for improvement.
-            </p>
-            
-            <div class="mb-6">
-                <label for="failureReportAgent" class="block text-sm font-medium text-gray-700">Select Agent</label>
-                <select id="failureReportAgent" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                    <!-- Options will be populated by JavaScript -->
-                </select>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Failure Categories Overview -->
-                <div>
-                    <h4 class="text-lg font-medium mb-4">Failure Categories</h4>
-                    <div id="failureCategoriesOverview" class="prose max-w-none">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Failure Categories Chart -->
-                <div>
-                    <h4 class="text-lg font-medium mb-4">Distribution of Failures</h4>
-                    <div id="failureCategoriesChart" class="w-full h-[400px]">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
+            <!-- Failure Analysis Section -->
+            {% include 'failure_analysis.html' %}
         </div>
 
         <!-- Token Pricing Configuration -->

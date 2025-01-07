@@ -1,14 +1,14 @@
 <!-- Failure Report Section -->
 <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-    <h3 class="text-xl font-semibold mb-2">Failure Analysis (Experimental)</h3>
-    <p class="text-sm text-gray-500 mb-6">
+    <h3 class="text-xl font-semibold mb-2">Failure Analysis</h3>
+    <p class="text-sm text-gray-500 mb-8">
         Select an agent to see a detailed breakdown of failure categories and their descriptions.
         This analysis helps understand common failure patterns and areas for improvement. Failure reports are usually available for the top 2 agents.
     </p>
     
-    <div class="mb-6">
-        <label for="failureReportAgent" class="block text-sm font-medium text-gray-700">Select Agent</label>
-        <select id="failureReportAgent" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+    <div class="mb-8">
+        <label for="failureReportAgent" class="block text-sm font-medium text-gray-700 mb-2">Select Agent</label>
+        <select id="failureReportAgent" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
             <!-- Options will be populated by JavaScript -->
         </select>
     </div>
@@ -16,15 +16,15 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Failure Categories Overview -->
         <div>
-            <h4 class="text-lg font-medium mb-4">Failure Categories</h4>
-            <div id="failureCategoriesOverview" class="prose max-w-none">
+            <h4 class="text-lg font-semibold mb-6 text-gray-900">Failure Categories</h4>
+            <div id="failureCategoriesOverview" class="prose max-w-none space-y-6">
                 <!-- Will be populated by JavaScript -->
             </div>
         </div>
 
         <!-- Failure Categories Chart -->
         <div>
-            <h4 class="text-lg font-medium mb-4">Distribution of Failures</h4>
+            <h4 class="text-lg font-semibold mb-6 text-gray-900">Distribution of Failures</h4>
             <div id="failureCategoriesChart" class="w-full h-[400px]">
                 <!-- Will be populated by JavaScript -->
             </div>
@@ -60,14 +60,14 @@
                 dropdown.dispatchEvent(new Event('change'));
             } else {
                 document.getElementById('failureCategoriesOverview').innerHTML = 
-                    '<p class="text-gray-500">No agents with failure reports available.</p>';
+                    '<p class="text-gray-500 text-sm">No agents with failure reports available.</p>';
                 document.getElementById('failureCategoriesChart').innerHTML = 
-                    '<p class="text-gray-500">No agents with failure reports available.</p>';
+                    '<p class="text-gray-500 text-sm">No agents with failure reports available.</p>';
             }
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('failureCategoriesOverview').innerHTML = 
-                '<p class="text-red-500">Failed to load available agents. Please try again.</p>';
+                '<p class="text-red-500 text-sm">Failed to load available agents. Please try again.</p>';
         }
     }
 
@@ -90,14 +90,14 @@
             if (data.failure_categories && data.failure_categories.length > 0) {
                 data.failure_categories.forEach(category => {
                     overviewHtml += `
-                        <div class="mb-4">
-                            <h5 class="font-medium text-gray-900">${category.category_name}</h5>
-                            <p class="text-gray-600">${category.description}</p>
+                        <div class="mb-6 last:mb-0">
+                            <h5 class="font-semibold text-base text-gray-900 mb-1">${category.category_name}</h5>
+                            <p class="text-sm text-gray-600 leading-relaxed">${category.description}</p>
                         </div>
                     `;
                 });
             } else {
-                overviewHtml = '<p class="text-gray-500">No failure categories available for this agent.</p>';
+                overviewHtml = '<p class="text-gray-500 text-sm">No failure categories available for this agent.</p>';
             }
             document.getElementById('failureCategoriesOverview').innerHTML = overviewHtml;
             
@@ -107,22 +107,25 @@
                     ...data.chart_data.layout,
                     margin: { t: 10, r: 10, b: 40, l: 200 },
                     width: null,
-                    height: null
+                    height: null,
+                    font: {
+                        family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                    }
                 }, {
                     responsive: true,
                     displayModeBar: false
                 });
             } else {
                 document.getElementById('failureCategoriesChart').innerHTML = 
-                    '<p class="text-center text-gray-500 mt-8">No chart data available for this agent.</p>';
+                    '<p class="text-center text-gray-500 text-sm mt-8">No chart data available for this agent.</p>';
             }
             
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('failureCategoriesOverview').innerHTML = 
-                '<p class="text-red-500">Failed to load failure report. Please try again.</p>';
+                '<p class="text-red-500 text-sm">Failed to load failure report. Please try again.</p>';
             document.getElementById('failureCategoriesChart').innerHTML = 
-                '<p class="text-red-500">Failed to load failure chart. Please try again.</p>';
+                '<p class="text-red-500 text-sm">Failed to load failure chart. Please try again.</p>';
         }
     });
 

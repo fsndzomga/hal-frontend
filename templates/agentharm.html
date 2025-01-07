@@ -17,6 +17,10 @@
             AgentHarm evaluates AI agents on their ability to identify and prevent potential harmful actions,
             focusing on safety and responsible behavior in various scenarios.
         </p>
+        <p class="text-sm text-gray-500 mb-8 max-w-3xl">
+            Paper: <a href="https://arxiv.org/abs/2410.09024" class="text-blue-600 hover:text-blue-800">
+                AgentHarm: A Benchmark for Measuring Harmfulness of LLM Agents</a>
+        </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
@@ -27,6 +31,31 @@
 </div>
 
 <div class="mx-auto max-w-[1500]px px-8 py-16">
+    <!-- Key Features Section -->
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-8">Key Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Safety Assessment</h3>
+                <p class="text-gray-600">
+                    Evaluates agents' ability to identify and prevent potential harmful actions in various scenarios.
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Refusal Analysis</h3>
+                <p class="text-gray-600">
+                    Measures both appropriate refusal of harmful requests and avoidance of false positives.
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Comprehensive Coverage</h3>
+                <p class="text-gray-600">
+                    Tests across diverse harm categories including physical, emotional, financial, and social harm.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Results Section -->
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Results</h2>
@@ -228,6 +257,39 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="mx-auto max-w-[1500px] px-8">
+    <!-- Additional Resources -->
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-8">Additional Resources</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Getting Started</h3>
+                <p class="text-gray-600 mb-4">
+                    Want to evaluate your agent on AgentHarm? Follow our comprehensive guide to get started:
+                </p>
+                <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    View Documentation
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Task Details</h3>
+                <p class="text-gray-600 mb-4">
+                    Browse the complete list of AgentHarm tasks, including safety scenarios and evaluation criteria:
+                </p>
+                <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    View Tasks
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
         </div>
     </div>
 </div>
