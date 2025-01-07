@@ -62,12 +62,16 @@ def create_leaderboard(df, benchmark_name = None):
     return df
 
 def create_task_success_heatmap(df, benchmark_name):
-
-    # Calculate agent accuracy
+    
+    if 'AgentHarm' in benchmark_name:
+        df['Task ID'] = df['Task ID'].str.replace('-', '_') # TODO - remove hardcoding
+    
+    # Calculate agent accuracy (now using mean success rate)
     agent_accuracy = df.groupby('Agent Name')['Success'].mean().sort_values(ascending=False)
     
-    # Calculate task success rate
-    task_success_rate = df.groupby('Task ID')['Success'].mean().sort_values(ascending=False)
+    # Calculate task success rate (first take mean success rate by task and agent, then take mean success rate by task)
+    task_success_rate = df.groupby(['Task ID', 'Agent Name'])['Success'].mean().unstack().mean(axis=1).sort_values(ascending=False)
+    print(task_success_rate)
     
     # Pivot the dataframe to create a matrix of agents vs tasks
     pivot_df = df.pivot(index='Agent Name', columns='Task ID', values='Success')
@@ -75,8 +79,8 @@ def create_task_success_heatmap(df, benchmark_name):
     # Sort the pivot table
     pivot_df = pivot_df.reindex(index=agent_accuracy.index, columns=task_success_rate.index)
 
-    # Calculate tasks solved across all agents
-    tasks_solved = (pivot_df.sum(axis=0) > 0).astype(int)
+    # Calculate tasks solved across all agents (considering a task solved if any agent solved it in any run)
+    tasks_solved = (pivot_df.max(axis=0) > 0).astype(int)
     # Total number of tasks (columns)
     total_tasks = len(pivot_df.columns)
     
@@ -100,8 +104,15 @@ def create_task_success_heatmap(df, benchmark_name):
     row_height = 30  # Fixed height for each row in pixels
     total_height = num_agents * row_height
     
-    # Create a custom colorscale
-    colorscale=[[0, 'white'], [1, '#3498db']]
+    # Create a custom colorscale that goes from white to blue
+    colorscale = [
+        [0, 'white'],
+        [0.01, '#EBF5FB'],  # Very light blue
+        [0.25, '#BFE0F5'],  # Lighter blue
+        [0.5, '#93CAF1'],   # Light blue
+        [0.75, '#67B4EC'],  # Medium blue
+        [1, '#3498db']      # Target blue (#3498db)
+    ]
 
     # Create figure with subplots - one for heatmap, one for summary
     fig = make_subplots(
@@ -118,17 +129,21 @@ def create_task_success_heatmap(df, benchmark_name):
             y=pivot_df.index,
             x=pivot_df.columns,
             colorscale=colorscale,
-            showscale=False,
+            showscale=True,
+            colorbar=dict(
+                title="Success Rate",
+                tickformat=".0%"
+            ),
             hovertemplate='<b>Agent:</b> %{y}<br>' +
                          '<b>Task:</b> %{x}<br>' +
-                         '<b>Status:</b> %{z}<extra></extra>'
+                         '<b>Success Rate:</b> %{z:.1%}<extra></extra>'
         ),
         row=1, col=1
     )
 
     # Calculate summary statistics
     tasks_solved_count = tasks_solved.sum()
-    best_agent_accuracy = agent_accuracy.iloc[0]  # Get the best agent's overall accuracy
+    best_agent_accuracy = agent_accuracy.iloc[0]  # Get the best agent's overall success rate
     best_agent_solved = int(best_agent_accuracy * total_tasks)  # Convert to number of tasks
     
     # Add bar chart for summary

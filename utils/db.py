@@ -426,9 +426,6 @@ class TracePreprocessor:
                 WHERE benchmark_name = ?
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
-
-        # for agent_names that have been run more than once, take the run with the highest accuracy
-        df = df.sort_values('accuracy', ascending=False).groupby('agent_name').first().reset_index()
         
         # Get all unique task IDs
         task_ids = set()
@@ -439,16 +436,22 @@ class TracePreprocessor:
             if ast.literal_eval(tasks) is not None:
                 task_ids.update(ast.literal_eval(tasks))
 
-        # Create a DataFrame with agent_name, task_ids, and success columns
+        # Create a DataFrame with agent_name, task_ids, and success rates
         data_list = []
-        for _, row in df.iterrows():
-            agent_name = row['agent_name']
-            for task_id in task_ids:
-                success = 1 if task_id in row['successful_tasks'] else 0
+        for task_id in task_ids:
+            for agent_name in df['agent_name'].unique():
+                agent_runs = df[df['agent_name'] == agent_name]
+                # Count how many times this task was successful across all runs
+                successes = sum(1 for _, row in agent_runs.iterrows() 
+                              if ast.literal_eval(row['successful_tasks']) is not None 
+                              and task_id in ast.literal_eval(row['successful_tasks']))
+                total_runs = len(agent_runs)
+                success_rate = successes / total_runs if total_runs > 0 else 0
+                
                 data_list.append({
                     'agent_name': agent_name,
                     'task_id': task_id,
-                    'success': success
+                    'success': success_rate
                 })
         df = pd.DataFrame(data_list)
 
