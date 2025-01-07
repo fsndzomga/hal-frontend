@@ -215,6 +215,7 @@ class TracePreprocessor:
     def preprocess_traces(self, processed_dir="evals_live"):
         processed_dir = Path(processed_dir)
         for file in processed_dir.glob('*.json'):
+            print(f"Processing {file}")
             with open(file, 'r') as f:
                 data = json.load(f)
                 agent_name = data['config']['agent_name']
@@ -391,34 +392,6 @@ class TracePreprocessor:
         df['accuracy_ci'] = None
         df['cost_ci'] = None
 
-        # Round float columns to 2 decimal places
-        float_columns = ['total_cost', 'accuracy', 'precision', 'recall', 'f1_score', 'auc', 
-                        'overall_score', 'vectorization_score', 'fathomnet_score', 'feedback_score', 
-                        'house_price_score', 'spaceship_titanic_score', 
-                        'amp_parkinsons_disease_progression_prediction_score', 'cifar10_score', 
-                        'imdb_score', 'level_1_accuracy', 'level_2_accuracy', 'level_3_accuracy']
-        
-        for column in float_columns:
-            if column in df.columns:
-                try:
-                    df[column] = df[column].round(2)
-                except Exception as e:
-                    print(f"Error rounding {column}: {e}")
-
-        for agent_name in df['agent_name'].unique():
-            agent_df = df[df['agent_name'] == agent_name]
-            
-            if len(agent_df) > 1:
-                accuracy_mean, accuracy_lower, accuracy_upper = self._calculate_ci(agent_df['accuracy'], type='minmax')
-                cost_mean, cost_lower, cost_upper = self._calculate_ci(agent_df['total_cost'], type='minmax')
-                
-                # Round CI values to 2 decimals
-                accuracy_ci = f"-{abs(accuracy_mean - accuracy_lower):.2f}/+{abs(accuracy_mean - accuracy_upper):.2f}"
-                cost_ci = f"-{abs(cost_mean - cost_lower):.2f}/+{abs(cost_mean - cost_upper):.2f}"
-                
-                df.loc[df['agent_name'] == agent_name, 'accuracy_ci'] = accuracy_ci
-                df.loc[df['agent_name'] == agent_name, 'cost_ci'] = cost_ci
-
         # Before dropping run_id, create new column from it with download link
         df['Traces'] = df['run_id'].apply(
             lambda x: f'https://huggingface.co/datasets/agent-evals/agent_traces/resolve/main/{x}.zip?download=true'
@@ -506,7 +479,7 @@ class TracePreprocessor:
 
         with self.get_conn(benchmark_name) as conn:
             query = '''
-                SELECT agent_name, model_name,
+                SELECT agent_name, model_name, run_id,
                 SUM(prompt_tokens) as prompt_tokens,
                 SUM(completion_tokens) as completion_tokens,
                 SUM(input_tokens) as input_tokens,
@@ -516,7 +489,7 @@ class TracePreprocessor:
                 SUM(input_tokens_cache_read) as input_tokens_cache_read
                 FROM token_usage
                 WHERE benchmark_name = ?
-                GROUP BY agent_name, model_name
+                GROUP BY agent_name, model_name, run_id
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
                     
@@ -535,7 +508,7 @@ class TracePreprocessor:
                     
         return df
 
-    def get_parsed_results_with_costs(self, benchmark_name, pricing_config=None, aggregate=True):
+    def get_parsed_results_with_costs(self, benchmark_name, pricing_config=None, aggregate=False):
         """Get parsed results with recalculated costs based on token usage"""
         # Get base results with URLs
         results_df = self.get_parsed_results(benchmark_name, aggregate=False)
@@ -543,9 +516,31 @@ class TracePreprocessor:
         
         # Get token usage with new costs
         token_costs = self.get_token_usage_with_costs(benchmark_name, pricing_config)
+        
+        for agent_name in results_df['Agent Name'].unique():
+            agent_df = results_df[results_df['Agent Name'] == agent_name]
+            
+            if agent_name not in token_costs['agent_name'].unique():
+                token_costs_df = results_df[results_df['Agent Name'] == agent_name]
+            else:
+                token_costs_df = token_costs[token_costs['agent_name'] == agent_name]
+                
+            if len(agent_df) > 1:
+                accuracy_mean, accuracy_lower, accuracy_upper = self._calculate_ci(agent_df['Accuracy'], type='minmax')
+                if agent_name not in token_costs['agent_name'].unique():
+                    cost_mean, cost_lower, cost_upper = self._calculate_ci(token_costs_df['Total Cost'], type='minmax')
+                else:
+                    cost_mean, cost_lower, cost_upper = self._calculate_ci(token_costs_df['total_cost'], type='minmax')
+                
+                # Round CI values to 2 decimals
+                accuracy_ci = f"-{abs(accuracy_mean - accuracy_lower):.2f}/+{abs(accuracy_mean - accuracy_upper):.2f}"
+                cost_ci = f"-{abs(cost_mean - cost_lower):.2f}/+{abs(cost_mean - cost_upper):.2f}"
+                
+                results_df.loc[results_df['Agent Name'] == agent_name, 'Accuracy CI'] = accuracy_ci
+                results_df.loc[results_df['Agent Name'] == agent_name, 'Total Cost CI'] = cost_ci
     
         # Group token costs by agent
-        agent_costs = token_costs.groupby('agent_name')['total_cost'].sum().reset_index()
+        agent_costs = token_costs.groupby('agent_name')['total_cost'].mean().reset_index()
 
         agent_costs = agent_costs.rename(columns={
             'agent_name': 'agent_name_temp',
@@ -569,7 +564,7 @@ class TracePreprocessor:
         # If there is no token usage data, set Total Cost to total_cost from results key
         if len(token_costs) < 1:
             results_df['Total Cost'] = results_df['Total Cost'].fillna(results_df['total_cost_temp'])
-        
+                
         # Drop temp column
         results_df = results_df.drop('agent_name_temp', axis=1)
         results_df = results_df.drop('total_cost_temp', axis=1)
@@ -609,14 +604,34 @@ class TracePreprocessor:
                 'Non-Refusal Harm Score': 'mean'  # Preserve URL
             })
         
-        # Round the cost values to 2 decimal places for consistency
-        results_df['Total Cost'] = results_df['Total Cost'].round(2)
+        # Round float columns to 2 decimal places
+        float_columns = [
+            'Accuracy',
+            'Precision',
+            'Recall',
+            'F1 Score',
+            'AUC',
+            'Overall Score',
+            'Vectorization Score',
+            'Fathomnet Score',
+            'Feedback Score',
+            'House Price Score',
+            'Spaceship Titanic Score',
+            'AMP Parkinsons Disease Progression Prediction Score',
+            'CIFAR10 Score',
+            'IMDB Score',
+            'Level 1 Accuracy',
+            'Level 2 Accuracy',
+            'Level 3 Accuracy',
+            'Total Cost'
+        ]
         
-        # Sort by Accuracy in descending order
-        if benchmark_name == 'agentharm':
-            results_df = results_df.sort_values('Accuracy', ascending=True)
-        else:
-            results_df = results_df.sort_values('Accuracy', ascending=False)
+        for column in float_columns:
+            if column in results_df.columns:
+                try:
+                    results_df[column] = results_df[column].round(2)
+                except Exception as e:
+                    print(f"Error rounding {column}: {e}")
         
         return results_df
 

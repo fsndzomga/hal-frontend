@@ -9,7 +9,45 @@ from scipy import stats
 from plotly.subplots import make_subplots
 
 
-def create_leaderboard(df, ci_metrics = None):
+def create_leaderboard(df, benchmark_name = None):
+    df = df.groupby('Agent Name', as_index=False).agg({
+                'Date': 'first',
+                'Total Cost': 'mean',
+                'Accuracy': 'mean',
+                'Precision': 'mean',
+                'Recall': 'mean',
+                'F1 Score': 'mean',
+                'AUC': 'mean',
+                'Overall Score': 'mean',
+                'Vectorization Score': 'mean',
+                'Fathomnet Score': 'mean',
+                'Feedback Score': 'mean',
+                'House Price Score': 'mean',
+                'Spaceship Titanic Score': 'mean',
+                'AMP Parkinsons Disease Progression Prediction Score': 'mean',
+                'CIFAR10 Score': 'mean',
+                'IMDB Score': 'mean',
+                'Scenario Goal Completion': 'mean',
+                'Task Goal Completion': 'mean',
+                'Level 1 Accuracy': 'mean',
+                'Level 2 Accuracy': 'mean',
+                'Level 3 Accuracy': 'mean',
+                'Verified': 'first',
+                'Traces': 'first',
+                'Runs': 'first',
+                'Accuracy CI': 'first',
+                'Total Cost CI': 'first',
+                'URL': 'first',
+                'Refusals': 'mean',
+                'Non-Refusal Harm Score': 'mean'  # Preserve URL
+            })
+    
+    # Sort by Accuracy in descending order
+    if benchmark_name == 'agentharm':
+        df = df.sort_values('Accuracy', ascending=True)
+    else:
+        df = df.sort_values('Accuracy', ascending=False)
+    
     # cast dtypes to string
     df = df.astype(str)
 
@@ -20,15 +58,6 @@ def create_leaderboard(df, ci_metrics = None):
     
     # Merge runs count back into the dataframe
     df = df.merge(runs_per_agent, on='Agent Name', how='left')
-
-    # # for each metric join metric and metric CI columns
-    # if ci_metrics:
-    #     for metric in ci_metrics:
-    #         CI_metric = metric + ' CI'
-    #         # for rows in the df for which CI metric is not None, join the metric and CI columns by looping through the CI metrics columns
-    #         for i, row in df.iterrows():
-    #             if str(row[CI_metric]) != 'None':
-    #                 df.at[i, metric] = str(round(float(row[metric]), 2)) + " (" + str(row[CI_metric]) + ")"
 
     return df
 
@@ -303,7 +332,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
     
     for agent in unique_agents:
         agent_data = df[df[hover_data[0]] == agent]
-        
+                
         # remove url from tooltip name
         if '[' in str(agent_data['Agent Name'].iloc[0]):
             agent_data.loc[:, 'Agent Name'] = agent_data['Agent Name'].str.rsplit(']').str[0].str[1:]
