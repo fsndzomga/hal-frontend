@@ -60,7 +60,7 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs('swebench_verified')
         print(results_df)
         # Create leaderboard
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='swebench_verified')
         # Create scatter plot
         scatter_plot = create_scatter_plot(
             results_df,
@@ -105,7 +105,7 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs('usaco')
         
         # Create leaderboard
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='usaco')
         
         # Create scatter plot
         scatter_plot = create_scatter_plot(
@@ -148,7 +148,7 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs(benchmark, pricing)
         
         # Create updated leaderboard
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name=benchmark)
         
         # Create updated scatter plot
         scatter_plot = create_scatter_plot(
@@ -180,7 +180,7 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs('appworld_test_normal')
         
         # Create leaderboard
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='appworld_test_normal')
         
         # Create scatter plot
         scatter_plot = create_scatter_plot(
@@ -222,7 +222,7 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in appworld_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('appworld_test_challenge')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='appworld_test_challenge')
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -258,7 +258,7 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in corebench_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('corebench_easy')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='corebench_easy')
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -295,7 +295,7 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in corebench_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('corebench_medium')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='corebench_medium')
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -332,7 +332,7 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in corebench_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('corebench_hard')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='corebench_hard')
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -369,7 +369,10 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in gaia_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('gaia')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='gaia')
+        
+        
+        print(results_df)
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -405,7 +408,7 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in cybench_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('cybench')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='cybench')
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -441,7 +444,7 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in agentharm_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('agentharm')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='agentharm')
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -477,7 +480,7 @@ def create_app():
         pricing = {model: DEFAULT_PRICING[model] for model in swebench_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('swebench_verified_mini')
-        leaderboard_df = create_leaderboard(results_df, ci_metrics=["Accuracy", "Total Cost"])
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='swebench_verified_mini')
         
         scatter_plot = create_scatter_plot(
             results_df,
