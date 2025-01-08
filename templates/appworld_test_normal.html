@@ -19,7 +19,7 @@
         </p>
         <p class="text-sm text-gray-500 mb-8 max-w-3xl">
             Paper: <a href="https://arxiv.org/abs/2407.18901" class="text-blue-600 hover:text-blue-800">
-                AppWorld: A Controllable World of Apps and People for Benchmarking Interactive Coding Agents</a>
+                AppWorld: A Controllable World of Apps and People for Benchmarking Interactive Coding Agents (Trivedi et al., 2024)</a>
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
@@ -36,8 +36,8 @@
 
 <div class="mx-auto max-w-[1500]px px-8 py-6">
     <!-- Key Features Section -->
-    <div class="mb-16">
-        <h2 class="text-3xl font-bold mb-8">Key Features</h2>
+    <div class="mb-12">
+        <h2 class="text-3xl font-bold mb-8">Key Features of AppWorld</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Interactive Environment</h3>
@@ -67,7 +67,7 @@
         <!-- Leaderboard Table -->
         <div class="bg-white rounded-xl shadow-md p-8 mb-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold">Leaderboard</h3>
+                <h3 class="text-3xl font-semibold">Leaderboard</h3>
                 <div class="text-sm text-gray-500">Last updated: {{ last_updated }}</div>
             </div>
             <div class="overflow-x-auto">
@@ -76,11 +76,78 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verified</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accuracy</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scenario Goal Completion</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost (USD)</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Runs</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
+                                <span class="cursor-help inline-flex items-center">
+                                    Verified
+                                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div class="invisible group-hover:visible absolute z-50 w-64 p-4 text-sm bg-white rounded-lg shadow-lg border border-gray-200 -translate-x-1/2 left-1/2 top-full mt-1">
+                                    <div class="absolute w-4 h-4 bg-white transform rotate-45 -translate-x-1/2 left-1/2 -top-2 border-t border-l border-gray-200"></div>
+                                    <div class="flex items-center mb-2">
+                                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="font-medium text-gray-900">Verified Results</span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">Results have been reproduced by the HAL team</p>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
+                                <span class="cursor-help inline-flex items-center">
+                                    Accuracy
+                                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div class="invisible group-hover:visible absolute z-50 w-64 p-4 text-sm bg-white rounded-lg shadow-lg border border-gray-200 -translate-x-1/2 left-1/2 top-full mt-1">
+                                    <div class="absolute w-4 h-4 bg-white transform rotate-45 -translate-x-1/2 left-1/2 -top-2 border-t border-l border-gray-200"></div>
+                                    <div class="flex items-center mb-2">
+                                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        </svg>
+                                        <span class="font-medium text-gray-900">Accuracy</span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">Confidence intervals show the min-max values across runs for those agents where multiple runs are available</p>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
+                                <span class="cursor-help inline-flex items-center">
+                                    Cost (USD)
+                                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div class="invisible group-hover:visible absolute z-50 w-64 p-4 text-sm bg-white rounded-lg shadow-lg border border-gray-200 -translate-x-1/2 left-1/2 top-full mt-1">
+                                    <div class="absolute w-4 h-4 bg-white transform rotate-45 -translate-x-1/2 left-1/2 -top-2 border-t border-l border-gray-200"></div>
+                                    <div class="flex items-center mb-2">
+                                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="font-medium text-gray-900">Total Cost</span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">Total API cost for running the agent on all tasks. Confidence intervals show the min-max values across runs for those agents where multiple runs are available</p>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
+                                <span class="cursor-help inline-flex items-center">
+                                    Runs
+                                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div class="invisible group-hover:visible absolute z-50 w-64 p-4 text-sm bg-white rounded-lg shadow-lg border border-gray-200 -translate-x-1/2 left-1/2 top-full mt-1">
+                                    <div class="absolute w-4 h-4 bg-white transform rotate-45 -translate-x-1/2 left-1/2 -top-2 border-t border-l border-gray-200"></div>
+                                    <div class="flex items-center mb-2">
+                                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                        <span class="font-medium text-gray-900">Number of Runs</span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">The number of runs for this agent submitted to the leaderboard. To submit multiple evaluations, rerun the same agent and set the same agent name</p>
+                                </div>
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traces</th>
                         </tr>
                     </thead>
@@ -155,7 +222,7 @@
         <div class="space-y-8 mb-12">
             <!-- Cost vs Accuracy Plot -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-semibold mb-2">Accuracy vs. Cost Frontier</h3>
+                <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     This plot shows the relationship between an agent's performance and its operational cost.
                     The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
@@ -163,9 +230,9 @@
                 <div id="costAccuracyPlot" class="w-full h-[400px]"></div>
             </div>
 
-            <!-- Saturation Heatmap -->
+            <!-- Heatmap -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-semibold mb-2">Saturation Heatmap</h3>
+                <h3 class="text-3xl font-semibold mb-2">Heatmap</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     The heatmap visualizes success rates across different task categories and difficulty levels. Colorscale shows the fraction of times a task was solved across reruns of the same agent. The "any agent" performance indicates the level of saturation of the benchmark and gives a sense of overall progress.
                 </p>
@@ -178,7 +245,7 @@
 
         <!-- Token Pricing Configuration -->
         <!-- <div class="bg-white rounded-xl shadow-md p-8">
-            <h3 class="text-xl font-semibold mb-2">Token Pricing Configuration</h3>
+            <h3 class="text-3xl font-semibold mb-2">Token Pricing Configuration</h3>
             <p class="text-sm text-gray-500 mb-6">
                 Adjust token prices to see how they affect the total cost calculations in the leaderboard and plots.
             </p>

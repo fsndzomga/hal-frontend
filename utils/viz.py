@@ -253,7 +253,7 @@ def create_bar_chart(categories, values, x_label, y_label, title):
     )])
 
     # Calculate dynamic height based on number of categories
-    height = max(400, len(categories) * 50)  # At least 400px, or 50px per category
+    height = max(400, len(categories) * 150)  # At least 400px, or 150px per category
 
     fig.update_layout(
         height=height,  # Dynamic height

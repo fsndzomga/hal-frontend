@@ -46,7 +46,8 @@ def create_app():
         total_benchmarks = preprocessor.get_total_benchmarks()
         return render_template('index.html', 
                              total_agents=total_agents, 
-                             total_benchmarks=total_benchmarks)
+                             total_benchmarks=total_benchmarks,
+                             contributors=CONTRIBUTORS)
 
     @app.route('/swebench')
     def swebench():
@@ -90,7 +91,8 @@ def create_app():
             scatter_plot=scatter_plot_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
-            pricing=pricing
+            pricing=pricing,
+            benchmark_name='swebench_verified'  # Add benchmark name for failure analysis
         )
 
     @app.route('/usaco')
