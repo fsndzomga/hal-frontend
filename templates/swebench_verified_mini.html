@@ -14,11 +14,13 @@
     <div class="mx-auto max-w-[1500]px px-8 py-16">
         <h1 class="text-4xl font-bold mb-4">SWE-bench Verified Mini</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
-            SWE-bench Verified Mini evaluates AI agents on a smaller subset of real-world programming tasks from the full SWE-bench Verified benchmark for cheaper and faster evaluation.
+                SWE-bench Verified (Mini) is a random subset of 50 tasks of the original <a href="/swebench" class="text-blue-600 hover:text-blue-800">SWE-bench Verified</a>. It is a light-weight version of the original SWE-bench Verified and is thus cheaper to evaluate.
         </p>
         <p class="text-sm text-gray-500 mb-8 max-w-3xl">
             Paper: <a href="https://arxiv.org/abs/2310.06770" class="text-blue-600 hover:text-blue-800">
-                SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a>
+                SWE-bench: Can Language Models Resolve Real-World GitHub Issues?</a><br>
+            OpenAI Blog: <a href="https://openai.com/index/introducing-swe-bench-verified/" class="text-blue-600 hover:text-blue-800">
+                SWE-bench Verified: Introducing SWE-bench Verified</a>
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
@@ -37,7 +39,7 @@
     </div>
 </div>
 
-<div class="mx-auto max-w-[1500]px px-8 py-16">
+<div class="mx-auto max-w-[1500]px px-8 py-6">
     <!-- Key Features Section -->
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Key Features</h2>
@@ -55,9 +57,9 @@
                 </p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Diverse Challenges</h3>
+                <h3 class="text-xl font-semibold mb-4">Diverse Tasks</h3>
                 <p class="text-gray-600">
-                    Tasks cover various programming languages, frameworks, and problem types, from bug fixes to feature implementations.
+                    Tasks originate from PRs of 12 open-source Python repositories covering various domains.
                 </p>
             </div>
         </div>
@@ -266,7 +268,7 @@
                 <p class="text-gray-600 mb-4">
                     Browse the complete list of SWE-bench tasks, including problem descriptions and test cases:
                 </p>
-                <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                <a href="https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Tasks
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>

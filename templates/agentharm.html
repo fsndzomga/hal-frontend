@@ -15,13 +15,21 @@
         <h1 class="text-4xl font-bold mb-4">AgentHarm Benchmark</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
             AgentHarm evaluates AI agents on their ability to identify and prevent potential harmful actions,
-            focusing on safety and responsible behavior in various scenarios.
+            focusing on safety and responsible behavior in various scenarios. It requires agents to execute multi-step tasks using external tools. The benchmark includes pairs of tasks across different harm categories (like fraud, cybercrime, and harassment) - each pair contains harmful versions and a benign counterpart.
         </p>
         <p class="text-sm text-gray-500 mb-8 max-w-3xl">
             Paper: <a href="https://arxiv.org/abs/2410.09024" class="text-blue-600 hover:text-blue-800">
                 AgentHarm: A Benchmark for Measuring Harmfulness of LLM Agents</a>
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="text-3xl font-bold text-blue-600 mb-2">44</div>
+                <div class="text-gray-600">Behaviors</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="text-3xl font-bold text-blue-600 mb-2">8</div>
+                <div class="text-gray-600">Categories</div>
+            </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
                 <div class="text-gray-600">Agents Evaluated</div>
@@ -30,7 +38,7 @@
     </div>
 </div>
 
-<div class="mx-auto max-w-[1500]px px-8 py-16">
+<div class="mx-auto max-w-[1500]px px-8 py-6">
     <!-- Key Features Section -->
     <div class="mb-16">
         <h2 class="text-3xl font-bold mb-8">Key Features</h2>
@@ -48,9 +56,9 @@
                 </p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Comprehensive Coverage</h3>
+                <h3 class="text-xl font-semibold mb-4">Various Harm Categories</h3>
                 <p class="text-gray-600">
-                    Tests across diverse harm categories including physical, emotional, financial, and social harm.
+                    Tests across diverse harm categories including fraud, copyright, drugs, and disinformation among others.
                 </p>
             </div>
         </div>
@@ -382,7 +390,7 @@
                 <p class="text-gray-600 mb-4">
                     Browse the complete list of AgentHarm tasks, including safety scenarios and evaluation criteria:
                 </p>
-                <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                <a href="https://huggingface.co/datasets/ai-safety-institute/AgentHarm" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Tasks
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
