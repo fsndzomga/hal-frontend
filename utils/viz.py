@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 from plotly.subplots import make_subplots
+from utils.db import DEFAULT_PRICING
 
 
 def create_leaderboard(df, benchmark_name = None):
@@ -58,6 +59,12 @@ def create_leaderboard(df, benchmark_name = None):
     
     # Merge runs count back into the dataframe
     df = df.merge(runs_per_agent, on='Agent Name', how='left')
+    
+    # Add model names to leaderboard data
+    df['Models'] = df['Agent Name'].apply(lambda x: x.split('(')[-1].rstrip(')') if any(model in x for model in DEFAULT_PRICING.keys()) else "")
+    # Remove model names from agent name
+    df['Agent Name'] = df['Agent Name'].apply(lambda x: '('.join(x.split('(')[:-1]).strip() if '(' in x else x)
+        
 
     return df
 

@@ -55,7 +55,7 @@ def create_app():
         
         # Get data for SWE-bench
         results_df = preprocessor.get_parsed_results_with_costs('swebench_verified')
-        print(results_df)
+        
         # Create leaderboard
         leaderboard_df = create_leaderboard(results_df, benchmark_name='swebench_verified')
         # Create scatter plot
@@ -182,7 +182,7 @@ def create_app():
         else:
             # Get updated results with new pricing
             results_df = preprocessor.get_parsed_results_with_costs(benchmark, pricing)
-            
+                        
             # Create updated leaderboard
             leaderboard_df = create_leaderboard(results_df, benchmark_name=benchmark)
             
@@ -217,7 +217,7 @@ def create_app():
         
         # Create leaderboard
         leaderboard_df = create_leaderboard(results_df, benchmark_name='appworld_test_normal')
-        
+
         # Create scatter plot
         scatter_plot = create_scatter_plot(
             results_df,

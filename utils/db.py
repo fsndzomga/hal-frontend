@@ -118,9 +118,12 @@ DEFAULT_PRICING = {
     "gpt-4-turbo-2024-04-09": {"prompt_tokens": 10, "completion_tokens": 30},
     "gpt-4-turbo": {"prompt_tokens": 10, "completion_tokens": 30},
     "gpt-4o-mini-2024-07-18": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
+    "gpt-4-turbo-2024-04-09": {"prompt_tokens": 10, "completion_tokens": 30},
     "meta-llama/Meta-Llama-3.1-8B-Instruct": {"prompt_tokens": 0.18, "completion_tokens": 0.18},
     "meta-llama/Meta-Llama-3.1-70B-Instruct": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "meta-llama/Meta-Llama-3.1-405B-Instruct": {"prompt_tokens": 5, "completion_tokens": 15},
+    "meta-llama/Llama-3-70b-chat-hf": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
+    "deepseek-ai/deepseek-coder-33b-instruct": {"prompt_tokens": 0.18, "completion_tokens": 0.18}, # these are set to the llama 8n prices
     "gpt-4o": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "o1-mini-2024-09-12": {"prompt_tokens": 3, "completion_tokens": 12},
     "o1-preview-2024-09-12": {"prompt_tokens": 15, "completion_tokens": 60},
@@ -138,6 +141,7 @@ DEFAULT_PRICING = {
     "google/gemini-1.5-pro": {"prompt_tokens": 1.25, "completion_tokens": 5},
     "google/gemini-1.5-flash": {"prompt_tokens": 0.075, "completion_tokens": 0.3},
     "together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": {"prompt_tokens": 3.5, "completion_tokens": 3.5},
+    "Meta-Llama-3.1-405B-Instruct-Turbo": {"prompt_tokens": 3.5, "completion_tokens": 3.5},
     "together/meta-llama/Meta-Llama-3.1-70B-Instruct": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
 }
 
