@@ -16,6 +16,7 @@ CONTRIBUTORS = [
     {"name": "JJ Allaire", "affiliation": "UK AISI"},
     {"name": "Laura Weidinger", "affiliation": "Google DeepMind"},
     {"name": "Madhur Prashant", "affiliation": "Amazon"},
+    {"name": "Marius Hobbhahn", "affiliation": "Apollo Research"},
     {"name": "Maximillian Kaufmann", "affiliation": "UK AISI"},
     {"name": "Morgan McGuire", "affiliation": "Weights & Biases"},
     {"name": "Omar Khattab", "affiliation": "MIT"},
