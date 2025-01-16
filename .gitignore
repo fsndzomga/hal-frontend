@@ -9,3 +9,4 @@ benchmark_submission.md
 config.py
 utils/db_old.py
 .env
+corebench_archive/*
