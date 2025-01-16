@@ -16,22 +16,48 @@
         .dropdown-visible {
             display: block !important;
         }
+        .mobile-menu-visible {
+            display: block !important;
+        }
+        .leaderboards-expanded {
+            display: block !important;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Desktop dropdown
             const dropdownButton = document.querySelector('[data-dropdown-toggle]');
             const dropdownMenu = document.querySelector('[data-dropdown-menu]');
             
-            dropdownButton.addEventListener('click', function(e) {
+            dropdownButton?.addEventListener('click', function(e) {
                 e.preventDefault();
                 dropdownMenu.classList.toggle('dropdown-visible');
             });
 
             // Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
-                if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    dropdownMenu.classList.remove('dropdown-visible');
+                if (!dropdownButton?.contains(e.target) && !dropdownMenu?.contains(e.target)) {
+                    dropdownMenu?.classList.remove('dropdown-visible');
                 }
+            });
+
+            // Mobile menu
+            const mobileMenuButton = document.querySelector('[data-mobile-menu-button]');
+            const mobileMenu = document.querySelector('[data-mobile-menu]');
+            
+            mobileMenuButton?.addEventListener('click', function() {
+                mobileMenu.classList.toggle('mobile-menu-visible');
+            });
+
+            // Mobile leaderboards dropdown
+            const mobileLeaderboardsButton = document.querySelector('[data-mobile-leaderboards-button]');
+            const mobileLeaderboardsContent = document.querySelector('[data-mobile-leaderboards-content]');
+            const mobileLeaderboardsIcon = document.querySelector('[data-mobile-leaderboards-icon]');
+            
+            mobileLeaderboardsButton?.addEventListener('click', function() {
+                mobileLeaderboardsContent.classList.toggle('leaderboards-expanded');
+                // Rotate arrow icon
+                mobileLeaderboardsIcon.classList.toggle('rotate-180');
             });
         });
     </script>
@@ -45,6 +71,7 @@
                     {% block nav_title %}{% endblock %}
                 </div>
                 <div class="flex items-center gap-8">
+                    <!-- Desktop Menu -->
                     <div class="hidden md:flex space-x-8 items-center">
                         <div class="relative">
                             <button data-dropdown-toggle class="text-gray-700 hover:text-blue-600 transition-colors">
@@ -84,11 +111,42 @@
                         </a>
                     </div>
                     <!-- Mobile menu button -->
-                    <button class="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                    <button data-mobile-menu-button class="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
                     </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div data-mobile-menu class="hidden md:hidden absolute top-24 left-0 w-full bg-white border-b border-gray-200 shadow-lg">
+                <div class="px-4 py-2">
+                    <div class="border-b border-gray-100">
+                        <button data-mobile-leaderboards-button class="flex justify-between items-center w-full text-gray-700 hover:text-blue-600 transition-colors h-12">
+                            <span>Leaderboards</span>
+                            <svg data-mobile-leaderboards-icon class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div data-mobile-leaderboards-content class="hidden pl-4 space-y-1 pb-2">
+                            <a href="{{ url_for('swebench') }}" class="block py-2 text-gray-700 hover:text-blue-600">SWE-bench Verified</a>
+                            <a href="{{ url_for('swebench_verified_mini') }}" class="block py-2 text-gray-700 hover:text-blue-600">SWE-bench Verified Mini</a>
+                            <a href="{{ url_for('usaco') }}" class="block py-2 text-gray-700 hover:text-blue-600">USACO</a>
+                            <a href="{{ url_for('appworld_test_normal') }}" class="block py-2 text-gray-700 hover:text-blue-600">AppWorld Normal</a>
+                            <a href="{{ url_for('appworld_test_challenge') }}" class="block py-2 text-gray-700 hover:text-blue-600">AppWorld Challenge</a>
+                            <a href="{{ url_for('corebench_easy') }}" class="block py-2 text-gray-700 hover:text-blue-600">CORE-Bench Easy</a>
+                            <a href="{{ url_for('corebench_medium') }}" class="block py-2 text-gray-700 hover:text-blue-600">CORE-Bench Medium</a>
+                            <a href="{{ url_for('corebench_hard') }}" class="block py-2 text-gray-700 hover:text-blue-600">CORE-Bench Hard</a>
+                            <a href="{{ url_for('gaia') }}" class="block py-2 text-gray-700 hover:text-blue-600">GAIA</a>
+                            <a href="{{ url_for('cybench') }}" class="block py-2 text-gray-700 hover:text-blue-600">Cybench</a>
+                            <a href="{{ url_for('agentharm') }}" class="block py-2 text-gray-700 hover:text-blue-600">AgentHarm</a>
+                        </div>
+                    </div>
+                    <a href="https://github.com/benediktstroebl/hal-harness/tree/main/agents" class="flex items-center h-12 text-gray-700 hover:text-blue-600 border-b border-gray-100">Add Agent</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness/tree/main/hal/benchmarks" class="flex items-center h-12 text-gray-700 hover:text-blue-600 border-b border-gray-100">Add Benchmark</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness" class="flex items-center h-12 text-gray-700 hover:text-blue-600 border-b border-gray-100">GitHub</a>
+                    <a href="https://github.com/benediktstroebl/hal-harness#about-hal" class="flex items-center h-12 text-gray-700 hover:text-blue-600 border-b border-gray-100">About</a>
+                    <a href="/#creators" class="flex items-center h-12 text-gray-700 hover:text-blue-600">Creators</a>
                 </div>
             </div>
         </nav>
