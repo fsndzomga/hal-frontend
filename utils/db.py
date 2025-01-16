@@ -119,6 +119,7 @@ DEFAULT_PRICING = {
     "gpt-4-turbo": {"prompt_tokens": 10, "completion_tokens": 30},
     "gpt-4o-mini-2024-07-18": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
     "gpt-4-turbo-2024-04-09": {"prompt_tokens": 10, "completion_tokens": 30},
+    "o1-2024-12-17": {"prompt_tokens": 15, "completion_tokens": 60},
     "meta-llama/Meta-Llama-3.1-8B-Instruct": {"prompt_tokens": 0.18, "completion_tokens": 0.18},
     "meta-llama/Meta-Llama-3.1-70B-Instruct": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "meta-llama/Meta-Llama-3.1-405B-Instruct": {"prompt_tokens": 5, "completion_tokens": 15},
@@ -131,6 +132,7 @@ DEFAULT_PRICING = {
     "claude-3-5-sonnet-20241022": {"prompt_tokens": 3, "completion_tokens": 15},
     "us.anthropic.claude-3-5-sonnet-20240620-v1:0": {"prompt_tokens": 3, "completion_tokens": 15},
     "us.anthropic.claude-3-5-sonnet-20241022-v2:0": {"prompt_tokens": 3, "completion_tokens": 15},
+    "claude-3-5-haiku-20241022": {"prompt_tokens": 0.8, "completion_tokens": 4},
     "openai/gpt-4o-2024-11-20": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-2024-08-06": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-mini-2024-07-18": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
@@ -141,6 +143,7 @@ DEFAULT_PRICING = {
     "google/gemini-1.5-pro": {"prompt_tokens": 1.25, "completion_tokens": 5},
     "google/gemini-1.5-flash": {"prompt_tokens": 0.075, "completion_tokens": 0.3},
     "together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": {"prompt_tokens": 3.5, "completion_tokens": 3.5},
+    "Meta-Llama-3.3-70B-Instruct-Turbo": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "Meta-Llama-3.1-405B-Instruct-Turbo": {"prompt_tokens": 3.5, "completion_tokens": 3.5},
     "together/meta-llama/Meta-Llama-3.1-70B-Instruct": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
 }
@@ -401,6 +404,9 @@ class TracePreprocessor:
             lambda x: f'https://huggingface.co/datasets/agent-evals/agent_traces/resolve/main/{x}.zip?download=true'
             if x else ''
         )
+        
+        # for all agents with the same name, set the trace column to the value for the agent with the highest accuracy
+        df['Traces'] = df.groupby('agent_name').apply(lambda x: x.loc[x['accuracy'].idxmax(), 'Traces']).reset_index(level=0, drop=True)
         
         df = df.drop(columns=['successful_tasks', 'failed_tasks'], axis=1)
         
@@ -683,7 +689,7 @@ class TracePreprocessor:
 
     def get_total_agents(self):
         """Get the total number of unique agents across all benchmarks"""
-        total_agents = set()
+        unique_agents = set()
         # Use the parsed_results table since it's guaranteed to have all benchmark-agent pairs
         for db_file in self.db_dir.glob('*.db'):
             # skip mlagentbench
@@ -692,14 +698,14 @@ class TracePreprocessor:
             benchmark_name = db_file.stem.replace('_', '/')
             with self.get_conn(benchmark_name) as conn:
                 query = '''
-                    SELECT DISTINCT benchmark_name, agent_name 
+                    SELECT DISTINCT agent_name 
                     FROM parsed_results
                 '''
                 
                 results = conn.execute(query).fetchall()
-                # Add each benchmark-agent pair to the set
-                total_agents.update(results)
-        return len(total_agents)
+                # Add each agent name to the set
+                unique_agents.update(agent[0] for agent in results)
+        return len(unique_agents)
 
     def get_agent_url(self, agent_name, benchmark_name):
         """Get the URL for an agent from the metadata file."""
