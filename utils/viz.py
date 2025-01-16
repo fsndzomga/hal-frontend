@@ -484,7 +484,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
     # Add non-overlapping labels using annotations
     for i in range(len(all_x)):
         # Default position: lower right
-        ax = 20
+        ax = 60
         ay = 20
         
         # Adjust position if near axes
@@ -493,7 +493,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         
         # If point is near minimum x-axis (left side)
         if all_x[i] < min(all_x) + 0.05 * x_range:
-            ax = 120  # Large shift for points very close to left axis
+            ax = 140  # Large shift for points very close to left axis
             
         # If point is near maximum x-axis (right side)
         if all_x[i] > max(all_x) - 0.1 * x_range:
@@ -515,7 +515,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
             dy = abs(all_y[i] - all_y[j])
             
             # Reduced overlap threshold from 0.2 to 0.1
-            if dx < 0.12 * x_range and dy < 0.12 * y_range:
+            if dx < 0.2 * x_range and dy < 0.2 * y_range:
                 # If points are close, try different positions
                 if not overlap:
                     ax += 20  # Smaller increment (from 40 to 20)

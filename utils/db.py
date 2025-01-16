@@ -689,7 +689,7 @@ class TracePreprocessor:
 
     def get_total_agents(self):
         """Get the total number of unique agents across all benchmarks"""
-        unique_agents = set()
+        total_agents = set()
         # Use the parsed_results table since it's guaranteed to have all benchmark-agent pairs
         for db_file in self.db_dir.glob('*.db'):
             # skip mlagentbench
@@ -698,14 +698,14 @@ class TracePreprocessor:
             benchmark_name = db_file.stem.replace('_', '/')
             with self.get_conn(benchmark_name) as conn:
                 query = '''
-                    SELECT DISTINCT agent_name 
+                    SELECT DISTINCT benchmark_name, agent_name 
                     FROM parsed_results
                 '''
                 
                 results = conn.execute(query).fetchall()
-                # Add each agent name to the set
-                unique_agents.update(agent[0] for agent in results)
-        return len(unique_agents)
+                # Add each benchmark-agent pair to the set
+                total_agents.update(results)
+        return len(total_agents)
 
     def get_agent_url(self, agent_name, benchmark_name):
         """Get the URL for an agent from the metadata file."""
