@@ -63,7 +63,7 @@ swebench_verified_mini:
   - agent_name: "Agentless (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-08-17
     url: "https://github.com/OpenAutoCoder/Agentless"
-  - agent_name: "SWE-agent (gpt-4o-mini-2024-07-18) (Cost Limit: $1)"
+  - agent_name: "SWE-agent (Cost Limit: $1) (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-08-19
     url: "https://github.com/princeton-nlp/SWE-agent"
   - agent_name: "Moatless (gpt-4o-mini-2024-07-18)"
