@@ -113,9 +113,60 @@
                                     <p class="text-gray-600 leading-relaxed">Confidence intervals show the min-max values across runs for those agents where multiple runs are available</p>
                                 </div>
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level 1</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level 2</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level 3</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
+                                <span class="cursor-help inline-flex items-center">
+                                    Level 1
+                                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div class="invisible group-hover:visible absolute z-50 w-64 p-4 text-sm bg-white rounded-lg shadow-lg border border-gray-200 -translate-x-1/2 left-1/2 top-full mt-1">
+                                    <div class="absolute w-4 h-4 bg-white transform rotate-45 -translate-x-1/2 left-1/2 -top-2 border-t border-l border-gray-200"></div>
+                                    <div class="flex items-center mb-2">
+                                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="font-medium text-gray-900">Level 1</span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">GAIA is divided in 3 levels, where level 1 should be breakable by very good LLMs, and level 3 indicate a strong jump in model capabilities.</p>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
+                                <span class="cursor-help inline-flex items-center">
+                                    Level 2
+                                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div class="invisible group-hover:visible absolute z-50 w-64 p-4 text-sm bg-white rounded-lg shadow-lg border border-gray-200 -translate-x-1/2 left-1/2 top-full mt-1">
+                                    <div class="absolute w-4 h-4 bg-white transform rotate-45 -translate-x-1/2 left-1/2 -top-2 border-t border-l border-gray-200"></div>
+                                    <div class="flex items-center mb-2">
+                                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="font-medium text-gray-900">Level 2</span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">GAIA is divided in 3 levels, where level 1 should be breakable by very good LLMs, and level 3 indicate a strong jump in model capabilities.</p>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
+                                <span class="cursor-help inline-flex items-center">
+                                    Level 3
+                                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                                <div class="invisible group-hover:visible absolute z-50 w-64 p-4 text-sm bg-white rounded-lg shadow-lg border border-gray-200 -translate-x-1/2 left-1/2 top-full mt-1">
+                                    <div class="absolute w-4 h-4 bg-white transform rotate-45 -translate-x-1/2 left-1/2 -top-2 border-t border-l border-gray-200"></div>
+                                    <div class="flex items-center mb-2">
+                                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span class="font-medium text-gray-900">Level 3</span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">GAIA is divided in 3 levels, where level 1 should be breakable by very good LLMs, and level 3 indicate a strong jump in model capabilities.</p>
+                                </div>
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
                                 <span class="cursor-help inline-flex items-center">
                                     Cost (USD)
@@ -459,8 +510,10 @@
                             }
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-blue-600 mr-2 py-0.5 rounded text-sm">
-                        ${row['Models']}
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${row['Models'].split(',').map(model => 
+                            `<span class="inline-block text-blue-600 mr-2 py-0.5 rounded">${model.trim()}</span>`
+                        ).join('')}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${row['Verified'] ? '<span class="text-green-600">✓</span>' : ''}
@@ -472,11 +525,32 @@
                                 `<span class="text-gray-500 ml-1">(${row['Accuracy CI']})</span>` : ''}
                         </span>
                     </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${(parseFloat(row['Level 1 Accuracy'])).toFixed(2)}%
+                            ${row['Level 1 Accuracy CI'] && row['Level 1 Accuracy CI'] !== 'None' ? 
+                                `<span class="text-gray-500 ml-1">(${row['Level 1 Accuracy CI']})</span>` : ''}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${(parseFloat(row['Level 2 Accuracy'])).toFixed(2)}%
+                            ${row['Level 2 Accuracy CI'] && row['Level 2 Accuracy CI'] !== 'None' ? 
+                                `<span class="text-gray-500 ml-1">(${row['Level 2 Accuracy CI']})</span>` : ''}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${(parseFloat(row['Level 3 Accuracy'])).toFixed(2)}%
+                            ${row['Level 3 Accuracy CI'] && row['Level 3 Accuracy CI'] !== 'None' ? 
+                                `<span class="text-gray-500 ml-1">(${row['Level 3 Accuracy CI']})</span>` : ''}
+                        </span>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         $${parseFloat(row['Total Cost']).toFixed(2)}
                         ${row['Total Cost CI'] && row['Total Cost CI'] !== 'None' ? 
                             `<span class="text-gray-400 text-xs">(${row['Total Cost CI']})</span>` : ''}
-                    </td>
+                        </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${row['Runs']}
                     </td>
@@ -518,7 +592,7 @@
     // Handle reset pricing
     document.getElementById('resetPricing').addEventListener('click', function() {
         const form = document.getElementById('pricingForm');
-        const defaultPricing = {{ pricing|tojson }};
+        const defaultPricing = JSON.parse('{{ pricing|tojson|safe }}');
         
         // Reset all input fields to their default values
         for (const [model, prices] of Object.entries(defaultPricing)) {
