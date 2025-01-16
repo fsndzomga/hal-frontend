@@ -685,7 +685,7 @@ class TracePreprocessor:
         benchmarks = set()
         for db_file in self.db_dir.glob('*.db'):
             benchmarks.add(db_file.stem.replace('_', '/'))
-        return len(benchmarks) -1 # TODO hardcoded -1 for mlagentbench
+        return len(benchmarks) - 2 # TODO hardcoded -1 for mlagentbench and agentharm benign
 
     def get_total_agents(self):
         """Get the total number of unique agents across all benchmarks"""
