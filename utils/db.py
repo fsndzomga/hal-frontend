@@ -400,13 +400,16 @@ class TracePreprocessor:
         df['cost_ci'] = None
 
         # Before dropping run_id, create new column from it with download link
-        df['Traces'] = df['run_id'].apply(
+        # First create a temporary dataframe with agent_name and max accuracy
+        max_accuracy_df = df.groupby('agent_name')['accuracy'].transform('max')
+        # Create mask for rows with max accuracy in their group
+        max_accuracy_mask = df['accuracy'] == max_accuracy_df
+        # Create the Traces column, only setting values for max accuracy rows
+        df['Traces'] = ''
+        df.loc[max_accuracy_mask, 'Traces'] = df.loc[max_accuracy_mask, 'run_id'].apply(
             lambda x: f'https://huggingface.co/datasets/agent-evals/agent_traces/resolve/main/{x}.zip?download=true'
             if x else ''
         )
-        
-        # for all agents with the same name, set the trace column to the value for the agent with the highest accuracy
-        df['Traces'] = df.groupby('agent_name').apply(lambda x: x.loc[x['accuracy'].idxmax(), 'Traces']).reset_index(level=0, drop=True)
         
         df = df.drop(columns=['successful_tasks', 'failed_tasks'], axis=1)
         
