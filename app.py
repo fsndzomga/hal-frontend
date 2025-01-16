@@ -406,10 +406,7 @@ def create_app():
         
         results_df = preprocessor.get_parsed_results_with_costs('gaia')
         leaderboard_df = create_leaderboard(results_df, benchmark_name='gaia')
-        
-        
-        print(results_df)
-        
+                
         scatter_plot = create_scatter_plot(
             results_df,
             "Total Cost",
