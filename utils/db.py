@@ -133,6 +133,7 @@ DEFAULT_PRICING = {
     "us.anthropic.claude-3-5-sonnet-20240620-v1:0": {"prompt_tokens": 3, "completion_tokens": 15},
     "us.anthropic.claude-3-5-sonnet-20241022-v2:0": {"prompt_tokens": 3, "completion_tokens": 15},
     "claude-3-5-haiku-20241022": {"prompt_tokens": 0.8, "completion_tokens": 4},
+    "us.anthropic.claude-3-5-haiku-20241022-v1:0": {"prompt_tokens": 0.8, "completion_tokens": 4},
     "openai/gpt-4o-2024-11-20": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-2024-08-06": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-mini-2024-07-18": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
@@ -144,6 +145,7 @@ DEFAULT_PRICING = {
     "google/gemini-1.5-flash": {"prompt_tokens": 0.075, "completion_tokens": 0.3},
     "together/meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": {"prompt_tokens": 3.5, "completion_tokens": 3.5},
     "Meta-Llama-3.3-70B-Instruct-Turbo": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
+    "us.meta.llama3-3-70b-instruct-v1:0": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "Meta-Llama-3.1-405B-Instruct-Turbo": {"prompt_tokens": 3.5, "completion_tokens": 3.5},
     "together/meta-llama/Meta-Llama-3.1-70B-Instruct": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
 }
