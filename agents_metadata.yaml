@@ -80,47 +80,53 @@ swebench_verified_mini:
     url: "https://github.com/OpenAutoCoder/Agentless"
 
 corebench_easy:
-  - agent_name: "AutoGPT (GPT-4o)"
+  - agent_name: "AutoGPT (gpt-4o-2024-05-13)"
     verification_date: 2024-09-28
     url: "https://github.com/princeton-nlp/SWE-bench"
-  - agent_name: "AutoGPT (GPT-4o-mini)"
+  - agent_name: "AutoGPT (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-09-28
     url: "https://github.com/princeton-nlp/SWE-bench"
-  - agent_name: "CORE-Agent (GPT-4o)"
+  - agent_name: "CORE-Agent (gpt-4o-2024-05-13)"
     verification_date: 2024-09-28
     url: "https://github.com/princeton-nlp/SWE-bench"
-  - agent_name: "CORE-Agent (GPT-4o-mini)"
+  - agent_name: "CORE-Agent (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-09-28
     url: "https://github.com/princeton-nlp/SWE-bench"
 
 corebench_medium:
-  - agent_name: "AutoGPT (GPT-4o)"
+  - agent_name: "AutoGPT (gpt-4o-2024-05-13)"
     verification_date: 2024-09-28
     url: "https://github.com/Significant-Gravitas/AutoGPT"
-  - agent_name: "AutoGPT (GPT-4o-mini)"
+  - agent_name: "AutoGPT (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-09-28
     url: "https://github.com/Significant-Gravitas/AutoGPT"
-  - agent_name: "CORE-Agent (GPT-4o)"
+  - agent_name: "CORE-Agent (gpt-4o-2024-05-13)"
     verification_date: 2024-09-28
     url: "https://github.com/siegelz/core-bench"
-  - agent_name: "CORE-Agent (GPT-4o-mini)"
+  - agent_name: "CORE-Agent (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-09-28
     url: "https://github.com/siegelz/core-bench"
 
 corebench_hard:
-  - agent_name: "AutoGPT (GPT-4o)"
+  - agent_name: "AutoGPT (gpt-4o-2024-05-13)"
     verification_date: 2024-09-28
     url: "https://github.com/Significant-Gravitas/AutoGPT"
-  - agent_name: "AutoGPT (GPT-4o-mini)"
+  - agent_name: "AutoGPT (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-09-28
     url: "https://github.com/Significant-Gravitas/AutoGPT"
-  - agent_name: "CORE-Agent (GPT-4o)"
+  - agent_name: "CORE-Agent (gpt-4o-2024-05-13)"
     verification_date: 2024-09-28
     url: "https://github.com/siegelz/core-bench"
-  - agent_name: "CORE-Agent (GPT-4o-mini)"
+  - agent_name: "CORE-Agent (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-09-28
     url: "https://github.com/siegelz/core-bench"
-  - agent_name: "CORE-Agent (o1-mini)"
+  - agent_name: "CORE-Agent (o1-mini-2024-09-12)"
+    verification_date: 2024-09-28
+    url: "https://github.com/siegelz/core-bench"
+  - agent_name: "CORE-Agent (o1-2024-12-17)"
+    verification_date: 2024-09-28
+    url: "https://github.com/siegelz/core-bench"
+  - agent_name: "CORE-Agent (claude-3-5-sonnet-20241022)"
     verification_date: 2024-09-28
     url: "https://github.com/siegelz/core-bench"
 
@@ -191,6 +197,15 @@ usaco:
   - agent_name: "USACO Zero-Shot (claude-3-5-sonnet-20241022)"
     verification_date: 2024-11-30
     url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "Amazon Bedrock Zero shot (claude-3-5-sonnet-20241022)"
+    verification_date: 2025-01-15
+    url: "https://github.com/aarora79/usaco_bedrock_models"
+  - agent_name: "Amazon Bedrock Zero shot (Meta-Llama-3.3-70B-Instruct-Turbo)"
+    verification_date: 2025-01-15
+    url: "https://github.com/aarora79/usaco_bedrock_models"
+  - agent_name: "Amazon Bedrock Zero shot (claude-3-5-haiku-20241022)"
+    verification_date: 2025-01-15
+    url: "https://github.com/aarora79/usaco_bedrock_models"
     
 appworld_test_normal:
   - agent_name: "ReAct (gpt-4o-2024-05-13)"
