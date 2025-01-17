@@ -15,7 +15,7 @@
         <h1 class="text-4xl font-bold mb-4">GAIA Benchmark</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
             GAIA is a benchmark for General AI Assistants that requires a set of fundamental abilities such as reasoning, multi-modality handling, web browsing, and generally tool-use proficiency.
-            It contains 450 questions with unambiguous answers, requiring different levels of tooling and autonomy to solve. It is divided in 3 levels, where level 1 should be breakable by very good LLMs, and level 3 indicate a strong jump in model capabilities.
+            It contains 450 questions with unambiguous answers, requiring different levels of tooling and autonomy to solve. It is divided in 3 levels, where level 1 should be breakable by very good LLMs, and level 3 indicate a strong jump in model capabilities. We evaluate on the public validation set of 165 questions.
         </p>
         <p class="text-sm text-gray-500 mb-8 max-w-3xl">
             Paper: <a href="https://arxiv.org/abs/2311.12983" class="text-blue-600 hover:text-blue-800">
@@ -23,8 +23,8 @@
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">450</div>
-                <div class="text-gray-600">Questions</div>
+                <div class="text-3xl font-bold text-blue-600 mb-2">165</div>
+                <div class="text-gray-600">Questions in Validation Set</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
@@ -49,12 +49,6 @@
                 <h3 class="text-xl font-semibold mb-4">Diverse Task Types</h3>
                 <p class="text-gray-600">
                     Covers a wide range of tasks from basic reasoning to complex problem-solving and creative generation.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Standardized Evaluation</h3>
-                <p class="text-gray-600">
-                    Rigorous evaluation criteria ensure consistent and fair assessment across different agents.
                 </p>
             </div>
         </div>
