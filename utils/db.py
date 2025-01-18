@@ -139,6 +139,7 @@ DEFAULT_PRICING = {
     "openai/gpt-4o-mini-2024-07-18": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
     "openai/o1-mini-2024-09-12": {"prompt_tokens": 3, "completion_tokens": 12},
     "openai/o1-preview-2024-09-12": {"prompt_tokens": 15, "completion_tokens": 60},
+    "openai/o1-2024-12-17": {"prompt_tokens": 15, "completion_tokens": 60},
     "anthropic/claude-3-5-sonnet-20240620": {"prompt_tokens": 3, "completion_tokens": 15},
     "anthropic/claude-3-5-sonnet-20241022": {"prompt_tokens": 3, "completion_tokens": 15},
     "google/gemini-1.5-pro": {"prompt_tokens": 1.25, "completion_tokens": 5},
