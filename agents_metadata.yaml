@@ -300,6 +300,9 @@ agentharm:
   - agent_name: "Inspect Tool-Use Agent (o1-preview-2024-09-12)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
+  - agent_name: "Inspect Tool-Use Agent (o1-2024-12-17)"
+    verification_date: 2025-01-10
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
   - agent_name: "Inspect Tool-Use Agent (o1-mini-2024-09-12)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
@@ -319,6 +322,9 @@ agentharm:
 
 agentharm_benign:
   - agent_name: "Inspect Tool-Use Agent (o1-preview-2024-09-12)"
+    verification_date: 2025-01-10
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
+  - agent_name: "Inspect Tool-Use Agent (o1-2024-12-17)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
   - agent_name: "Inspect Tool-Use Agent (o1-mini-2024-09-12)"
