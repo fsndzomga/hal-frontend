@@ -669,17 +669,42 @@
             <div class="flex flex-wrap gap-4">
                 <a href="https://github.com/benediktstroebl/hal-harness/blob/main/CONTRIBUTING.md" 
                    class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    Contribution Guidelines
+                   GitHub
                 </a>
-                <a href="https://github.com/benediktstroebl/hal-harness" 
+                <!-- <a href="https://github.com/benediktstroebl/hal-harness" 
                    class="inline-block px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
-                    GitHub Repository
-                </a>
+                    GitHub
+                </a> -->
             </div>
         </div>
-    </div>
+
+        <div
+            class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 mt-16">
+            <div class="mb-8">
+                <h3
+                    class="text-2xl font-bold mb-4">
+                    Cite HAL</h3>
+                <div>
+                    <div class="relative">
+                        <pre class="bg-gray-50 p-2 rounded-lg overflow-x-auto text-sm">@Misc{hal,
+title =        {HAL: A Holistic Agent Leaderboard for Centralized and Reproducible Agent Evaluation},
+author =       {Benedikt Stroebl and Sayash Kapoor and Arvind Narayanan},
+howpublished = {\url{https://github.com/princeton-pli/hal-harness/}},
+year =         {2025}}</pre>
+                        <button onclick="copyBibtex()" class="absolute top-2 right-2 p-2 text-gray-500 hover:text-gray-700 rounded-md transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-100/80 to-transparent"></div>
 </div>
+
 
 {% endblock %}
 
@@ -698,5 +723,20 @@
     window.addEventListener('resize', function() {
         Plotly.Plots.resize('usacoScatterPlot');
     });
+
+    function copyBibtex() {
+        const bibtex = `@Misc{hal,
+title =        {HAL: A Holistic Agent Leaderboard for Centralized and Reproducible Agent Evaluation},
+author =       {Benedikt Stroebl and Sayash Kapoor and Arvind Narayanan},
+howpublished = {\\url{https://github.com/princeton-pli/hal-harness/}},
+year =         {2025}}`;
+        navigator.clipboard.writeText(bibtex).then(() => {
+            const button = document.querySelector('button[onclick="copyBibtex()"]');
+            button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+            setTimeout(() => {
+                button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+            }, 2000);
+        });
+    }
 </script>
 {% endblock %} 
