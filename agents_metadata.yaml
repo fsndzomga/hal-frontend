@@ -44,6 +44,10 @@ cybench:
   - agent_name: "Inspect ReAct Agent (o1-preview-2024-09-12)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+  - agent_name: "Inspect ReAct Agent (o3-mini-2025-01-14)"
+    verification_date: 2025-01-21
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+
 
 swebench_verified:
   - agent_name: "Moatless (gpt-4o-2024-08-06)"
