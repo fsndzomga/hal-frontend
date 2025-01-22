@@ -309,7 +309,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         # Look for model name in parentheses at the end
         if '(' in agent_name and ')' in agent_name:
             model = agent_name.split('(')[-1].rstrip(')')
-            if any(model_prefix in model.lower() for model_prefix in ['gpt-', 'claude-', 'gemini-', 'meta-llama', 'openai', 'anthropic', 'o1-']):
+            if any(model_prefix in model.lower() for model_prefix in ['gpt-', 'claude-', 'gemini-', 'meta-llama', 'openai', 'anthropic', 'o1-', 'o3-']):
                 return model.strip()
         return 'Other'
 
