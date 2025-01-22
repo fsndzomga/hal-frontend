@@ -1,0 +1,13 @@
+[passenger]
+web_doc_root = "/n/fs/hal/hal-frontend/www-docroot"
+passenger_user = "sayashk"
+passenger_group = "hal"
+passenger_app_root = "/n/fs/hal/hal-frontend/www-approot"
+passenger_restart_dir = "/n/fs/hal/hal-frontend/www-approot/tmp"
+passenger_python = "/n/fs/hal/hal-frontend/venv/bin/python"
+[wsgi]
+chdir = "/n/fs/hal/hal-frontend/"
+app = "app.app"
+[secret_files]
+[environment]
+LOG_FILENAME = "/n/fs/hal/hal-frontend/log/logfile"
