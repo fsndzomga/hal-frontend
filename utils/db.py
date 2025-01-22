@@ -559,6 +559,9 @@ class TracePreprocessor:
                 
                 results_df.loc[results_df['Agent Name'] == agent_name, 'Accuracy CI'] = accuracy_ci
                 results_df.loc[results_df['Agent Name'] == agent_name, 'Total Cost CI'] = cost_ci
+            
+            if agent_name == 'Inspect ReAct Agent (o3-mini-2025-01-14)':
+                results_df.loc[results_df['Agent Name'] == agent_name, 'Total Cost CI'] = "lower bound: $16.04*"
     
         # Group token costs by agent
         agent_costs = token_costs.groupby('agent_name')['total_cost'].mean().reset_index()
