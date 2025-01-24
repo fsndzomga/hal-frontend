@@ -671,19 +671,12 @@
                    class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                    GitHub
                 </a>
-                <!-- <a href="https://github.com/benediktstroebl/hal-harness" 
-                   class="inline-block px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
-                    GitHub
-                </a> -->
             </div>
         </div>
 
-        <div
-            class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 mt-16">
+        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 mt-16">
             <div class="mb-8">
-                <h3
-                    class="text-2xl font-bold mb-4">
-                    Cite HAL</h3>
+                <h3 class="text-2xl font-bold mb-4">Cite HAL</h3>
                 <div>
                     <div class="relative">
                         <pre class="bg-gray-50 p-2 rounded-lg overflow-x-auto text-sm">@Misc{hal,
@@ -702,6 +695,14 @@ year =         {2025}}</pre>
             </div>
         </div>
 
+        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 mt-16">
+            <h3 class="text-2xl font-bold mb-4">Funding</h3>
+            <p class="text-gray-600">
+                HAL is funded by the <a href="https://ai.princeton.edu/ai-lab" target="_blank" class="text-blue-600 hover:text-blue-800">Princeton AI Lab</a> and the <a href="https://pli.princeton.edu/" target="_blank" class="text-blue-600 hover:text-blue-800">Princeton Language and Intelligence</a> Initiative.
+            </p>
+        </div>
+
+    </div>
     <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-100/80 to-transparent"></div>
 </div>
 
@@ -728,7 +729,7 @@ year =         {2025}}</pre>
         const bibtex = `@Misc{hal,
 title =        {HAL: A Holistic Agent Leaderboard for Centralized and Reproducible Agent Evaluation},
 author =       {Benedikt Stroebl and Sayash Kapoor and Arvind Narayanan},
-howpublished = {\\url{https://github.com/princeton-pli/hal-harness/}},
+howpublished = {\url{https://github.com/princeton-pli/hal-harness/}},
 year =         {2025}}`;
         navigator.clipboard.writeText(bibtex).then(() => {
             const button = document.querySelector('button[onclick="copyBibtex()"]');
