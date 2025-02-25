@@ -135,8 +135,17 @@ corebench_hard:
     url: "https://github.com/siegelz/core-bench"
 
 usaco:
-  - agent_name: "USACO Reflexion + Episodic (gpt-4o-mini-2024-07-18)"
-    verification_date: 2024-08-20
+  - agent_name: "USACO Zero-shot (o3-mini-2025-01-31)"
+    verification_date: 2025-02-26
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Episodic + Semantic (o3-mini-2025-01-31)"
+    verification_date: 2025-02-26
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Zero-shot (claude-3-7-sonnet-20250219)"
+    verification_date: 2025-02-26
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Episodic + Semantic (claude-3-7-sonnet-20250219)"
+    verification_date: 2025-02-26
     url: "https://github.com/princeton-nlp/USACO"
   - agent_name: "USACO Reflexion + Episodic + Semantic (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-08-20
