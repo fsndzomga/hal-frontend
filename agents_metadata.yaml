@@ -346,3 +346,43 @@ agentharm_benign:
   - agent_name: "Inspect Tool-Use Agent (Meta-Llama-3.1-405B-Instruct-Turbo)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
+
+taubench_retail:
+  - agent_name: "TAU-bench ToolCalling (gpt-4o-2024-11-20)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (gpt-4o-mini-2024-07-18)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (claude-3-5-sonnet-20241022)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (o1-2024-12-17)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (claude-3-7-sonnet-20250219)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (o3-mini-2025-01-31)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+
+taubench_airline:
+  - agent_name: "TAU-bench ToolCalling (gpt-4o-2024-11-20)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (gpt-4o-mini-2024-07-18)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (claude-3-5-sonnet-20241022)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (o1-2024-12-17)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (claude-3-7-sonnet-20250219)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
+  - agent_name: "TAU-bench ToolCalling (o3-mini-2025-01-31)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
