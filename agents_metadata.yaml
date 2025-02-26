@@ -24,6 +24,12 @@ gaia:
   - agent_name: "Inspect ReAct Agent (o1-preview-2024-09-12)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
+  - agent_name: "Inspect ReAct Agent (o3-mini-2025-01-31 med.)"
+    verification_date: 2025-02-26
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
+  - agent_name: "Inspect ReAct Agent (claude-3-7-sonnet-20250219)"
+    verification_date: 2025-02-26
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
 
 cybench:
   - agent_name: "Inspect ReAct Agent (gpt-4o-mini-2024-07-18)"
@@ -46,6 +52,9 @@ cybench:
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
   - agent_name: "Inspect ReAct Agent (o3-mini-2025-01-14)"
     verification_date: 2025-01-21
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
+  - agent_name: "Inspect ReAct Agent (claude-3-7-sonnet-20250219)"
+    verification_date: 2025-02-26
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
 
 
@@ -81,6 +90,8 @@ swebench_verified_mini:
     url: "https://github.com/aorwall/moatless-tools"
   - agent_name: "Agentless (o1-mini-2024-09-12 med.)"
     verification_date: 2024-10-30
+    url: "https://github.com/OpenAutoCoder/Agentless"
+  - agent_name: "Agentless Lite Test (o3-mini-2025-01-31)"
     url: "https://github.com/OpenAutoCoder/Agentless"
 
 corebench_easy:
@@ -135,10 +146,10 @@ corebench_hard:
     url: "https://github.com/siegelz/core-bench"
 
 usaco:
-  - agent_name: "USACO Zero-Shot (o3-mini-2025-01-31)"
+  - agent_name: "USACO Zero-Shot (o3-mini-2025-01-31 med.)"
     verification_date: 2025-02-26
     url: "https://github.com/princeton-nlp/USACO"
-  - agent_name: "USACO Episodic + Semantic (o3-mini-2025-01-31)"
+  - agent_name: "USACO Episodic + Semantic (o3-mini-2025-01-31 med.)"
     verification_date: 2025-02-26
     url: "https://github.com/princeton-nlp/USACO"
   - agent_name: "USACO Zero-Shot (claude-3-7-sonnet-20250219)"
@@ -190,6 +201,9 @@ usaco:
     verification_date: 2024-08-24
     url: "https://github.com/princeton-nlp/USACO"
   - agent_name: "USACO Episodic (gpt-4o-2024-05-13)"
+    verification_date: 2024-08-24
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Reflexion + Episodic (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-08-24
     url: "https://github.com/princeton-nlp/USACO"
   - agent_name: "USACO Semantic (gpt-4o-2024-05-13)"
