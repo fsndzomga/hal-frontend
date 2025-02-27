@@ -374,6 +374,9 @@ agentharm_benign:
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
 
 taubench_retail:
+  - agent_name: "TAU-bench ToolCalling (o1-2024-12-17 med.)"
+    verification_date: 2025-02-26
+    url: "https://github.com/sierra-research/tau-bench"
   - agent_name: "TAU-bench ToolCalling (gpt-4o-2024-11-20)"
     verification_date: 2025-02-26
     url: "https://github.com/sierra-research/tau-bench"
