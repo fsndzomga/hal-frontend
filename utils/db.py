@@ -127,7 +127,7 @@ DEFAULT_PRICING = {
     "meta-llama/Llama-3-70b-chat-hf": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "deepseek-ai/deepseek-coder-33b-instruct": {"prompt_tokens": 0.18, "completion_tokens": 0.18}, # these are set to the llama 8n prices
     "gpt-4o": {"prompt_tokens": 2.5, "completion_tokens": 10},
-    "o1-mini-2024-09-12": {"prompt_tokens": 3, "completion_tokens": 12},
+    "o1-mini-2024-09-12": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "o1-preview-2024-09-12": {"prompt_tokens": 15, "completion_tokens": 60},
     "o3-mini-2025-01-14": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "o3-mini-2025-01-31": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
@@ -140,7 +140,7 @@ DEFAULT_PRICING = {
     "openai/gpt-4o-2024-11-20": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-2024-08-06": {"prompt_tokens": 2.5, "completion_tokens": 10},
     "openai/gpt-4o-mini-2024-07-18": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
-    "openai/o1-mini-2024-09-12": {"prompt_tokens": 3, "completion_tokens": 12},
+    "openai/o1-mini-2024-09-12": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "openai/o1-preview-2024-09-12": {"prompt_tokens": 15, "completion_tokens": 60},
     "openai/o1-2024-12-17": {"prompt_tokens": 15, "completion_tokens": 60},
     "openai/o3-mini-2025-01-14": {"prompt_tokens": 1.1, "completion_tokens": 4.4},

@@ -18,7 +18,7 @@ gaia:
   - agent_name: "Inspect ReAct Agent (Meta-Llama-3.1-405B-Instruct-Turbo)"
     verification_date: 2024-11-30
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
-  - agent_name: "Inspect ReAct Agent (o1-mini-2024-09-12 med.)"
+  - agent_name: "Inspect ReAct Agent (o1-mini-2024-09-12)"
     verification_date: 2024-11-30
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
   - agent_name: "Inspect ReAct Agent (o1-preview-2024-09-12)"
@@ -41,7 +41,7 @@ cybench:
   - agent_name: "Inspect ReAct Agent (claude-3-5-sonnet-20241022)"
     verification_date: 2024-11-30
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
-  - agent_name: "Inspect ReAct Agent (o1-mini-2024-09-12 med.)"
+  - agent_name: "Inspect ReAct Agent (o1-mini-2024-09-12)"
     verification_date: 2024-11-30
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
   - agent_name: "Inspect ReAct Agent (Meta-Llama-3.1-405B-Instruct-Turbo)"
@@ -62,7 +62,7 @@ swebench_verified:
   - agent_name: "Moatless (gpt-4o-2024-08-06)"
     verification_date: 2024-10-30
     url: "https://github.com/aorwall/moatless-tools"
-  - agent_name: "Agentless (o1-mini-2024-09-12 med.)"
+  - agent_name: "Agentless (o1-mini-2024-09-12)"
     verification_date: 2024-10-30
     url: "https://github.com/OpenAutoCoder/Agentless"
   - agent_name: "Moatless (claude-3-5-sonnet-20241022)"
@@ -88,7 +88,7 @@ swebench_verified_mini:
   - agent_name: "Moatless (claude-3-5-sonnet-20241022)"
     verification_date: 2024-10-30
     url: "https://github.com/aorwall/moatless-tools"
-  - agent_name: "Agentless (o1-mini-2024-09-12 med.)"
+  - agent_name: "Agentless (o1-mini-2024-09-12)"
     verification_date: 2024-10-30
     url: "https://github.com/OpenAutoCoder/Agentless"
   - agent_name: "Agentless Lite Test (o3-mini-2025-01-31)"
@@ -135,7 +135,7 @@ corebench_hard:
   - agent_name: "CORE-Agent (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-09-28
     url: "https://github.com/siegelz/core-bench"
-  - agent_name: "CORE-Agent (o1-mini-2024-09-12 med.)"
+  - agent_name: "CORE-Agent (o1-mini-2024-09-12)"
     verification_date: 2024-09-28
     url: "https://github.com/siegelz/core-bench"
   - agent_name: "CORE-Agent (o1-2024-12-17 med.)"
@@ -146,6 +146,9 @@ corebench_hard:
     url: "https://github.com/siegelz/core-bench"
 
 usaco:
+  - agent_name: "USACO Episodic + Semantic (o1-mini-2024-09-12)"
+    verification_date: 2025-02-26
+    url: "https://github.com/princeton-nlp/USACO"
   - agent_name: "USACO Zero-Shot (o3-mini-2025-01-31 med.)"
     verification_date: 2025-02-26
     url: "https://github.com/princeton-nlp/USACO"
@@ -330,7 +333,7 @@ agentharm:
   - agent_name: "Inspect Tool-Use Agent (o1-2024-12-17 med.)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
-  - agent_name: "Inspect Tool-Use Agent (o1-mini-2024-09-12 med.)"
+  - agent_name: "Inspect Tool-Use Agent (o1-mini-2024-09-12)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
   - agent_name: "Inspect Tool-Use Agent (gpt-4o-mini-2024-07-18)"
@@ -354,7 +357,7 @@ agentharm_benign:
   - agent_name: "Inspect Tool-Use Agent (o1-2024-12-17 med.)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
-  - agent_name: "Inspect Tool-Use Agent (o1-mini-2024-09-12 med.)"
+  - agent_name: "Inspect Tool-Use Agent (o1-mini-2024-09-12)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
   - agent_name: "Inspect Tool-Use Agent (gpt-4o-mini-2024-07-18)"
