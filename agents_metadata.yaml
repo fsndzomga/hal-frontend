@@ -32,6 +32,9 @@ gaia:
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/gaia"
 
 cybench:
+  - agent_name: "Inspect ReAct Agent (gpt-4.5-preview-2025-02-27)"
+    verification_date: 2025-02-28
+    url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
   - agent_name: "Inspect ReAct Agent (gpt-4o-mini-2024-07-18)"
     verification_date: 2024-11-30
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
