@@ -146,6 +146,12 @@ corebench_hard:
     url: "https://github.com/siegelz/core-bench"
 
 usaco:
+  - agent_name: "USACO Zero-Shot (gpt-4.5-preview-2025-02-27)"
+    verification_date: 2025-02-28
+    url: "https://github.com/princeton-nlp/USACO"
+  - agent_name: "USACO Episodic + Semantic (gpt-4.5-preview-2025-02-27)"
+    verification_date: 2025-02-28
+    url: "https://github.com/princeton-nlp/USACO"
   - agent_name: "USACO Episodic + Semantic (o1-mini-2024-09-12)"
     verification_date: 2025-02-26
     url: "https://github.com/princeton-nlp/USACO"
@@ -374,6 +380,9 @@ agentharm_benign:
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/agentharm"
 
 taubench_retail:
+  - agent_name: "TAU-bench ToolCalling (gpt-4.5-preview-2025-02-27)"
+    verification_date: 2025-02-28
+    url: "https://github.com/sierra-research/tau-bench"
   - agent_name: "TAU-bench ToolCalling (o1-2024-12-17 med.)"
     verification_date: 2025-02-26
     url: "https://github.com/sierra-research/tau-bench"
@@ -397,6 +406,9 @@ taubench_retail:
     url: "https://github.com/sierra-research/tau-bench"
 
 taubench_airline:
+  - agent_name: "TAU-bench ToolCalling (gpt-4.5-preview-2025-02-27)"
+    verification_date: 2025-02-28
+    url: "https://github.com/sierra-research/tau-bench"
   - agent_name: "TAU-bench ToolCalling (gpt-4o-2024-11-20)"
     verification_date: 2025-02-26
     url: "https://github.com/sierra-research/tau-bench"
