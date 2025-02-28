@@ -53,7 +53,7 @@ cybench:
   - agent_name: "Inspect ReAct Agent (o1-preview-2024-09-12)"
     verification_date: 2025-01-10
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
-  - agent_name: "Inspect ReAct Agent (o3-mini-2025-01-14)"
+  - agent_name: "Inspect ReAct Agent (o3-mini-2025-01-14 med.)"
     verification_date: 2025-01-21
     url: "https://github.com/UKGovernmentBEIS/inspect_evals/tree/main/src/inspect_evals/cybench"
   - agent_name: "Inspect ReAct Agent (claude-3-7-sonnet-20250219)"
