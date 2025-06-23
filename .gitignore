@@ -15,3 +15,7 @@ updates/*
 preprocessed_traces_old/*
 analysis.ipynb
 scratch.py
+delete_json_files.py
+hal-harness/
+hal_traces/
+decrypt.sh
