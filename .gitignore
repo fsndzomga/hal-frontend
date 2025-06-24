@@ -19,3 +19,7 @@ delete_json_files.py
 hal-harness/
 hal_traces/
 decrypt.sh
+filter_traces.sh
+agent_run_status.csv
+*.txt
+*.sh
