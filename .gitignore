@@ -1,6 +1,7 @@
 venv/*
 **/__pycache__/*
 evals_live/*
+evals_archive/*
 .DS_Store
 app_old.py
 creators.md
