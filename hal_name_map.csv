@@ -18,7 +18,11 @@ MODEL_NAME_MAP,o3-2025-04-16 medium,o3-2025-04-16
 MODEL_NAME_MAP,openai/o3-mini-2025-01-31 low,o3-mini-2025-01-31 low
 MODEL_NAME_MAP,anthropic/claude-3-7-sonnet-20250219 low,claude-3-7-sonnet-2025-02-19 low
 MODEL_NAME_MAP,anthropic/claude-3-7-sonnet-20250219 high,claude-3-7-sonnet-2025-02-19 high
-MODEL_NAME_MAP,o3-2025-04-03,o3-2025-04-16
+MODEL_NAME_MAP,o3-2025-04-16,o3-2025-04-03
+MODEL_NAME_MAP,claude-3-7-sonnet-2025-02-19,claude-3-7-sonnet-20250219
+MODEL_NAME_MAP,claude-3-7-sonnet-2025-02-19 high,claude-3-7-sonnet-20250219-thinking-high
+MODEL_NAME_MAP,claude-3-7-sonnet-2025-02-19 low,claude-3-7-sonnet-20250219-thinking-low
+MODEL_NAME_MAP,o4-mini-2025-04-16,o4-mini-2025-04-16-medium
 AGENT_NAME_MAP,taubench_fewshot_o320250403,TAU-bench FewShot (o3-2025-04-03)
 AGENT_NAME_MAP,taubench_fewshot_o3mini20250131_high,TAU-bench FewShot (o3-mini-2025-01-31)
 AGENT_NAME_MAP,usaco_episodic__semantic_o3mini20250131_high,USACO Episodic + Semantic (o3-mini-2025-01-31 high)
@@ -63,8 +67,30 @@ AGENT_NAME_MAP,SAB Self-Debug Claude-3-7 low,SAB Example Agent (claude-3-7-sonne
 AGENT_NAME_MAP,SAB Self-Debug o4-mini high,SAB Example Agent (o4-mini-2025-04-16 high)
 AGENT_NAME_MAP,sab_selfdebug_dsr1,SAB Example Agent (deepseek-ai/DeepSeek-R1)
 AGENT_NAME_MAP,SAB Self-Debug gemini-2-5-pro,SAB Example Agent (gemini-2.5-pro-preview)
+AGENT_NAME_MAP,Hal Generalist Agent (o3-2025-04-16),HAL Generalist Agent (o3-2025-04-16)
+AGENT_NAME_MAP,Hal Generalist Agent (gpt-4.1-2025-04-14),HAL Generalist Agent (gpt-4.1-2025-04-14)
+AGENT_NAME_MAP,Hal Generalist Agent (o4-mini-2025-04-16 low),HAL Generalist Agent (o4-mini-2025-04-16 low)
+AGENT_NAME_MAP,Hal Generalist Agent (o4-mini-2025-04-16),HAL Generalist Agent (o4-mini-2025-04-16)
+AGENT_NAME_MAP,Hal Generalist Agent (o4-mini-2025-04-16 high),HAL Generalist Agent (o4-mini-2025-04-16 high)
 AGENT_NAME_MAP,coreagent,CORE-Agent
 AGENT_NAME_MAP,Browser-Use_test(DeepSeek-R1),Browser-Use(DeepSeek-R1)
 AGENT_NAME_MAP,Browser-Use_test(claude-3-7-sonnet-20250219),Browser-Use(claude-3-7-sonnet-20250219)
 AGENT_NAME_MAP,Browser-Use_test(DeepSeek-V3),Browser-Use(DeepSeek-V3)
+AGENT_NAME_MAP,Hal Generalist Agent (GPT4.1),HAL Generalist Agent (GPT4.1)
+AGENT_NAME_MAP,Hal Generalist Agent (DeepSeek-R1),HAL Generalist Agent (DeepSeek-R1)
+AGENT_NAME_MAP,Hal Generalist Agent (O3-low),HAL Generalist Agent (O3-low)
+AGENT_NAME_MAP,Hal Generalist Agent (DeepSeek-V3),HAL Generalist Agent (DeepSeek-V3)
+AGENT_NAME_MAP,Hal Generalist Agent (Sonnet3.7),HAL Generalist Agent (Sonnet3.7)
+AGENT_NAME_MAP,Hal Generalist Agent (O4-mini-high),HAL Generalist Agent (O4-mini-high)
+AGENT_NAME_MAP,Hal Generalist Agent (Sonnet 3.7),HAL Generalist Agent (Sonnet 3.7)
+AGENT_NAME_MAP,Hal Generalist Agent (o4-mini-high),HAL Generalist Agent (o4-mini-high)
+AGENT_NAME_MAP,Hal Generalist Agent (o3-low),HAL Generalist Agent (o3-2025-04-16 low)
+AGENT_NAME_MAP,Hal Generalist Agent (o4-mini-low),HAL Generalist Agent (o4-mini-low)
+AGENT_NAME_MAP,TAU-bench FewShot,TAU-bench FewShot Agent
+AGENT_NAME_MAP,HF Open Deep Research,Open Deep Research
+AGENT_NAME_MAP,USACO Episodic + Semantic,Reflexion
+AGENT_NAME_MAP,Col-bench Text,Colbench Agent
+AGENT_NAME_MAP,Scicode Tool Calling Agent,SciCode Tool Calling
+AGENT_NAME_MAP,Scicode Zero Shot Agent,Scicode Zero Shot
+AGENT_NAME_MAP,Assistantbench Browser Agent,Assistantbench Browsing Agent
 AGENT_NAME_SHORT_MAP,Hal Generalist Agent,HAL Generalist Agent

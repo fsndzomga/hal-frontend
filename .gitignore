@@ -23,3 +23,6 @@ filter_traces.sh
 agent_run_status.csv
 *.txt
 *.sh
+.env
+cosine_similarity_reconciliation.py
+

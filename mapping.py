@@ -21,7 +21,11 @@ MODEL_NAME_MAP = {
     "openai/o3-mini-2025-01-31 low": "o3-mini-2025-01-31 low",
     "anthropic/claude-3-7-sonnet-20250219 low": "claude-3-7-sonnet-2025-02-19 low",
     "anthropic/claude-3-7-sonnet-20250219 high": "claude-3-7-sonnet-2025-02-19 high",
-    "o3-2025-04-03": "o3-2025-04-16"
+    "o3-2025-04-16": "o3-2025-04-03",
+    "claude-3-7-sonnet-2025-02-19": "claude-3-7-sonnet-20250219",
+    "claude-3-7-sonnet-2025-02-19 high": "claude-3-7-sonnet-20250219-thinking-high",
+    "claude-3-7-sonnet-2025-02-19 low": "claude-3-7-sonnet-20250219-thinking-low",
+    "o4-mini-2025-04-16": "o4-mini-2025-04-16-medium",
 }
 
 AGENT_NAME_MAP = {
@@ -91,10 +95,14 @@ AGENT_NAME_MAP = {
     "Hal Generalist Agent (Sonnet 3.7)": "HAL Generalist Agent (Sonnet 3.7)",
     "Hal Generalist Agent (o4-mini-high)": "HAL Generalist Agent (o4-mini-high)",
     "Hal Generalist Agent (o3-low)": "HAL Generalist Agent (o3-2025-04-16 low)",
-    "Hal Generalist Agent (o4-mini-low)": "HAL Generalist Agent (o4-mini-low)"
-}
-
-AGENT_NAME_MAP = {
+    "Hal Generalist Agent (o4-mini-low)": "HAL Generalist Agent (o4-mini-low)",
+    'TAU-bench FewShot': 'TAU-bench FewShot Agent',
+    'HF Open Deep Research': 'Open Deep Research',
+    'USACO Episodic + Semantic': 'Reflexion',
+    'Col-bench Text': 'Colbench Agent',
+    'Scicode Tool Calling Agent': 'SciCode Tool Calling',
+    'Scicode Zero Shot Agent': 'Scicode Zero Shot',
+    'Assistantbench Browser Agent': 'Assistantbench Browsing Agent',
     "taubench_fewshot_o320250403": "TAU-bench FewShot (o3-2025-04-03)",
     "taubench_fewshot_o3mini20250131_high": "TAU-bench FewShot (o3-mini-2025-01-31)",
     #"TAU-bench FewShot (claude-3-7-sonnet-20250219)": "TAU-bench FewShot (claude-3-7-sonnet-2025-02-19)",

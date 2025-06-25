@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - {{ benchmark }}{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Admin - {{ benchmark }}</h1>
+{% if rows %}
+<table class="table-auto w-full border-collapse text-xs">
+    <thead>
+        <tr>
+            {% for key in rows[0].keys() %}
+            <th class="border px-2 py-1">{{ key }}</th>
+            {% endfor %}
+            <th class="border px-2 py-1">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            {% for value in row.values() %}
+            <td class="border px-2 py-1">{{ value }}</td>
+            {% endfor %}
+            <td class="border px-2 py-1">
+                <form action="{{ url_for('update_row_route', benchmark=benchmark) }}" method="post" class="inline">
+                    <input type="hidden" name="agent_name" value="{{ row['agent_name'] }}">
+                    <input type="hidden" name="run_id" value="{{ row['run_id'] }}">
+                    <input type="text" name="accuracy" value="{{ row['accuracy'] }}" class="border px-1 py-0.5 w-16">
+                    <input type="text" name="total_cost" value="{{ row['total_cost'] }}" class="border px-1 py-0.5 w-16">
+                    <button class="bg-blue-500 text-white px-2 py-1 text-xs">Update</button>
+                </form>
+                <form action="{{ url_for('delete_row_route', benchmark=benchmark) }}" method="post" class="inline ml-2">
+                    <input type="hidden" name="agent_name" value="{{ row['agent_name'] }}">
+                    <input type="hidden" name="run_id" value="{{ row['run_id'] }}">
+                    <button class="bg-red-500 text-white px-2 py-1 text-xs">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No rows found.</p>
+{% endif %}
+{% endblock %}

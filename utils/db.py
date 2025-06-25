@@ -749,6 +749,38 @@ class TracePreprocessor:
         """Get the download URL for agent traces."""
         # This would typically point to where traces are stored, e.g. HuggingFace
         return f"https://huggingface.co/datasets/princeton-nlp/hal-eval-results/resolve/main/traces/{benchmark_name}/{agent_name}/{run_id}.json"
+    
+    def list_rows(self, benchmark_name):
+        """List all rows for a benchmark."""
+        with self.get_conn(benchmark_name) as conn:
+            df = pd.read_sql_query(
+                "SELECT * FROM parsed_results WHERE benchmark_name = ?",
+                conn,
+                params=(benchmark_name,),
+            )
+        return df.to_dict("records")
+
+    def update_row(self, benchmark_name, agent_name, run_id, data):
+        """Update a row in parsed_results."""
+        if not data:
+            return
+        cols = ", ".join([f"{k} = ?" for k in data.keys()])
+        values = list(data.values()) + [benchmark_name, agent_name, run_id]
+        with self.get_conn(benchmark_name) as conn:
+            conn.execute(
+                f"UPDATE parsed_results SET {cols} WHERE benchmark_name = ? AND agent_name = ? AND run_id = ?",
+                values,
+            )
+            conn.commit()
+
+    def delete_row(self, benchmark_name, agent_name, run_id):
+        """Delete a row from parsed_results."""
+        with self.get_conn(benchmark_name) as conn:
+            conn.execute(
+                "DELETE FROM parsed_results WHERE benchmark_name = ? AND agent_name = ? AND run_id = ?",
+                (benchmark_name, agent_name, run_id),
+            )
+            conn.commit()
 
 if __name__ == '__main__':
     preprocessor = TracePreprocessor()

@@ -711,6 +711,31 @@ def create_app():
         ]
         
         return jsonify(agents_with_reports)
+    
+    @app.route('/admin/<benchmark>')
+    def admin_page(benchmark):
+        rows = preprocessor.list_rows(benchmark)
+        return render_template('admin.html', benchmark=benchmark, rows=rows)
+
+    @app.route('/admin/<benchmark>/update', methods=['POST'])
+    def update_row_route(benchmark):
+        data = request.get_json() if request.is_json else request.form.to_dict()
+        agent_name = data.pop('agent_name', None)
+        run_id = data.pop('run_id', None)
+        preprocessor.update_row(benchmark, agent_name, run_id, data)
+        if request.is_json:
+            return jsonify({'status': 'ok'})
+        return redirect(f'/admin/{benchmark}')
+
+    @app.route('/admin/<benchmark>/delete', methods=['POST'])
+    def delete_row_route(benchmark):
+        data = request.get_json() if request.is_json else request.form
+        agent_name = data.get('agent_name')
+        run_id = data.get('run_id')
+        preprocessor.delete_row(benchmark, agent_name, run_id)
+        if request.is_json:
+            return jsonify({'status': 'ok'})
+        return redirect(f'/admin/{benchmark}')
 
     @app.route('/creators')
     def creators():
