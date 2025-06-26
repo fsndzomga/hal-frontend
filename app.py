@@ -744,7 +744,7 @@ def create_app():
     def make_benchmark_route(benchmark_name: str,
                          template: str,
                          pretty_name: str):
-        @app.route(f'/{benchmark_name}')
+        @app.route(f'/{benchmark_name}', endpoint=f'{benchmark_name}_page')
         def _route():
             models  = preprocessor.get_models_for_benchmark(benchmark_name)
             pricing = {m: DEFAULT_PRICING[m] for m in models if m in DEFAULT_PRICING}
