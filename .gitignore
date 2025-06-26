@@ -26,4 +26,8 @@ agent_run_status.csv
 *.sh
 .env
 cosine_similarity_reconciliation.py
+*.csv
+second_mapping_run.py
+similarity_mapping.py
+mapping.py
 
