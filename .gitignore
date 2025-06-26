@@ -3,6 +3,9 @@ venv/*
 evals_live/*
 evals_archive/*
 .cache/*
+data/
+logs/
+scripts/
 .DS_Store
 app_old.py
 creators.md
@@ -20,16 +23,7 @@ scratch.py
 delete_json_files.py
 hal-harness/
 hal_traces/
-decrypt.sh
-filter_traces.sh
-agent_run_status.csv
 *.txt
 *.sh
-.env
-cosine_similarity_reconciliation.py
 *.csv
-second_mapping_run.py
-similarity_mapping.py
-mapping.py
-restore_evals_live.py
 
