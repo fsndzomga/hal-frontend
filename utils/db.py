@@ -297,6 +297,16 @@ class TracePreprocessor:
             try:
                 total_usage = data.get('total_usage', {})
                 for model_name, usage in total_usage.items():
+                    # Get the model name for new benchmarks like swebench
+                    if not model_name:
+                        model_name = (
+                            data.get("config", {})
+                                .get("agent_args", {})
+                                .get("model_name")
+                            or data.get("config", {})
+                                .get("agent_args", {})
+                                .get("agent.model.name")
+                        )
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
                             INSERT INTO token_usage 

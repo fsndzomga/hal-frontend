@@ -2,6 +2,7 @@ venv/*
 **/__pycache__/*
 evals_live/*
 evals_archive/*
+.cache/*
 .DS_Store
 app_old.py
 creators.md
@@ -30,4 +31,5 @@ cosine_similarity_reconciliation.py
 second_mapping_run.py
 similarity_mapping.py
 mapping.py
+restore_evals_live.py
 
