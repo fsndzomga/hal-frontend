@@ -740,6 +740,41 @@ def create_app():
     @app.route('/creators')
     def creators():
         return render_template('creators.html', contributors=CONTRIBUTORS)
+    
+    def make_benchmark_route(benchmark_name: str,
+                         template: str,
+                         pretty_name: str):
+        @app.route(f'/{benchmark_name}')
+        def _route():
+            models  = preprocessor.get_models_for_benchmark(benchmark_name)
+            pricing = {m: DEFAULT_PRICING[m] for m in models if m in DEFAULT_PRICING}
+
+            df   = preprocessor.get_parsed_results_with_costs(benchmark_name)
+            lb   = create_leaderboard(df, benchmark_name=benchmark_name)
+            scat = create_scatter_plot(df,
+                                    "Total Cost", "Accuracy",
+                                    "Total Cost (in USD)", "Accuracy",
+                                    ["Agent Name"])
+            heat = create_task_success_heatmap(
+                preprocessor.get_task_success_data(benchmark_name),
+                pretty_name
+            )
+
+            return render_template(
+                template,
+                leaderboard    = lb.to_dict('records'),
+                scatter_plot   = json.dumps(scat, cls=plotly.utils.PlotlyJSONEncoder),
+                heatmap        = json.dumps(heat, cls=plotly.utils.PlotlyJSONEncoder),
+                last_updated   = datetime.now().strftime("%Y-%m-%d %H:%M UTC"),
+                pricing        = pricing,
+                benchmark_name = benchmark_name
+            )
+
+    make_benchmark_route('online_mind2web',  'online_mind2web.html',  'Online-Mind2Web')
+    make_benchmark_route('scienceagentbench','scienceagentbench.html','ScienceAgentBench')
+    make_benchmark_route('assistantbench',   'assistantbench.html',   'AssistantBench')
+    make_benchmark_route('colbench-backend', 'colbench_backend.html', 'Col-bench Backend')
+    make_benchmark_route('colbench-frontend','colbench_frontend.html','Col-bench Frontend')
 
     return app
 
