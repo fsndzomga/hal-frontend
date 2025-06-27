@@ -295,18 +295,22 @@ class TracePreprocessor:
                 print(f"Error preprocessing parsed results in {file}: {e}")
 
             try:
-                total_usage = data.get('total_usage', {})
-                for model_name, usage in total_usage.items():
-                    # Get the model name for new benchmarks like swebench
-                    if not model_name:
-                        model_name = (
-                            data.get("config", {})
-                                .get("agent_args", {})
-                                .get("model_name")
-                            or data.get("config", {})
-                                .get("agent_args", {})
-                                .get("agent.model.name")
-                        )
+                raw_total = data.get('total_usage', {})
+
+                if list(raw_total.keys()) == ['']:
+                    # fall back to config.agent_args.model_name or config.agent_name
+                    model_name = (
+                        data['config'].get('agent_args', {}).get('model_name')
+                        or data['config'].get('agent_args', {}).get('agent.model.name')
+                        or agent_name
+                    )
+                    model_usages = {model_name: raw_total.get('', {})}
+                else:
+                    # otherwise keys are already the model names
+                    model_usages = raw_total
+
+                # Insert all usages
+                for model_name, usage in model_usages.items():
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
                             INSERT INTO token_usage 
@@ -325,7 +329,7 @@ class TracePreprocessor:
                             usage.get('output_tokens', 0),
                             usage.get('total_tokens', 0),
                             usage.get('input_tokens_cache_write', 0),
-                            usage.get('input_tokens_cache_read', 0)
+                            usage.get('input_tokens_cache_read', 0),
                         ))
             except Exception as e:
                 print(f"Error preprocessing token usage in {file}: {e}")
