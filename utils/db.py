@@ -295,22 +295,8 @@ class TracePreprocessor:
                 print(f"Error preprocessing parsed results in {file}: {e}")
 
             try:
-                raw_total = data.get('total_usage', {})
-
-                if list(raw_total.keys()) == ['']:
-                    # fall back to config.agent_args.model_name or config.agent_name
-                    model_name = (
-                        data['config'].get('agent_args', {}).get('model_name')
-                        or data['config'].get('agent_args', {}).get('agent.model.name')
-                        or agent_name
-                    )
-                    model_usages = {model_name: raw_total.get('', {})}
-                else:
-                    # otherwise keys are already the model names
-                    model_usages = raw_total
-
-                # Insert all usages
-                for model_name, usage in model_usages.items():
+                total_usage = data.get('total_usage', {})
+                for model_name, usage in total_usage.items():
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
                             INSERT INTO token_usage 
@@ -329,7 +315,7 @@ class TracePreprocessor:
                             usage.get('output_tokens', 0),
                             usage.get('total_tokens', 0),
                             usage.get('input_tokens_cache_write', 0),
-                            usage.get('input_tokens_cache_read', 0),
+                            usage.get('input_tokens_cache_read', 0)
                         ))
             except Exception as e:
                 print(f"Error preprocessing token usage in {file}: {e}")
@@ -763,38 +749,6 @@ class TracePreprocessor:
         """Get the download URL for agent traces."""
         # This would typically point to where traces are stored, e.g. HuggingFace
         return f"https://huggingface.co/datasets/princeton-nlp/hal-eval-results/resolve/main/traces/{benchmark_name}/{agent_name}/{run_id}.json"
-    
-    def list_rows(self, benchmark_name):
-        """List all rows for a benchmark."""
-        with self.get_conn(benchmark_name) as conn:
-            df = pd.read_sql_query(
-                "SELECT * FROM parsed_results WHERE benchmark_name = ?",
-                conn,
-                params=(benchmark_name,),
-            )
-        return df.to_dict("records")
-
-    def update_row(self, benchmark_name, agent_name, run_id, data):
-        """Update a row in parsed_results."""
-        if not data:
-            return
-        cols = ", ".join([f"{k} = ?" for k in data.keys()])
-        values = list(data.values()) + [benchmark_name, agent_name, run_id]
-        with self.get_conn(benchmark_name) as conn:
-            conn.execute(
-                f"UPDATE parsed_results SET {cols} WHERE benchmark_name = ? AND agent_name = ? AND run_id = ?",
-                values,
-            )
-            conn.commit()
-
-    def delete_row(self, benchmark_name, agent_name, run_id):
-        """Delete a row from parsed_results."""
-        with self.get_conn(benchmark_name) as conn:
-            conn.execute(
-                "DELETE FROM parsed_results WHERE benchmark_name = ? AND agent_name = ? AND run_id = ?",
-                (benchmark_name, agent_name, run_id),
-            )
-            conn.commit()
 
 if __name__ == '__main__':
     preprocessor = TracePreprocessor()
