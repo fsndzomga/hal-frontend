@@ -323,7 +323,7 @@ class TracePreprocessor:
                             benchmark_name,
                             agent_name,
                             config['run_id'],
-                            config['model_name_short'],
+                            model_name,
                             usage.get('prompt_tokens', 0),
                             usage.get('completion_tokens', 0),
                             usage.get('input_tokens', 0),
@@ -332,8 +332,10 @@ class TracePreprocessor:
                             usage.get('input_tokens_cache_write', 0),
                             usage.get('input_tokens_cache_read', 0)
                         ))
+                        print(f"{benchmark_name + agent_name + config['run_id'] + config['model_name_short']}")
             except Exception as e:
                 print(f"Error preprocessing token usage in {file}: {e}")
+                print(f"{benchmark_name + agent_name + config['run_id'] + config['model_name_short']}")
 
     @lru_cache(maxsize=100)
     def get_analyzed_traces(self, agent_name, benchmark_name):
