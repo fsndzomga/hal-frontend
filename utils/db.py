@@ -323,7 +323,7 @@ class TracePreprocessor:
                             benchmark_name,
                             agent_name,
                             config['run_id'],
-                            model_name,
+                            config['model_name_short'],
                             usage.get('prompt_tokens', 0),
                             usage.get('completion_tokens', 0),
                             usage.get('input_tokens', 0),
