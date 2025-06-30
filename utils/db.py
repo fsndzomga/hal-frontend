@@ -20,6 +20,21 @@ PARSED_RESULTS_COLUMNS = {
     'failed_tasks': 'TEXT',
     'total_cost': 'REAL',
     'accuracy': 'REAL',
+    'average_score': 'REAL', #assistantbench
+    'exact_matches': 'REAL', #assistantbench
+    'answer_rate': 'REAL', #assistantbench
+    'total_tasks': 'REAL', #mind2web
+    'accuracy_easy': 'REAL', #mind2web
+    'total_easy': 'REAL', #mind2web
+    'accuracy_medium': 'REAL', #mind2web
+    'total_medium': 'REAL', #mind2web
+    'accuracy_hard': 'REAL', #mind2web
+    'total_hard': 'REAL', #mind2web
+    'average_correctness': 'REAL', #colbench_backend_frontend
+    'subtask_accuracy': 'REAL', #scicode
+    'codebert_score': 'REAL', #scienceagentbench
+    'success_rate': 'REAL', #scienceagentbench
+    'valid_program_rate': 'REAL', #scienceagentbench
     'precision': 'REAL',
     'recall': 'REAL',
     'f1_score': 'REAL',
@@ -204,16 +219,16 @@ class TracePreprocessor:
                     PRIMARY KEY (benchmark_name, agent_name, run_id)
                 )
             ''')
-            conn.execute('''
-                CREATE TABLE IF NOT EXISTS failure_reports (
-                    benchmark_name TEXT,
-                    agent_name TEXT,
-                    date TEXT,
-                    run_id TEXT,
-                    failure_report BLOB,
-                    PRIMARY KEY (benchmark_name, agent_name, run_id)
-                )
-            ''')
+            # conn.execute('''
+            #     CREATE TABLE IF NOT EXISTS failure_reports (
+            #         benchmark_name TEXT,
+            #         agent_name TEXT,
+            #         date TEXT,
+            #         run_id TEXT,
+            #         failure_report BLOB,
+            #         PRIMARY KEY (benchmark_name, agent_name, run_id)
+            #     )
+            # ''')
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS token_usage (
                     benchmark_name TEXT,
@@ -258,16 +273,16 @@ class TracePreprocessor:
             except Exception as e:
                 print(f"Error preprocessing raw_logging_results in {file}: {e}")
 
-            try:
-                failure_report = pickle.dumps(data['failure_report'])
-                with self.get_conn(benchmark_name) as conn:
-                    conn.execute('''
-                        INSERT INTO failure_reports 
-                        (benchmark_name, agent_name, date, run_id, failure_report)
-                        VALUES (?, ?, ?, ?, ?)
-                    ''', (benchmark_name, agent_name, date, config['run_id'], failure_report))
-            except Exception as e:
-                print(f"Error preprocessing failure_report in {file}: {e}")
+            # try:
+            #     failure_report = pickle.dumps(data['failure_report'])
+            #     with self.get_conn(benchmark_name) as conn:
+            #         conn.execute('''
+            #             INSERT INTO failure_reports 
+            #             (benchmark_name, agent_name, date, run_id, failure_report)
+            #             VALUES (?, ?, ?, ?, ?)
+            #         ''', (benchmark_name, agent_name, date, config['run_id'], failure_report))
+            # except Exception as e:
+            #     print(f"Error preprocessing failure_report in {file}: {e}")
 
             try:
                 results = data['results']
