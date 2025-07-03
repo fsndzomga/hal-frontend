@@ -282,7 +282,7 @@ class TracePreprocessor:
             print(f"Processing {file}")
             with open(file, 'r') as f:
                 data = json.load(f)
-                agent_name = data['config']['agent_name_short']
+                agent_name = data['config']['agent_name']
                 benchmark_name = data['config']['benchmark_name']
                 if "inspect" in benchmark_name:
                     benchmark_name = benchmark_name.split("/")[-1]
@@ -474,7 +474,7 @@ class TracePreprocessor:
         df = df.drop(columns=['successful_tasks', 'failed_tasks'], axis=1)
         
         if aggregate:
-            df = df.groupby('agent_name').agg(AGGREGATION_RULES).reset_index()
+            df = df.groupby(['agent_name', 'model_name']).agg(AGGREGATION_RULES).reset_index()
             
         # Rename columns using the display names mapping
         df = df.rename(columns=COLUMN_DISPLAY_NAMES)
