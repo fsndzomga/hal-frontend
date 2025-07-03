@@ -64,6 +64,21 @@ AGGREGATION_RULES = {
     'date': 'first',
     'total_cost': 'mean',
     'accuracy': 'mean',
+    'average_score': 'mean',
+    'exact_matches': 'mean',
+    'answer_rate': 'mean',
+    'total_tasks': 'mean',
+    'accuracy_easy': 'mean',
+    'total_easy': 'mean',
+    'accuracy_medium': 'mean',
+    'total_medium': 'mean',
+    'accuracy_hard': 'mean',
+    'total_hard': 'mean',
+    'average_correctness': 'mean',
+    'subtask_accuracy': 'mean',
+    'codebert_score': 'mean',
+    'success_rate': 'mean',
+    'valid_program_rate': 'mean',
     'precision': 'mean',
     'recall': 'mean',
     'f1_score': 'mean',
@@ -99,6 +114,21 @@ COLUMN_DISPLAY_NAMES = {
     'date': 'Date',
     'total_cost': 'Total Cost',
     'accuracy': 'Accuracy',
+    'average_score': 'Average Score',
+    'exact_matches': 'Exact Matches',
+    'answer_rate': 'Answer Rate',
+    'total_tasks': 'Total Tasks',
+    'accuracy_easy': 'Accuracy (Easy)',
+    'total_easy': 'Total (Easy)',
+    'accuracy_medium': 'Accuracy (Medium)',
+    'total_medium': 'Total (Medium)',
+    'accuracy_hard': 'Accuracy (Hard)',
+    'total_hard': 'Total (Hard)',
+    'average_correctness': 'Average Correctness',
+    'subtask_accuracy': 'Subtask Accuracy',
+    'codebert_score': 'CodeBERT Score',
+    'success_rate': 'Success Rate',
+    'valid_program_rate': 'Valid Program Rate',
     'precision': 'Precision',
     'recall': 'Recall',
     'f1_score': 'F1 Score',
@@ -311,6 +341,7 @@ class TracePreprocessor:
 
             try:
                 total_usage = data.get('total_usage', {})
+                print(f"Total usage is: {total_usage}")
                 for model_name, usage in total_usage.items():
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
