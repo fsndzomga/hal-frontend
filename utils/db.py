@@ -582,12 +582,12 @@ class TracePreprocessor:
         #         df.loc[mask, 'completion_tokens'] * prices['completion_tokens'] / 1e6
         #     )
             
-        # # Sum total_cost for each run_id (if agents use multiple models, this will be the total cost for that run)
-        # df_temp = df.groupby('run_id')['total_cost'].sum().reset_index()
-        # df_temp = df_temp.rename(columns={'total_cost': 'total_cost_temp'})
-        # df = df.merge(df_temp, on='run_id', how='left')
-        # df['total_cost'] = df['total_cost_temp']
-        # df = df.drop('total_cost_temp', axis=1)
+        # Sum total_cost for each run_id (if agents use multiple models, this will be the total cost for that run)
+        df_temp = df.groupby('run_id')['total_cost'].sum().reset_index()
+        df_temp = df_temp.rename(columns={'total_cost': 'total_cost_temp'})
+        df = df.merge(df_temp, on='run_id', how='left')
+        df['total_cost'] = df['total_cost_temp']
+        df = df.drop('total_cost_temp', axis=1)
                                 
         return df
 
