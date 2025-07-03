@@ -282,7 +282,7 @@ class TracePreprocessor:
             print(f"Processing {file}")
             with open(file, 'r') as f:
                 data = json.load(f)
-                agent_name = data['config']['agent_name']
+                agent_name = data['config']['agent_name_short']
                 benchmark_name = data['config']['benchmark_name']
                 if "inspect" in benchmark_name:
                     benchmark_name = benchmark_name.split("/")[-1]
@@ -363,10 +363,10 @@ class TracePreprocessor:
                             usage.get('input_tokens_cache_write', 0),
                             usage.get('input_tokens_cache_read', 0)
                         ))
-                        print(f"{benchmark_name + agent_name + config['run_id'] + config['model_name_short']}")
+                        print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
             except Exception as e:
                 print(f"Error preprocessing token usage in {file}: {e}")
-                print(f"{benchmark_name + agent_name + config['run_id'] + config['model_name_short']}")
+                print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
 
     @lru_cache(maxsize=100)
     def get_analyzed_traces(self, agent_name, benchmark_name):
