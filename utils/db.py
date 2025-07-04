@@ -9,7 +9,7 @@ import ast
 from scipy import stats
 import yaml
 import numpy as np
-from utils.adaptation import get_fallback_accuracy
+
 
 # Define column schemas
 PARSED_RESULTS_COLUMNS = {
@@ -205,6 +205,18 @@ DEFAULT_PRICING = {
     "claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
     "anthropic/claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
 }
+
+def get_fallback_accuracy(results):
+    if 'accuracy' in results and results['accuracy'] is not None:
+        return results['accuracy']
+    elif 'average_correctness' in results and results['average_correctness'] is not None:
+        return results['average_correctness']
+    elif 'success_rate' in results and results['success_rate'] is not None:
+        return results['success_rate']
+    elif 'average_score' in results and results['average_score'] is not None:
+        return results['average_score']
+    else:
+        return None
 
 class TracePreprocessor:
     def __init__(self, db_dir='preprocessed_traces'):
