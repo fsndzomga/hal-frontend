@@ -9,6 +9,7 @@ import ast
 from scipy import stats
 import yaml
 import numpy as np
+from utils.adaptation import get_fallback_accuracy
 
 # Define column schemas
 PARSED_RESULTS_COLUMNS = {
@@ -316,19 +317,24 @@ class TracePreprocessor:
 
             try:
                 results = data['results']
+
+                # Ensure 'accuracy' key exists with a fallback
+                if 'accuracy' not in results or results['accuracy'] is None:
+                    fallback = get_fallback_accuracy(results)
+                    if fallback is not None:
+                        results['accuracy'] = fallback
+
                 with self.get_conn(benchmark_name) as conn:
-                    # Dynamically create placeholders and values list
                     columns = [col for col in PARSED_RESULTS_COLUMNS.keys() 
-                              if col not in ['benchmark_name', 'agent_name', 'date', 'run_id']]
-                    placeholders = ','.join(['?'] * (len(columns) + 4))  # +4 for benchmark_name, agent_name, date, run_id
-                    
+                            if col not in ['benchmark_name', 'agent_name', 'date', 'run_id']]
+                    placeholders = ','.join(['?'] * (len(columns) + 4)) # +4 for benchmark_name, agent_name, date, run_id
                     values = [
                         benchmark_name,
                         agent_name,
                         config['date'],
                         config['run_id']
                     ] + [str(results.get(col)) if col in ['successful_tasks', 'failed_tasks'] 
-                         else results.get(col) for col in columns]
+                        else results.get(col) for col in columns]
 
                     query = f'''
                         INSERT INTO parsed_results 
@@ -570,17 +576,17 @@ class TracePreprocessor:
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
                     
         # Calculate costs based on pricing config (prices are per 1M tokens)
-        # df['total_cost'] = 0.0
-        # for model, prices in pricing_config.items():
-        #     mask = df['model_name'] == model
-        #     df.loc[mask, 'total_cost'] = (
-        #         df.loc[mask, 'input_tokens'] * prices['prompt_tokens'] / 1e6 +
-        #         df.loc[mask, 'output_tokens'] * prices['completion_tokens'] / 1e6 +
-        #         df.loc[mask, 'input_tokens_cache_read'] * prices['prompt_tokens'] / 1e6 +
-        #         df.loc[mask, 'input_tokens_cache_write'] * prices['prompt_tokens'] / 1e6 +
-        #         df.loc[mask, 'prompt_tokens'] * prices['prompt_tokens'] / 1e6 +
-        #         df.loc[mask, 'completion_tokens'] * prices['completion_tokens'] / 1e6
-        #     )
+        df['total_cost'] = 0.0
+        for model, prices in pricing_config.items():
+            mask = df['model_name'] == model
+            df.loc[mask, 'total_cost'] = (
+                df.loc[mask, 'input_tokens'] * prices['prompt_tokens'] / 1e6 +
+                df.loc[mask, 'output_tokens'] * prices['completion_tokens'] / 1e6 +
+                df.loc[mask, 'input_tokens_cache_read'] * prices['prompt_tokens'] / 1e6 +
+                df.loc[mask, 'input_tokens_cache_write'] * prices['prompt_tokens'] / 1e6 +
+                df.loc[mask, 'prompt_tokens'] * prices['prompt_tokens'] / 1e6 +
+                df.loc[mask, 'completion_tokens'] * prices['completion_tokens'] / 1e6
+            )
             
         # Sum total_cost for each run_id (if agents use multiple models, this will be the total cost for that run)
         df_temp = df.groupby('run_id')['total_cost'].sum().reset_index()
