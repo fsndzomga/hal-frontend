@@ -204,6 +204,7 @@ DEFAULT_PRICING = {
     "together/meta-llama/Meta-Llama-3.1-70B-Instruct": {"prompt_tokens": 0.88, "completion_tokens": 0.88},
     "claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
     "anthropic/claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
+    "o4-mini-2025-04-16": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
 }
 
 def get_fallback_accuracy(results):
