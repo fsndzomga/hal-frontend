@@ -94,6 +94,53 @@ def create_app():
             benchmark_name='usaco'  # Add benchmark name for failure analysis
         )
 
+    @app.route('/assistantbench')
+    def assistantbench():
+        # Get models used in assistantbench benchmark
+        assistantbench_models = preprocessor.get_models_for_benchmark('assistantbench')
+        
+        # Filter pricing to only show models used in assistantbench
+        pricing = {model: DEFAULT_PRICING[model] for model in assistantbench_models if model in DEFAULT_PRICING}
+        
+        # Get data for assistantbench
+        results_df = preprocessor.get_parsed_results_with_costs('assistantbench')
+        
+        # Create leaderboard
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='assistantbench')
+        
+        # Create scatter plot
+        scatter_plot = create_scatter_plot(
+            preprocessor.get_parsed_results('assistantbench', aggregate=False),
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        
+        # Convert plot to JSON for rendering
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Create heatmap
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('assistantbench'),
+            'AssistantBench'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Get last updated time
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'assistantbench.html',
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='assistantbench'  # Add benchmark name for failure analysis
+        )
+    
     @app.route('/update_pricing/<benchmark>', methods=['POST'])
     def update_pricing(benchmark):
         pricing = request.json
