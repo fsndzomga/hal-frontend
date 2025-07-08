@@ -777,16 +777,16 @@ class TracePreprocessor:
         benchmarks = set()
         for db_file in self.db_dir.glob('*.db'):
             benchmarks.add(db_file.stem.replace('_', '/'))
-        return len(benchmarks) - 2 # TODO hardcoded -1 for mlagentbench and agentharm benign
+        return len(benchmarks) - 4 # TODO hardcoded -4 because of benchmarks not added for now
 
     def get_total_agents(self):
         """Get the total number of unique agents across all benchmarks"""
         total_agents = set()
         # Use the parsed_results table since it's guaranteed to have all benchmark-agent pairs
         for db_file in self.db_dir.glob('*.db'):
-            # skip mlagentbench
-            if db_file.stem == 'mlagentbench':
-                continue # TODO remove hardcoded skip for mlagentbench
+            # skip assistantbench, colbench, scienceagentbench
+            if db_file.stem in ['assistantbench', 'colbench_backend_programming', 'colbench_frontend_design', 'scienceagentbench']:
+                continue # TODO remove hardcoded skip once these benchmarks are added
             benchmark_name = db_file.stem.replace('_', '/')
             with self.get_conn(benchmark_name) as conn:
                 query = '''

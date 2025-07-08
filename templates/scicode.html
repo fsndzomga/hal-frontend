@@ -1,37 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}HAL: SWE-bench Verified Mini Leaderboard{% endblock %}
+{% block title %}HAL: SciCode Leaderboard{% endblock %}
 
-{% block description %}SWE-bench Verified Mini leaderboard for evaluating code generation and bug fixing capabilities of AI agents on a smaller subset of tasks.{% endblock %}
+{% block description %}SciCode leaderboard for evaluating AI agents' ability to complete challenging but realistic research-level coding problems.{% endblock %}
 
 {% block nav_title %}
-<span class="text-2xl ml-4">/ SWE-bench Verified Mini</span>
+<span class="text-2xl ml-4">/ SciCode</span>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <div class="bg-gradient-to-b from-blue-50 to-white">
     <div class="mx-auto max-w-[1500]px px-8 py-16">
-        <h1 class="text-4xl font-bold mb-4">SWE-bench Verified Mini</h1>
+        <h1 class="text-4xl font-bold mb-4">SciCode</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
-                SWE-bench Verified (Mini) is a random subset of 50 tasks of the original <a href="/swebench" class="text-blue-600 hover:text-blue-800">SWE-bench Verified</a>. It is a light-weight version of the original SWE-bench Verified and is thus cheaper to evaluate.
+            SciCode evaluates AI agents' ability to generate code for realistic scientific research tasks. It is made up of 80 main problems decomposed into 338 subproblems across 16 subfields in six natural science domains (Mathematics, Physics, Chemistry, Biology, Material Science, and Computational Mechanics).
         </p>
         <p class="text-sm text-gray-500 mb-8 max-w-3xl">
-            Paper: <a href="https://arxiv.org/abs/2310.06770" class="text-blue-600 hover:text-blue-800">
-                SWE-bench: Can Language Models Resolve Real-World GitHub Issues? (Jimenez et al., 2023)</a><br>
-            OpenAI Blog: <a href="https://openai.com/index/introducing-swe-bench-verified/" class="text-blue-600 hover:text-blue-800">
-                SWE-bench Verified: Introducing SWE-bench Verified</a>
-                <br><br>
-                Note: This subset of the original SWE-bench Verified contains different tasks then <a href="https://huggingface.co/datasets/MariusHobbhahn/swe-bench-verified-mini" class="text-blue-600 hover:text-blue-800">this recently released version</a> with the same name. We are working on reconciling the two versions.
+            Paper: <a href="https://arxiv.org/abs/2407.13168" class="text-blue-600 hover:text-blue-800">
+                SciCode: A Research Coding Benchmark Curated by Scientists (Tian et al., 2024)</a><br>
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">50</div>
-                <div class="text-gray-600">Verified Tasks</div>
+                <div class="text-3xl font-bold text-blue-600 mb-2">80</div>
+                <div class="text-gray-600">Problems</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">100%</div>
-                <div class="text-gray-600">Human Validated</div>
+                <div class="text-3xl font-bold text-blue-600 mb-2">338</div>
+                <div class="text-gray-600">Subproblems</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
@@ -44,24 +40,18 @@
 <div class="mx-auto max-w-[1500]px px-8 py-6">
     <!-- Key Features Section -->
     <div class="mb-12">
-        <h2 class="text-3xl font-bold mb-8">Key Features of SWE-bench Verified</h2>
+        <h2 class="text-3xl font-bold mb-8">Key Features of Online SciCode</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Real-World Tasks</h3>
+                <h3 class="text-xl font-semibold mb-4">Scientist-Curated, Real-World Research Tasks</h3>
                 <p class="text-gray-600">
-                    All tasks are sourced from actual GitHub issues, representing real software engineering problems.
+                    All tasks are sourced from scripts underpinning published scientific studies, ensuring robustness and real-world relevance.
                 </p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Human Validation</h3>
+                <h3 class="text-xl font-semibold mb-4">Multi-Disciplinary Coverage</h3>
                 <p class="text-gray-600">
-                    Every task has been reviewed and validated by software engineers to be non-problematic.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Diverse Tasks</h3>
-                <p class="text-gray-600">
-                    Tasks originate from PRs of 12 open-source Python repositories covering various domains.
+                    SciCode includes tasks from six domains (Physics, Mathematics, Material Science, Biology, Chemistry; plus Computational Mechanics), and covers 16 subfields such as Numerical Linear Algebra, Quantum Chemistry, and Ecology.
                 </p>
             </div>
         </div>
@@ -74,7 +64,7 @@
         <!-- Leaderboard Table -->
         <div class="bg-white rounded-xl shadow-md p-8 mb-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-3xl font-semibold">SWE-Bench Verified Mini Leaderboard</h3>
+                <h3 class="text-3xl font-semibold">SciCode Leaderboard</h3>
                 
             </div>
             <div class="overflow-x-auto">
@@ -223,16 +213,11 @@
             </div>
         </div>
         
-        <!-- Note about Agentless agent -->
-        <div class="text-sm text-gray-500 mt-2 mb-8">
-            Note: The cost of Agentless (gpt-4o-mini-2024-07-18) does currently not update when token pricing is changed.
-        </div>
-        
         <!-- Visualization Section -->
         <div class="space-y-8 mb-12">
             <!-- Cost vs Accuracy Plot -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for SWE-Bench Verified Mini</h3>
+                <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for SciCode</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     This plot shows the relationship between an agent's performance and its token cost.
                     The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
@@ -244,7 +229,7 @@
 
             <!-- Heatmap -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-3xl font-semibold mb-2">Heatmap for SWE-Bench Verified Mini</h3>
+                <h3 class="text-3xl font-semibold mb-2">Heatmap for SciCode</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     The heatmap visualizes success rates across tasks and agents. Colorscale shows the fraction of times a task was solved across reruns of the same agent. The "any agent" performance indicates the level of saturation of the benchmark and gives a sense of overall progress.
                 </p>
@@ -254,7 +239,6 @@
             </div>
 
             <!-- Failure Analysis Section -->
-            <!-- {% include 'failure_analysis.html' %} -->
         </div>
 
         <!-- Token Pricing Configuration -->
@@ -339,9 +323,9 @@
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Getting Started</h3>
                 <p class="text-gray-600 mb-4">
-                    Want to evaluate your agent on SWE-bench? Follow our comprehensive guide to get started:
+                    Want to evaluate your agent on SciCode? Follow our comprehensive guide to get started:
                 </p>
-                <a href="https://github.com/benediktstroebl/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                <a href="https://github.com/princeton-pli/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Documentation
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -351,9 +335,9 @@
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Task Details</h3>
                 <p class="text-gray-600 mb-4">
-                    Browse the complete list of SWE-bench tasks, including problem descriptions and test cases:
+                    Browse and download the complete list of SciCode tasks:
                 </p>
-                <a href="https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                <a href="https://scicode-bench.github.io/" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Tasks
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -414,7 +398,7 @@
             spinner.classList.remove('hidden');
             
             // Send pricing update request
-            const response = await fetch('/update_pricing/swebench_verified_mini', {
+            const response = await fetch('/update_pricing/scicode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
