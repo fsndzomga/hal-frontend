@@ -399,7 +399,7 @@ def create_app():
     
     @app.route('/scicode')
     def scicode():
-        scicode_models = preprocessor.get_models_for_benchmark('online_mind2web')
+        scicode_models = preprocessor.get_models_for_benchmark('scicode')
         pricing = {model: DEFAULT_PRICING[model] for model in scicode_models if model in DEFAULT_PRICING}
         
         results_df = preprocessor.get_parsed_results_with_costs('scicode')
@@ -416,7 +416,7 @@ def create_app():
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
         
         heatmap = create_task_success_heatmap(
-            preprocessor.get_task_success_data('online_mind2web'),
+            preprocessor.get_task_success_data('scicode'),
             'Scicode'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
