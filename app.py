@@ -360,6 +360,79 @@ def create_app():
             pricing=pricing,
             benchmark_name='swebench_verified_mini'  # Add benchmark name for failure analysis
         )
+    
+    @app.route('/online_mind2web')
+    def online_mind2web():
+        online_mind2web_models = preprocessor.get_models_for_benchmark('online_mind2web')
+        pricing = {model: DEFAULT_PRICING[model] for model in online_mind2web_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('online_mind2web')
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='online_mind2web')
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('online_mind2web'),
+            'Online Mind2Web'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'online_mind2web.html',  # Use the new template
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='online_mind2web'  # Add benchmark name for failure analysis
+        )
+    
+    @app.route('/scicode')
+    def scicode():
+        scicode_models = preprocessor.get_models_for_benchmark('online_mind2web')
+        pricing = {model: DEFAULT_PRICING[model] for model in scicode_models if model in DEFAULT_PRICING}
+        
+        results_df = preprocessor.get_parsed_results_with_costs('scicode')
+        leaderboard_df = create_leaderboard(results_df, benchmark_name='scicode')
+        
+        scatter_plot = create_scatter_plot(
+            results_df,
+            "Total Cost",
+            "Accuracy",
+            "Total Cost (in USD)",
+            "Accuracy",
+            ["Agent Name"]
+        )
+        scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        heatmap = create_task_success_heatmap(
+            preprocessor.get_task_success_data('online_mind2web'),
+            'Scicode'
+        )
+        heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
+        
+        return render_template(
+            'scicode.html',  # Use the new template
+            leaderboard=leaderboard_df.to_dict('records'),
+            scatter_plot=scatter_plot_json,
+            heatmap=heatmap_json,
+            last_updated=last_updated,
+            pricing=pricing,
+            benchmark_name='scicode'  # Add benchmark name for failure analysis
+        )
+
 
     @app.route('/failure_report/<benchmark>')
     def failure_report(benchmark):
