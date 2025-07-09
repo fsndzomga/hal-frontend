@@ -207,17 +207,7 @@ DEFAULT_PRICING = {
     "o4-mini-2025-04-16": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
 }
 
-def get_fallback_accuracy(results):
-    if 'accuracy' in results and results['accuracy'] is not None:
-        return results['accuracy']
-    elif 'average_correctness' in results and results['average_correctness'] is not None:
-        return results['average_correctness']
-    elif 'success_rate' in results and results['success_rate'] is not None:
-        return results['success_rate']
-    elif 'average_score' in results and results['average_score'] is not None:
-        return results['average_score']
-    else:
-        return None
+
 
 class TracePreprocessor:
     def __init__(self, db_dir='preprocessed_traces'):
@@ -225,7 +215,20 @@ class TracePreprocessor:
         self.db_dir.mkdir(exist_ok=True)
         self.local = threading.local()
         self.connections = {}
-
+    
+    @staticmethod
+    def get_fallback_accuracy(results):
+        if 'accuracy' in results and results['accuracy'] is not None:
+            return results['accuracy']
+        elif 'average_correctness' in results and results['average_correctness'] is not None:
+            return results['average_correctness']
+        elif 'success_rate' in results and results['success_rate'] is not None:
+            return results['success_rate']
+        elif 'average_score' in results and results['average_score'] is not None:
+            return results['average_score']
+        else:
+            return None
+        
     def get_conn(self, benchmark_name):
         # Sanitize benchmark name for filename
         safe_name = benchmark_name.replace('/', '_').replace('\\', '_')
@@ -333,7 +336,7 @@ class TracePreprocessor:
 
                 # Ensure 'accuracy' key exists with a fallback
                 if 'accuracy' not in results or results['accuracy'] is None:
-                    fallback = get_fallback_accuracy(results)
+                    fallback = self.get_fallback_accuracy(results)
                     if fallback is not None:
                         results['accuracy'] = fallback
 
