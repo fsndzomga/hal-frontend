@@ -24,10 +24,11 @@ tables = [row[0] for row in cursor.fetchall()]
 for table in tables:
     print(f"Exporting table: {table}")
     df = pd.read_sql_query(f"SELECT * FROM {table};", conn)
+    print(df.head(5))
     # Use table name for CSV file
-    csv_path = f'{table}.csv'
-    df.to_csv(csv_path, index=False)
-    print(f"Saved {csv_path} ({len(df)} rows)")
+    # csv_path = f'{table}.csv'
+    # df.to_csv(csv_path, index=False)
+    # print(f"Saved {csv_path} ({len(df)} rows)")
 
 conn.close()
 
