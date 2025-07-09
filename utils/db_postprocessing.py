@@ -7,10 +7,10 @@ from datetime import datetime, timezone
 # Folder containing all the .db files
 DB_DIR = "preprocessed_traces"
 
-# File to log actions
+# File to log all actions
 LOG_CSV = "model_cleanup_log.csv"
 
-# 1) List of models to remove
+# 1) List of models to remove (exact match or substring)
 MODELS_TO_REMOVE = [
     '2.5-pro',
     'o1',
@@ -36,94 +36,112 @@ with open(LOG_CSV, 'w', newline='') as csvfile:
     ])
     log_writer.writeheader()
 
-    # Go through each db
+    # Iterate over each .db file
     for db_path in glob.glob(os.path.join(DB_DIR, "*.db")):
-        bench = os.path.basename(db_path)
+        db_name = os.path.basename(db_path)
         conn = sqlite3.connect(db_path)
         cur  = conn.cursor()
 
-        # Identify run_ids to remove
+        # --- 1) Identify and remove runs for unwanted models ---
+        runs_to_drop = []
+
+        # a) Exact matches via IN
         placeholders = ",".join("?" for _ in MODELS_TO_REMOVE)
         cur.execute(f"""
-            SELECT DISTINCT run_id, model_name 
-            FROM token_usage 
+            SELECT DISTINCT run_id, model_name
+            FROM token_usage
             WHERE model_name IN ({placeholders})
         """, MODELS_TO_REMOVE)
-        runs_to_drop = cur.fetchall()
+        runs_to_drop.extend(cur.fetchall())
+
+        # b) Substring matches via LIKE
+        for pattern in MODELS_TO_REMOVE:
+            cur.execute("""
+                SELECT DISTINCT run_id, model_name
+                FROM token_usage
+                WHERE model_name LIKE ?
+            """, (f"%{pattern}%",))
+            runs_to_drop.extend(cur.fetchall())
+
+        # Deduplicate runs
+        runs_to_drop = list({(run_id, model): None for run_id, model in runs_to_drop}.keys())
 
         for run_id, model_name in runs_to_drop:
-            # log
+            ts = datetime.now(timezone.utc).isoformat()
+            # Log the removal
             log_writer.writerow({
-                'timestamp': datetime.now(timezone.utc).isoformat(),
-                'db_file': bench,
+                'timestamp': ts,
+                'db_file': db_name,
                 'action': 'REMOVE_RUN',
                 'table': 'parsed_results',
                 'run_id': run_id,
                 'old_value': model_name,
                 'new_value': ''
             })
-
+            # Delete from parsed_results
             cur.execute("DELETE FROM parsed_results WHERE run_id = ?", (run_id,))
-
+            # Delete from preprocessed_traces
             cur.execute("DELETE FROM preprocessed_traces WHERE run_id = ?", (run_id,))
-
+            # Delete from token_usage
             cur.execute("DELETE FROM token_usage WHERE run_id = ?", (run_id,))
 
-        # Renaming models
+        # --- 2) Rename model_name in token_usage ---
         for old_model, new_model in MODEL_MAP.items():
-            cur.execute("SELECT COUNT(*) FROM token_usage WHERE model_name = ?", (old_model,))
-            count = cur.fetchone()[0]
-            if count:
-                # log
+            cur.execute(
+                "SELECT COUNT(*) FROM token_usage WHERE model_name = ?",
+                (old_model,)
+            )
+            if cur.fetchone()[0] > 0:
+                ts = datetime.now(timezone.utc).isoformat()
                 log_writer.writerow({
-                    'timestamp': datetime.now(timezone.utc).isoformat(),
-                    'db_file': bench,
+                    'timestamp': ts,
+                    'db_file': db_name,
                     'action': 'RENAME_MODEL',
                     'table': 'token_usage',
                     'run_id': '',
                     'old_value': old_model,
                     'new_value': new_model
                 })
-                # update
                 cur.execute("""
-                    UPDATE token_usage 
-                    SET model_name = ? 
-                    WHERE model_name = ?
+                    UPDATE token_usage
+                       SET model_name = ?
+                     WHERE model_name = ?
                 """, (new_model, old_model))
 
-        def rename_agent(table):
+        # --- 3) Rename agent_name in all tables ---
+        def rename_agent_in_table(table_name):
             for old_model, new_model in MODEL_MAP.items():
-                # search agent_name containing "(old_model)"
-                pattern = f"%({old_model})%"
+                like_pattern = f"%({old_model})%"
                 cur.execute(f"""
-                    SELECT DISTINCT agent_name 
-                    FROM {table} 
+                    SELECT DISTINCT agent_name
+                    FROM {table_name}
                     WHERE agent_name LIKE ?
-                """, (pattern,))
-                rows = cur.fetchall()
-                for (agent_name,) in rows:
-                    new_agent_name = agent_name.replace(f"({old_model})", f"({new_model})")
-                    # log
+                """, (like_pattern,))
+                for (agent_name,) in cur.fetchall():
+                    new_agent_name = agent_name.replace(
+                        f"({old_model})",
+                        f"({new_model})"
+                    )
+                    ts = datetime.now(timezone.utc).isoformat()
                     log_writer.writerow({
-                        'timestamp': datetime.now(timezone.utc).isoformat(),
-                        'db_file': bench,
+                        'timestamp': ts,
+                        'db_file': db_name,
                         'action': 'RENAME_AGENT',
-                        'table': table,
+                        'table': table_name,
                         'run_id': '',
                         'old_value': agent_name,
                         'new_value': new_agent_name
                     })
-                    # update
                     cur.execute(f"""
-                        UPDATE {table}
-                        SET agent_name = ?
-                        WHERE agent_name = ?
+                        UPDATE {table_name}
+                           SET agent_name = ?
+                         WHERE agent_name = ?
                     """, (new_agent_name, agent_name))
 
-        for tbl in ['parsed_results', 'preprocessed_traces', 'token_usage']:
-            rename_agent(tbl)
+        for tbl in ('parsed_results', 'preprocessed_traces', 'token_usage'):
+            rename_agent_in_table(tbl)
 
         conn.commit()
         conn.close()
 
-print(f"✅ Cleanup complete, see {LOG_CSV} for the action log.")
+print(f"✅ Cleanup complete — see '{LOG_CSV}' for the full action log.")
