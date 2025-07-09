@@ -27,6 +27,9 @@ MODEL_MAP = {
     'claude-3-7-sonnet-20250219-thinking-high': 'claude-3-7-sonnet-2025-02-19 high',
     'claude-3-7-sonnet-20250219-thinking-low':  'claude-3-7-sonnet-2025-02-19 low',
     'o4-mini-2025-04-16-medium':                'o4-mini-2025-04-16',
+    'o4-mini-2025-04-16_high_reasoning_effort': 'o4-mini-2025-04-16 high',
+    'o4-mini-2025-04-16_low_reasoning_effort': 'o4-mini-2025-04-16 low',
+    'claude-3-7-sonnet-20250219_thinking_high_4096': 'claude-3-7-sonnet-2025-02-19 high',
 }
 
 with open(LOG_CSV, 'w', newline='') as csvfile:

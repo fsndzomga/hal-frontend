@@ -11,6 +11,14 @@ from utils.db import DEFAULT_PRICING
 
 
 def create_leaderboard(df, benchmark_name = None):
+    # If it’s corebench_hard, inject model_name into Agent Name
+    if benchmark_name == 'corebench_hard':
+        # e.g. "HAL Generalist Agent (o4-mini-2025-04-16)"
+        df['Agent Name'] = df.apply(
+            lambda row: f"{row['Agent Name']} ({row['model_name']})",
+            axis=1
+        )
+    
     df = df.groupby('Agent Name', as_index=False).agg({
                 'Date': 'first',
                 'Total Cost': 'mean',
@@ -62,7 +70,9 @@ def create_leaderboard(df, benchmark_name = None):
     
     # Add model names to leaderboard data
     # df['Models'] = df['Agent Name'].apply(lambda x: x.split('(')[-1].rstrip(')') if any(model in x for model in DEFAULT_PRICING.keys()) else "")
+    
     df['Models'] = df['Agent Name'].apply(lambda x: x.split('(')[-1].rstrip(')'))
+    
     # Remove model names from agent name
     df['Agent Name'] = df['Agent Name'].apply(lambda x: '('.join(x.split('(')[:-1]).strip() if '(' in x else x)
         

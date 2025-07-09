@@ -14,7 +14,7 @@
 import sqlite3
 import pandas as pd
 
-db_path = '/workspaces/hal-frontend/preprocessed_traces/assistantbench.db'
+db_path = '/workspaces/hal-frontend/preprocessed_traces/corebench_hard.db'
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
@@ -25,10 +25,11 @@ for table in tables:
     print(f"Exporting table: {table}")
     df = pd.read_sql_query(f"SELECT * FROM {table};", conn)
     print(df.head(5))
-    # Use table name for CSV file
-    # csv_path = f'{table}.csv'
-    # df.to_csv(csv_path, index=False)
-    # print(f"Saved {csv_path} ({len(df)} rows)")
+    if table == "parsed_results":
+        # Use table name for CSV file
+        csv_path = f'{table}.csv'
+        df.to_csv(csv_path, index=False)
+        print(f"Saved {csv_path} ({len(df)} rows)")
 
 conn.close()
 
