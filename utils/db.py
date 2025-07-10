@@ -205,6 +205,11 @@ DEFAULT_PRICING = {
     "claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
     "anthropic/claude-3-7-sonnet-20250219": {"prompt_tokens": 3, "completion_tokens": 15},
     "o4-mini-2025-04-16": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
+    "o3-2025-04-16":{"prompt_tokens": 2, "completion_tokens": 8},
+    "gpt-4.1-2025-04-14":{"prompt_tokens": 2, "completion_tokens": 8},
+    "claude-3-7-sonnet-2025-02-19": {"prompt_tokens": 3, "completion_tokens": 15},
+    "deepseek-ai/DeepSeek-V3": {"prompt_tokens": 0.27, "completion_tokens": 1.1},
+    "gemini-2.0-flash": {"prompt_tokens": 0.1, "completion_tokens": 0.4},
 }
 
 
