@@ -14,7 +14,7 @@
 import sqlite3
 import pandas as pd
 
-db_path = '/workspaces/hal-frontend/preprocessed_traces/taubench_airline.db'
+db_path = '/workspaces/hal-frontend/preprocessed_traces/corebench_hard.db'
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 

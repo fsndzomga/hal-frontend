@@ -11,14 +11,6 @@ from utils.db import DEFAULT_PRICING
 
 
 def create_leaderboard(df, benchmark_name = None):
-    # If it’s corebench_hard, inject model_name into Agent Name
-    if benchmark_name == 'corebench_hard':
-        # e.g. "HAL Generalist Agent (o4-mini-2025-04-16)"
-        df['Agent Name'] = df.apply(
-            lambda row: f"{row['Agent Name']} ({row['model_name']})",
-            axis=1
-        )
-    
     df = df.groupby('Agent Name', as_index=False).agg({
                 'Date': 'first',
                 'Total Cost': 'mean',

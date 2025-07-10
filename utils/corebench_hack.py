@@ -1,32 +1,20 @@
-"""
-Script to add and populate `model_name` column in `parsed_results`
-of the corebench_hard SQLite database, based on token_usage table.
-"""
 import sqlite3
 import os
+import re
 
-# Path to the corebench_hard database
 DB_PATH = os.path.join("preprocessed_traces", "corebench_hard.db")
 
-
-def main(db_path):
-    """Connects to the SQLite DB, adds the model_name column if missing, and populates it."""
-    conn = sqlite3.connect(db_path)
-    cur = conn.cursor()
-
-    # 1) Check existing columns in parsed_results
+def ensure_model_column(cur):
     cur.execute("PRAGMA table_info(parsed_results)")
-    columns = [row[1] for row in cur.fetchall()]
-
-    # 2) Add model_name column if it doesn't exist
-    if 'model_name' not in columns:
+    cols = [row[1] for row in cur.fetchall()]
+    if 'model_name' not in cols:
         cur.execute("ALTER TABLE parsed_results ADD COLUMN model_name TEXT")
-        print("Added column: model_name")
+        print("→ Added column: model_name")
     else:
-        print("Column 'model_name' already exists")
+        print("→ model_name column already exists")
 
-    # 3) Populate model_name from token_usage
-    update_sql = """
+def populate_model_column(cur):
+    cur.execute("""
     UPDATE parsed_results
     SET model_name = (
         SELECT model_name
@@ -37,22 +25,48 @@ def main(db_path):
         LIMIT 1
     )
     WHERE model_name IS NULL;
+    """)
+    print(f"→ Populated model_name ({cur.rowcount} rows)")
+
+def rewrite_agent_names(cur):
     """
-    cur.execute(update_sql)
-    updated_count = conn.total_changes
-    print(f"Updated model_name for {updated_count} rows")
+    For each row in parsed_results:
+      - Strip any existing '(...)' suffix from agent_name
+      - Append ' ({model_name})'
+    """
+    # Fetch all run_ids + current agent_name + model_name
+    cur.execute("SELECT run_id, agent_name, model_name FROM parsed_results")
+    rows = cur.fetchall()
 
-    # 4) Verify how many rows remain with NULL model_name
-    cur.execute("SELECT COUNT(*) FROM parsed_results WHERE model_name IS NULL")
-    missing_count = cur.fetchone()[0]
-    print(f"Rows still missing model_name: {missing_count}")
+    updated = 0
+    for run_id, agent_name, model in rows:
+        if not model:
+            continue
+        # Strip any existing parenthetical suffix
+        base = re.sub(r'\s*\([^)]*\)\s*$', '', agent_name)
+        new_name = f"{base} ({model})"
+        if new_name != agent_name:
+            cur.execute(
+                "UPDATE parsed_results SET agent_name = ? WHERE run_id = ?",
+                (new_name, run_id)
+            )
+            updated += 1
 
-    # Commit and close
+    print(f"→ Rewrote agent_name for {updated} rows")
+
+def main():
+    if not os.path.exists(DB_PATH):
+        raise FileNotFoundError(f"DB not found at {DB_PATH}")
+    conn = sqlite3.connect(DB_PATH)
+    cur  = conn.cursor()
+
+    ensure_model_column(cur)
+    populate_model_column(cur)
+    rewrite_agent_names(cur)
+
     conn.commit()
     conn.close()
+    print("✅ corebench_hard agent_name rewrite complete.")
 
-
-if __name__ == '__main__':
-    if not os.path.exists(DB_PATH):
-        raise FileNotFoundError(f"Database not found: {DB_PATH}")
-    main(DB_PATH)
+if __name__ == "__main__":
+    main()
