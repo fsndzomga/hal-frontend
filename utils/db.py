@@ -502,7 +502,7 @@ class TracePreprocessor:
         df = df.drop(columns=['successful_tasks', 'failed_tasks'], axis=1)
         
         if aggregate:
-            df = df.groupby(['agent_name', 'model_name']).agg(AGGREGATION_RULES).reset_index()
+            df = df.groupby('agent_name').agg(AGGREGATION_RULES).reset_index()
             
         # Rename columns using the display names mapping
         df = df.rename(columns=COLUMN_DISPLAY_NAMES)
