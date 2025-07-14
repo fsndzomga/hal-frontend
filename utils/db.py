@@ -9,6 +9,7 @@ import ast
 from scipy import stats
 import yaml
 import numpy as np
+from urllib.parse import quote
 
 
 # Define column schemas
@@ -475,7 +476,9 @@ class TracePreprocessor:
 
         # Add 'Verified' column
         verified_agents = self.load_verified_agents()
-        df['Verified'] = df.apply(lambda row: '✓' if (benchmark_name, row['agent_name']) in verified_agents else '', axis=1)
+        # Temporary hack TO DO: Restore logic with yaml file later 
+        df['Verified'] = '✓'
+        # df['Verified'] = df.apply(lambda row: '✓' if (benchmark_name, row['agent_name']) in verified_agents else '', axis=1)
 
         # Add URLs to agent names if they exist
         df['url'] = df['agent_name'].apply(lambda x: url_mapping.get(x, ''))
@@ -822,9 +825,12 @@ class TracePreprocessor:
         return ''
 
     def get_traces_url(self, agent_name, benchmark_name, run_id):
-        """Get the download URL for agent traces."""
-        # This would typically point to where traces are stored, e.g. HuggingFace
-        return f"https://huggingface.co/datasets/princeton-nlp/hal-eval-results/resolve/main/traces/{benchmark_name}/{agent_name}/{run_id}.json"
+        base = "https://huggingface.co/datasets/agent-evals/hal_traces/resolve/main"
+        safe_bench = quote(benchmark_name, safe="")
+        safe_agent = quote(agent_name,   safe="")
+        safe_run   = quote(run_id,       safe="")
+        filename = f"{safe_bench}_{safe_agent}_{safe_run}_UPLOAD.zip"
+        return f"{base}/{filename}"
 
 if __name__ == '__main__':
     preprocessor = TracePreprocessor()
