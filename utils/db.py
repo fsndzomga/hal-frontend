@@ -211,7 +211,6 @@ DEFAULT_PRICING = {
     "deepseek-ai/DeepSeek-V3": {"prompt_tokens": 0.27, "completion_tokens": 1.1},
     "gemini-2.0-flash": {"prompt_tokens": 0.1, "completion_tokens": 0.4},
     "deepseek-ai/DeepSeek-R1":{"prompt_tokens": 0.55, "completion_tokens": 2.19},
-    
 }
 
 
