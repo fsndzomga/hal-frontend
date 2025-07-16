@@ -630,7 +630,8 @@ class TracePreprocessor:
         
         # Get token usage with new costs
         token_costs = self.get_token_usage_with_costs(benchmark_name, pricing_config)
-        
+        # import pdb; pdb.set_trace()
+
         for agent_name in results_df['Agent Name'].unique():
             agent_df = results_df[results_df['Agent Name'] == agent_name]
             
