@@ -9,7 +9,6 @@ import ast
 from scipy import stats
 import yaml
 import numpy as np
-from urllib.parse import quote
 
 
 # Define column schemas
@@ -37,6 +36,7 @@ PARSED_RESULTS_COLUMNS = {
     'codebert_score': 'REAL', #scienceagentbench
     'success_rate': 'REAL', #scienceagentbench
     'valid_program_rate': 'REAL', #scienceagentbench
+    'trace_stem': 'TEXT', # Stores file.stem from the JSON
     'precision': 'REAL',
     'recall': 'REAL',
     'f1_score': 'REAL',
@@ -59,6 +59,7 @@ PARSED_RESULTS_COLUMNS = {
     'combined_scorer_inspect_evals_avg_score_non_refusals': 'REAL',
     'accuracy_ci': 'TEXT',  # Using TEXT since it stores formatted strings like "-0.123/+0.456"
     'cost_ci': 'TEXT',
+    'model_name': 'TEXT',
 }
 
 # Define which columns should be included in aggregation and how
@@ -107,6 +108,8 @@ AGGREGATION_RULES = {
     'accuracy_ci': 'first',
     'cost_ci': 'first',
     'run_id': 'first',
+    'trace_stem': 'first',
+    'model_name': 'first',
 }
 
 # Define column display names
@@ -153,6 +156,8 @@ COLUMN_DISPLAY_NAMES = {
     'cost_ci': 'Total Cost CI',
     'combined_scorer_inspect_evals_avg_refusals': 'Refusals',
     'combined_scorer_inspect_evals_avg_score_non_refusals': 'Non-Refusal Harm Score',
+    'trace_stem': 'Trace Stem',
+    'model_name': 'Model Name',
 }
 
 DEFAULT_PRICING = {
@@ -306,6 +311,7 @@ class TracePreprocessor:
             print(f"Processing {file}")
             with open(file, 'r') as f:
                 data = json.load(f)
+                stem = file.stem
                 agent_name = data['config']['agent_name']
                 benchmark_name = data['config']['benchmark_name']
                 if "inspect" in benchmark_name:
@@ -339,6 +345,53 @@ class TracePreprocessor:
             #     print(f"Error preprocessing failure_report in {file}: {e}")
 
             try:
+                total_usage = data.get('total_usage', {})
+                print(f"Total usage is: {total_usage}")
+                primary_model_name = None
+                max_tokens = -1
+                for model_name, usage in total_usage.items():
+                    total_tokens = usage.get('total_tokens', 0)
+                    if total_tokens > max_tokens:
+                        max_tokens = total_tokens
+                        primary_model_name = model_name
+                    
+                    # TODO Add logic to map primary model name to show_name: model_name in db should be show name always.
+
+
+                    with self.get_conn(benchmark_name) as conn:
+                        conn.execute('''
+                            INSERT INTO token_usage 
+                            (benchmark_name, agent_name, run_id, model_name, 
+                            prompt_tokens, completion_tokens, input_tokens, output_tokens, total_tokens,
+                            input_tokens_cache_write, input_tokens_cache_read, is_primary)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ''', (
+                            benchmark_name,
+                            agent_name,
+                            config['run_id'],
+                            model_name,
+                            usage.get('prompt_tokens', 0),
+                            usage.get('completion_tokens', 0),
+                            usage.get('input_tokens', 0),
+                            usage.get('output_tokens', 0),
+                            total_tokens,
+                            usage.get('input_tokens_cache_write', 0),
+                            usage.get('input_tokens_cache_read', 0),
+                            0
+                        ))
+                        print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
+                if primary_model_name:
+                    with self.get_conn(benchmark_name) as conn:
+                        conn.execute('''
+                            UPDATE token_usage 
+                            SET is_primary = 1
+                            WHERE benchmark_name = ? AND agent_name = ? AND run_id = ? AND model_name = ?
+                        ''', (benchmark_name, agent_name, config['run_id'], primary_model_name))
+            except Exception as e:
+                print(f"Error preprocessing token usage in {file}: {e}")
+                print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
+
+            try:
                 results = data['results']
 
                 # Ensure 'accuracy' key exists with a fallback
@@ -347,15 +400,20 @@ class TracePreprocessor:
                     if fallback is not None:
                         results['accuracy'] = fallback
 
+                results['model_name'] = primary_model_name
+
+                # TODO: Add logic to rename agent name with model name from usage data
+
                 with self.get_conn(benchmark_name) as conn:
                     columns = [col for col in PARSED_RESULTS_COLUMNS.keys() 
-                            if col not in ['benchmark_name', 'agent_name', 'date', 'run_id']]
-                    placeholders = ','.join(['?'] * (len(columns) + 4)) # +4 for benchmark_name, agent_name, date, run_id
+                            if col not in ['benchmark_name', 'agent_name', 'date', 'run_id','trace_stem']]
+                    placeholders = ','.join(['?'] * (len(columns) + 5)) # +5 for benchmark_name, agent_name, date, run_id, trace_stem
                     values = [
                         benchmark_name,
                         agent_name,
                         config['date'],
-                        config['run_id']
+                        config['run_id'],
+                        stem
                     ] + [str(results.get(col)) if col in ['successful_tasks', 'failed_tasks'] 
                         else results.get(col) for col in columns]
 
@@ -367,35 +425,6 @@ class TracePreprocessor:
                     conn.execute(query, values)
             except Exception as e:
                 print(f"Error preprocessing parsed results in {file}: {e}")
-
-            try:
-                total_usage = data.get('total_usage', {})
-                print(f"Total usage is: {total_usage}")
-                for model_name, usage in total_usage.items():
-                    with self.get_conn(benchmark_name) as conn:
-                        conn.execute('''
-                            INSERT INTO token_usage 
-                            (benchmark_name, agent_name, run_id, model_name, 
-                            prompt_tokens, completion_tokens, input_tokens, output_tokens, total_tokens,
-                            input_tokens_cache_write, input_tokens_cache_read)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        ''', (
-                            benchmark_name,
-                            agent_name,
-                            config['run_id'],
-                            model_name,
-                            usage.get('prompt_tokens', 0),
-                            usage.get('completion_tokens', 0),
-                            usage.get('input_tokens', 0),
-                            usage.get('output_tokens', 0),
-                            usage.get('total_tokens', 0),
-                            usage.get('input_tokens_cache_write', 0),
-                            usage.get('input_tokens_cache_read', 0)
-                        ))
-                        print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
-            except Exception as e:
-                print(f"Error preprocessing token usage in {file}: {e}")
-                print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
 
     @lru_cache(maxsize=100)
     def get_analyzed_traces(self, agent_name, benchmark_name):
@@ -475,7 +504,7 @@ class TracePreprocessor:
                     url_mapping[agent['agent_name']] = agent['url']
 
         # Add 'Verified' column
-        verified_agents = self.load_verified_agents()
+        # verified_agents = self.load_verified_agents()
         # Temporary hack TO DO: Restore logic with yaml file later 
         df['Verified'] = '✓'
         # df['Verified'] = df.apply(lambda row: '✓' if (benchmark_name, row['agent_name']) in verified_agents else '', axis=1)
@@ -497,10 +526,14 @@ class TracePreprocessor:
         max_accuracy_mask = df['accuracy'] == max_accuracy_df
         # Create the Traces column, only setting values for max accuracy rows
         df['Traces'] = ''
-        df.loc[max_accuracy_mask, 'Traces'] = df.loc[max_accuracy_mask, 'run_id'].apply(
-            lambda x: f'https://huggingface.co/datasets/agent-evals/agent_traces/resolve/main/{x}.zip?download=true'
-            if x else ''
+        df.loc[max_accuracy_mask, 'Traces'] = df.loc[max_accuracy_mask, 'trace_stem'].apply(
+            lambda x: f'https://huggingface.co/datasets/agent-evals/hal_traces/resolve/main/{x}_UPLOAD.zip?download=true' if x else ''
         )
+        # df['Traces'] = ''
+        # df.loc[max_accuracy_mask, 'Traces'] = df.loc[max_accuracy_mask, 'run_id'].apply(
+        #     lambda x: f'https://huggingface.co/datasets/agent-evals/agent_traces/resolve/main/{x}.zip?download=true'
+        #     if x else ''
+        # )
         
         df = df.drop(columns=['successful_tasks', 'failed_tasks'], axis=1)
         
@@ -824,14 +857,6 @@ class TracePreprocessor:
         except Exception as e:
             print(f"Error getting agent URL: {e}")
         return ''
-
-    def get_traces_url(self, agent_name, benchmark_name, run_id):
-        base = "https://huggingface.co/datasets/agent-evals/hal_traces/resolve/main"
-        safe_bench = quote(benchmark_name, safe="")
-        safe_agent = quote(agent_name,   safe="")
-        safe_run   = quote(run_id,       safe="")
-        filename = f"{safe_bench}_{safe_agent}_{safe_run}_UPLOAD.zip"
-        return f"{base}/{filename}"
 
 if __name__ == '__main__':
     preprocessor = TracePreprocessor()
