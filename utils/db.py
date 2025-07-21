@@ -9,6 +9,7 @@ import ast
 from scipy import stats
 import yaml
 import numpy as np
+import re
 
 
 # Define column schemas
@@ -219,7 +220,54 @@ DEFAULT_PRICING = {
     "deepseek-ai/DeepSeek-R1":{"prompt_tokens": 0.55, "completion_tokens": 2.19},
 }
 
-
+MODEL_MAPPING = [
+    ("o4-mini-2025-04-16", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
+    ("gpt-4.1-2025-04-14", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
+    ("o4-mini-2025-04-16 low", "o4-mini Low (April 2025)", "o4-mini-2025-04-16"),
+    ("claude-3-7-sonnet-20250219 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("o4-mini-2025-04-16 high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
+    ("deepseek-ai/DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
+    ("claude-3-7-sonnet-20250219", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("gemini-2.0-flash", "Gemini 2.0 Flash", "gemini-2.0-flash"),
+    ("claude-3-7-sonnet-20250219 high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("o3-2025-04-16", "o3 Medium (April 2025)", "o3-2025-04-16"),
+    ("claude-3-7-sonnet-2025-02-19", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
+    ("DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
+    ("claude-3-7-sonnet-2025-02-19 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
+    ("Sonnet3.7", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("O4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
+    ("GPT4.1", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
+    ("O3-low", "o3 Low (April 2025)", "o3-2025-04-16"),
+    ("Sonnet 3.7", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("o4-mini-low", "o4-mini Low (April 2025)", "o4-mini-2025-04-16"),
+    ("o4-mini-2025-04-16 medium", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
+    ("o3-mini-2025-01-31 low", "o3-mini Low (January 2025)", "o3-mini-2025-01-31"),
+    ("o3-mini-2025-01-31 medium", "o3-mini Medium (January 2025)", "o3-mini-2025-01-31"),
+    ("claude-3-7-sonnet-2025-02-19 high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("gemini/gemini-2.5-pro-preview-03-25", "Gemini 2.5 Pro Preview (March 2025)", "gemini-2.5-pro-preview-03-25"),
+    ("o3-mini-2025-01-31 high", "o3-mini High (January 2025)", "o3-mini-2025-01-31"),
+    ("claude-3-7-sonnet-20250219_thinking_high_4096", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("gemini-2.5-pro-preview-03-25", "Gemini 2.5 Pro Preview (March 2025)", "gemini-2.5-pro-preview-03-25"),
+    ("o4-mini-2025-04-16_high_reasoning_effort", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
+    ("o4-mini-2025-04-16_low_reasoning_effort", "o4-mini Low (April 2025)", "o4-mini-2025-04-16"),
+    ("gemini-2.5-pro-preview", "Gemini 2.5 Pro Preview (March 2025)", "gemini-2.5-pro-preview-03-25"),
+    ("o3-mini", "o3-mini Medium (January 2025)", "o3-mini-2025-01-31"),
+    ("gpt-4o-2024-11-20", "GPT-4o (November 2024)", "gpt-4o-2024-11-20"),
+    ("gpt-4o", "GPT-4o (August 2024)", "gpt-4o-2024-08-06"),
+    ("o1", "o1 Medium (December 2024)", "o1-2024-12-17"),
+    ("gpt-4.1", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
+    ("o3-mini-2025-01-31", "o3-mini Medium (January 2025)", "o3-mini-2025-01-31"),
+    ("o3-2025-04-03", "o3 Medium (April 2025)", "o3-2025-04-03"),
+    ("o3-2025-04-16 low", "o3 Low (April 2025)", "o3-2025-04-16"),
+    ("openai/o3-2025-04-16 medium", "o3 Medium (April 2025)", "o3-2025-04-16"),
+    ("o3-mini low", "o3-mini Low (January 2025)", "o3-mini-2025-01-31"),
+    ("o3-mini high", "o3-mini High (January 2025)", "o3-mini-2025-01-31"),
+    ("gpt-4o-2024-08-06", "GPT-4o (August 2024)", "gpt-4o-2024-08-06"),
+    ("o1-2024-12-17", "o1 Medium (December 2024)", "o1-2024-12-17"),
+    ("text-embedding-3-small", "Text-Embedding-3 Small", "text-embedding-3-small")
+]
 
 class TracePreprocessor:
     def __init__(self, db_dir='preprocessed_traces'):
@@ -240,6 +288,13 @@ class TracePreprocessor:
             return results['average_score']
         else:
             return None
+    
+    @staticmethod
+    def get_model_show_name(model_name):
+        for mapping in MODEL_MAPPING:
+            if model_name == mapping[0] or model_name == mapping[2]:
+                return mapping[1]
+        return model_name
         
     def get_conn(self, benchmark_name):
         # Sanitize benchmark name for filename
@@ -356,7 +411,7 @@ class TracePreprocessor:
                         primary_model_name = model_name
                     
                     # TODO Add logic to map primary model name to show_name: model_name in db should be show name always.
-
+                    model_show_name = self.get_model_show_name(model_name)
 
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
@@ -369,7 +424,7 @@ class TracePreprocessor:
                             benchmark_name,
                             agent_name,
                             config['run_id'],
-                            model_name,
+                            model_show_name,
                             usage.get('prompt_tokens', 0),
                             usage.get('completion_tokens', 0),
                             usage.get('input_tokens', 0),
@@ -381,12 +436,13 @@ class TracePreprocessor:
                         ))
                         print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
                 if primary_model_name:
+                    show_primary_model_name = self.get_model_show_name(primary_model_name)
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
                             UPDATE token_usage 
                             SET is_primary = 1
                             WHERE benchmark_name = ? AND agent_name = ? AND run_id = ? AND model_name = ?
-                        ''', (benchmark_name, agent_name, config['run_id'], primary_model_name))
+                        ''', (benchmark_name, agent_name, config['run_id'], show_primary_model_name))
             except Exception as e:
                 print(f"Error preprocessing token usage in {file}: {e}")
                 print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
@@ -403,6 +459,8 @@ class TracePreprocessor:
                 results['model_name'] = primary_model_name
 
                 # TODO: Add logic to rename agent name with model name from usage data
+                base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
+                agent_name = f"{base_agent_name} ({primary_model_name})" if primary_model_name else base_agent_name
 
                 with self.get_conn(benchmark_name) as conn:
                     columns = [col for col in PARSED_RESULTS_COLUMNS.keys() 
