@@ -423,17 +423,6 @@ class TracePreprocessor:
             # Create tables for this benchmark if they don't exist
             self.create_tables(benchmark_name)
 
-            try:
-                # raw_logging_results = pickle.dumps(data['raw_logging_results'])
-                with self.get_conn(benchmark_name) as conn:
-                    conn.execute('''
-                        INSERT OR REPLACE INTO preprocessed_traces 
-                        (benchmark_name, agent_name, date, run_id) 
-                        VALUES (?, ?, ?, ?)
-                    ''', (benchmark_name, agent_name, date, config['run_id']))
-            except Exception as e:
-                print(f"Error preprocessing raw_logging_results in {file}: {e}")
-
             # try:
             #     failure_report = pickle.dumps(data['failure_report'])
             #     with self.get_conn(benchmark_name) as conn:
@@ -458,6 +447,10 @@ class TracePreprocessor:
                     
                     # TODO Add logic to map primary model name to show_name: model_name in db should be show name always.
                     model_show_name = self.get_model_show_name(model_name)
+
+                    # TODO: Add logic to rename agent name with model name from usage data
+                    base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
+                    agent_name = f"{base_agent_name} ({model_show_name})" if model_show_name else base_agent_name
 
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
@@ -492,6 +485,18 @@ class TracePreprocessor:
             except Exception as e:
                 print(f"Error preprocessing token usage in {file}: {e}")
                 print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
+            
+
+            try:
+                # raw_logging_results = pickle.dumps(data['raw_logging_results'])
+                with self.get_conn(benchmark_name) as conn:
+                    conn.execute('''
+                        INSERT OR REPLACE INTO preprocessed_traces 
+                        (benchmark_name, agent_name, date, run_id) 
+                        VALUES (?, ?, ?, ?)
+                    ''', (benchmark_name, agent_name, date, config['run_id']))
+            except Exception as e:
+                print(f"Error preprocessing raw_logging_results in {file}: {e}")
 
             try:
                 results = data['results']
@@ -502,22 +507,18 @@ class TracePreprocessor:
                     if fallback is not None:
                         results['accuracy'] = fallback
 
-                results['model_name'] = show_primary_model_name # added after last db update, so model_name might be usable for now. will be updated later
-
-                # TODO: Add logic to rename agent name with model name from usage data
-                base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
-                agent_name = f"{base_agent_name} ({primary_model_name})" if primary_model_name else base_agent_name
+                results['model_name'] = show_primary_model_name
+                results['trace_stem'] = stem
 
                 with self.get_conn(benchmark_name) as conn:
                     columns = [col for col in PARSED_RESULTS_COLUMNS.keys() 
-                            if col not in ['benchmark_name', 'agent_name', 'date', 'run_id','trace_stem']]
-                    placeholders = ','.join(['?'] * (len(columns) + 5)) # +5 for benchmark_name, agent_name, date, run_id, trace_stem
+                            if col not in ['benchmark_name', 'agent_name', 'date', 'run_id']]
+                    placeholders = ','.join(['?'] * (len(columns) + 4)) # +4 for benchmark_name, agent_name, date, run_id
                     values = [
                         benchmark_name,
                         agent_name,
                         config['date'],
-                        config['run_id'],
-                        stem
+                        config['run_id']
                     ] + [str(results.get(col)) if col in ['successful_tasks', 'failed_tasks'] 
                         else results.get(col) for col in columns]
 
@@ -586,6 +587,20 @@ class TracePreprocessor:
             max = np.max(data)
             ci = (min, max)
         return mean, ci[0], ci[1]
+
+    # def _calculate_ci(self, data, confidence=0.95, type='minmax'):
+    #     arr = pd.to_numeric(data, errors='coerce').to_numpy()
+    #     arr = arr[np.isfinite(arr)]
+    #     if len(arr) < 2:
+    #         return np.nan, np.nan, np.nan
+    #     mean = arr.mean()
+    #     if type == 't':
+    #         sem  = stats.sem(arr)
+    #         low, high = stats.t.interval(confidence, len(arr)-1, loc=mean, scale=sem)
+    #     else:  # 'minmax'
+    #         low, high = arr.min(), arr.max()
+    #     return mean, low, high
+
     
     def get_parsed_results(self, benchmark_name, aggregate=True):
         with self.get_conn(benchmark_name) as conn:
