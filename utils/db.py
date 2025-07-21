@@ -588,19 +588,6 @@ class TracePreprocessor:
             ci = (min, max)
         return mean, ci[0], ci[1]
 
-    # def _calculate_ci(self, data, confidence=0.95, type='minmax'):
-    #     arr = pd.to_numeric(data, errors='coerce').to_numpy()
-    #     arr = arr[np.isfinite(arr)]
-    #     if len(arr) < 2:
-    #         return np.nan, np.nan, np.nan
-    #     mean = arr.mean()
-    #     if type == 't':
-    #         sem  = stats.sem(arr)
-    #         low, high = stats.t.interval(confidence, len(arr)-1, loc=mean, scale=sem)
-    #     else:  # 'minmax'
-    #         low, high = arr.min(), arr.max()
-    #     return mean, low, high
-
     
     def get_parsed_results(self, benchmark_name, aggregate=True):
         with self.get_conn(benchmark_name) as conn:
