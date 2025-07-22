@@ -314,6 +314,16 @@ MODEL_MAPPING = [
     ("text-embedding-3-small", "Text-Embedding-3 Small", "text-embedding-3-small")
 ]
 
+MODELS_TO_SKIP = [
+    '2.5-pro',
+    'o1',
+    'o3-mini',
+    'gpt-4o',
+    'o3-2025-04-16 low',
+    'claude-3-7-sonnet-2025-02-19 low',
+    'claude-3-7-sonnet-20250219-thinking-low'
+]
+
 class TracePreprocessor:
     def __init__(self, db_dir='preprocessed_traces'):
         self.db_dir = Path(db_dir)
@@ -340,6 +350,18 @@ class TracePreprocessor:
             if model_name == mapping[0] or model_name == mapping[2]:
                 return mapping[1]
         return model_name
+    
+    @staticmethod
+    def get_show_names_to_skip(mapping, skip_substrings):
+        show_names_to_remove = set()
+        for entry in mapping:
+            # entry is a tuple: (alias1, show_name, alias2)
+            for alias in entry:
+                for substr in skip_substrings:
+                    if substr.lower() in alias.lower():
+                        show_names_to_remove.add(entry[1])
+                        break
+        return list(show_names_to_remove)
         
     def get_conn(self, benchmark_name):
         # Sanitize benchmark name for filename
@@ -408,6 +430,9 @@ class TracePreprocessor:
 
     def preprocess_traces(self, processed_dir="evals_live"):
         processed_dir = Path(processed_dir)
+
+        skip_show_names = self.get_show_names_to_skip(MODEL_MAPPING, MODELS_TO_SKIP)
+
         for file in processed_dir.glob('*.json'):
             print(f"Processing {file}")
             with open(file, 'r') as f:
@@ -437,6 +462,8 @@ class TracePreprocessor:
             try:
                 total_usage = data.get('total_usage', {})
                 print(f"Total usage is: {total_usage}")
+                
+                # Find the primary model based on total tokens
                 primary_model_name = None
                 max_tokens = -1
                 for model_name, usage in total_usage.items():
@@ -444,14 +471,20 @@ class TracePreprocessor:
                     if total_tokens > max_tokens:
                         max_tokens = total_tokens
                         primary_model_name = model_name
-                    
-                    # TODO Add logic to map primary model name to show_name: model_name in db should be show name always.
+
+                show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else None
+
+                # If show_primary_model_name is part of models to  skip, skip this agent
+                if show_primary_model_name in skip_show_names:
+                    print(f"Skipping agent {agent_name} for benchmark {benchmark_name} due to primary model {show_primary_model_name} being in MODELS_TO_SKIP")
+                    continue # This will skip this agent for this benchmark and continue to the next file
+
+                # Rename agent_name with primary model show name (only once)
+                base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
+                agent_name_with_model = f"{base_agent_name} ({show_primary_model_name})" if show_primary_model_name else base_agent_name
+
+                for model_name, usage in total_usage.items():
                     model_show_name = self.get_model_show_name(model_name)
-
-                    # TODO: Add logic to rename agent name with model name from usage data
-                    base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
-                    agent_name = f"{base_agent_name} ({model_show_name})" if model_show_name else base_agent_name
-
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
                             INSERT INTO token_usage 
@@ -461,30 +494,22 @@ class TracePreprocessor:
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ''', (
                             benchmark_name,
-                            agent_name,
+                            agent_name_with_model,
                             config['run_id'],
                             model_show_name,
                             usage.get('prompt_tokens', 0),
                             usage.get('completion_tokens', 0),
                             usage.get('input_tokens', 0),
                             usage.get('output_tokens', 0),
-                            total_tokens,
+                            usage.get('total_tokens', 0),
                             usage.get('input_tokens_cache_write', 0),
                             usage.get('input_tokens_cache_read', 0),
-                            0
+                            1 if model_name == primary_model_name else 0
                         ))
                         print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
-                if primary_model_name:
-                    show_primary_model_name = self.get_model_show_name(primary_model_name)
-                    with self.get_conn(benchmark_name) as conn:
-                        conn.execute('''
-                            UPDATE token_usage 
-                            SET is_primary = 1
-                            WHERE benchmark_name = ? AND agent_name = ? AND run_id = ? AND model_name = ?
-                        ''', (benchmark_name, agent_name, config['run_id'], show_primary_model_name))
             except Exception as e:
                 print(f"Error preprocessing token usage in {file}: {e}")
-                print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
+                print(f"{benchmark_name + agent_name + config['run_id'] + model_show_name}")
             
 
             try:
@@ -494,7 +519,7 @@ class TracePreprocessor:
                         INSERT OR REPLACE INTO preprocessed_traces 
                         (benchmark_name, agent_name, date, run_id) 
                         VALUES (?, ?, ?, ?)
-                    ''', (benchmark_name, agent_name, date, config['run_id']))
+                    ''', (benchmark_name, agent_name_with_model, date, config['run_id']))
             except Exception as e:
                 print(f"Error preprocessing raw_logging_results in {file}: {e}")
 
@@ -516,7 +541,7 @@ class TracePreprocessor:
                     placeholders = ','.join(['?'] * (len(columns) + 4)) # +4 for benchmark_name, agent_name, date, run_id
                     values = [
                         benchmark_name,
-                        agent_name,
+                        agent_name_with_model,
                         config['date'],
                         config['run_id']
                     ] + [str(results.get(col)) if col in ['successful_tasks', 'failed_tasks'] 
@@ -633,7 +658,7 @@ class TracePreprocessor:
         # Create the Traces column, only setting values for max accuracy rows
         df['Traces'] = ''
         df.loc[max_accuracy_mask, 'Traces'] = df.loc[max_accuracy_mask, 'trace_stem'].apply(
-            lambda x: f'https://huggingface.co/datasets/agent-evals/hal_traces/resolve/main/{x}_UPLOAD.zip?download=true' if x else ''
+            lambda x: f'https://huggingface.co/datasets/agent-evals/hal_traces/resolve/main/{x}.zip?download=true' if x else ''
         )
         # df['Traces'] = ''
         # df.loc[max_accuracy_mask, 'Traces'] = df.loc[max_accuracy_mask, 'run_id'].apply(
@@ -858,7 +883,8 @@ class TracePreprocessor:
                 'Total Cost CI': 'first',
                 'URL': 'first',
                 'Refusals': 'mean',
-                'Non-Refusal Harm Score': 'mean'  # Preserve URL
+                'Non-Refusal Harm Score': 'mean',  # Preserve URL
+                'Model Name': 'first',
             })
         
         # Round float columns to 2 decimal places

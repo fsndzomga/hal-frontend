@@ -40,7 +40,8 @@ def create_leaderboard(df, benchmark_name = None):
                 'Total Cost CI': 'first',
                 'URL': 'first',
                 'Refusals': 'mean',
-                'Non-Refusal Harm Score': 'mean'  # Preserve URL
+                'Non-Refusal Harm Score': 'mean',  # Preserve URL
+                'Model Name': 'first',
             })
     
     # Sort by Accuracy in descending order
@@ -61,14 +62,14 @@ def create_leaderboard(df, benchmark_name = None):
     df = df.merge(runs_per_agent, on='Agent Name', how='left')
     
     # Add model names to leaderboard data
-    # df['Models'] = df['Agent Name'].apply(lambda x: x.split('(')[-1].rstrip(')') if any(model in x for model in DEFAULT_PRICING.keys()) else "")
-    
-    df['Models'] = df['Agent Name'].apply(lambda x: x.split('(')[-1].rstrip(')'))
+    df.rename(columns={'Model Name': 'Models'}, inplace=True)
     
     # Remove model names from agent name
-    df['Agent Name'] = df['Agent Name'].apply(lambda x: '('.join(x.split('(')[:-1]).strip() if '(' in x else x)
-        
-
+    df['Agent Name'] = (
+        df['Agent Name']
+        .str.replace(r'\s*\(.*\)\s*$', '', regex=True)
+        .str.strip()
+    )
     return df
 
 def create_task_success_heatmap(df, benchmark_name):
