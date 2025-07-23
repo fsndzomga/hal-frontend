@@ -252,6 +252,18 @@
                 </div>
             </div>
 
+            <!-- Total Completion Tokens Used per Agent -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-3xl font-semibold mb-2">Total Completion Tokens Used per Agent</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    The bar chart shows the total completion tokens used by each agent, with the height of each bar representing the total number of completion tokens used across all tasks. 
+                    Secondary models usually contribute a relatively small amount of tokens in comparison, and are used for RAG or image processing only.
+                </p>
+                <div class="overflow-x-auto sm:overflow-x-visible">
+                    <div id="completionTokensBar" class="w-[800px] sm:w-full h-[500px]"></div>
+                </div>
+            </div>
+
             <!-- Failure Analysis Section -->
         </div>
 
@@ -385,6 +397,19 @@
         margin: { t: 10, r: 10, b: 40, l: 60 },
         width: window.innerWidth < 640 ? 800 : null,  // 640px is sm breakpoint
         height: 500
+    }, {
+        responsive: true,
+        displayModeBar: false
+    });
+
+    const completion_tokens_bar = JSON.parse('{{ completion_tokens_bar|safe }}');
+
+    // Initialize completion tokens bar chart with consistent styling
+    Plotly.newPlot('completionTokensBar', completion_tokens_bar.data, {
+        ...completion_tokens_bar.layout,
+        margin: { t: 10, r: 10, b: 40, l: 60 },
+        width: null,  // Make plot responsive
+        height: null  // Make plot responsive
     }, {
         responsive: true,
         displayModeBar: false

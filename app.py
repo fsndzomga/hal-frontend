@@ -61,6 +61,7 @@ def create_app():
         # Create leaderboard
         leaderboard_df = create_leaderboard(results_df, benchmark_name='usaco')
         
+        
         # Create scatter plot
         scatter_plot = create_scatter_plot(
             preprocessor.get_parsed_results('usaco', aggregate=False),
@@ -80,6 +81,9 @@ def create_app():
             'USACO'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('usaco')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         # Get last updated time
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
@@ -91,7 +95,8 @@ def create_app():
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='usaco'  # Add benchmark name for failure analysis
+            benchmark_name='usaco',  # Add benchmark name for failure analysis
+            completion_tokens_bar=completion_tokens_json
         )
 
     @app.route('/assistantbench')
@@ -127,6 +132,9 @@ def create_app():
             'AssistantBench'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('assistantbench')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         # Get last updated time
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
@@ -138,7 +146,8 @@ def create_app():
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='assistantbench'  # Add benchmark name for failure analysis
+            benchmark_name='assistantbench',  # Add benchmark name for failure analysis
+            completion_tokens_bar=completion_tokens_json
         )
     
     @app.route('/update_pricing/<benchmark>', methods=['POST'])
@@ -230,6 +239,9 @@ def create_app():
             'CORE-Bench-Hard'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('corebench_hard')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -241,7 +253,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             difficulty="Hard",
-            benchmark_name='corebench_hard'  # Add benchmark name for failure analysis
+            benchmark_name='corebench_hard',  # Add benchmark name for failure analysis
+            completion_tokens_bar=completion_tokens_json
         )
 
     @app.route('/gaia')
@@ -267,6 +280,9 @@ def create_app():
             'GAIA'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('gaia')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -277,7 +293,8 @@ def create_app():
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='gaia'  # Add benchmark name for failure analysis
+            benchmark_name='gaia',  # Add benchmark name for failure analysis
+            completion_tokens_bar=completion_tokens_json
         )
 
     @app.route('/taubench_airline')
@@ -311,6 +328,9 @@ def create_app():
             'TAU-bench Airline'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('taubench_airline')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         # Get last updated time
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
@@ -322,7 +342,8 @@ def create_app():
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='taubench_airline'
+            benchmark_name='taubench_airline',
+            completion_tokens_bar=completion_tokens_json
         )
 
     @app.route('/swebench_verified_mini')
@@ -348,6 +369,9 @@ def create_app():
             'SWE-bench Verified (Mini)'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('swebench_verified_mini')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -358,7 +382,8 @@ def create_app():
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='swebench_verified_mini'  # Add benchmark name for failure analysis
+            benchmark_name='swebench_verified_mini',  # Add benchmark name for failure analysis
+            completion_tokens_bar=completion_tokens_json
         )
     
     @app.route('/online_mind2web')
@@ -424,6 +449,9 @@ def create_app():
             'Scicode'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('scicode')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -434,7 +462,8 @@ def create_app():
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='scicode'  # Add benchmark name for failure analysis
+            benchmark_name='scicode',  # Add benchmark name for failure analysis
+            completion_tokens_bar=completion_tokens_json
         )
 
 

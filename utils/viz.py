@@ -10,49 +10,45 @@ from plotly.subplots import make_subplots
 from utils.db import DEFAULT_PRICING, TracePreprocessor
 
 def create_completion_tokens_bar_chart(benchmark_name, pricing_config=None, top_n=20):
-    """
-    Plots total completion (output) tokens used per agent run for a given benchmark.
-    """
     db = TracePreprocessor()
-    # Get token usage for this benchmark
     df = db.get_token_usage_with_costs(benchmark_name, pricing_config)
     if df.empty:
         return go.Figure()
 
-    # Only keep primary model for each run (is_primary==1)
+    # keep only the primary model rows, if that column exists
     if 'is_primary' in df.columns:
         df = df[df.get('is_primary', 1) == 1]
 
-    # Group by agent_name, model_name, run_id
-    agg = df.groupby(['agent_name', 'model_name', 'run_id'], as_index=False).agg({
-        'completion_tokens': 'sum'
-    })
+    # Sum completion tokens within each run first
+    run_totals = (df
+        .groupby(['agent_name', 'model_name', 'run_id'], as_index=False)
+        ['completion_tokens'].sum())
 
-    # Aggregate by agent (sum over all runs)
-    agent_agg = agg.groupby(['agent_name', 'model_name'], as_index=False)['completion_tokens'].sum()
-    # Sort by most tokens used
-    agent_agg = agent_agg.sort_values('completion_tokens', ascending=False).head(top_n)
+    #Sum over all runs and all models for the agent
+    agent_totals = (run_totals
+        .groupby('agent_name', as_index=False)
+        ['completion_tokens'].sum()
+        .sort_values('completion_tokens', ascending=False)
+        .head(top_n))
 
-    # Convert tokens to millions
-    agent_agg['completion_tokens_m'] = agent_agg['completion_tokens'] / 1e6
-
-    # Bar labels: Agent Name (Model)
-    agent_agg['label'] = agent_agg['agent_name']
+    # Convert to millions and build the bar
+    agent_totals['completion_tokens_m'] = agent_totals['completion_tokens'] / 1e6
+    agent_totals['label'] = agent_totals['agent_name']   # one bar per agent
 
     fig = go.Figure(go.Bar(
-        y=agent_agg['label'],
-        x=agent_agg['completion_tokens_m'],
+        y=agent_totals['label'],
+        x=agent_totals['completion_tokens_m'],
         orientation='h',
         marker_color='#3498db',
-        text=[f"{v:.2f}M" for v in agent_agg['completion_tokens_m']],
+        text=[f"{v:.2f} M" for v in agent_totals['completion_tokens_m']],
         textposition='auto',
-        hovertemplate="<b>%{y}</b><br>Completion Tokens: %{x:.2f}M<extra></extra>"
+        hovertemplate="<b>%{y}</b><br>Total completion tokens: %{x:.2f} M<extra></extra>"
     ))
 
     fig.update_layout(
         xaxis_title="Completion Tokens Used (Millions)",
         yaxis_title="Agent",
-        height=max(400, 40 * len(agent_agg)),
+        height=max(400, 40 * len(agent_totals)),
         margin=dict(l=200, r=40, t=60, b=40),
         plot_bgcolor='white',
         paper_bgcolor='white'
