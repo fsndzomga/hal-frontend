@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, request
 from utils.db import TracePreprocessor, DEFAULT_PRICING
-from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart
+from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart, create_completion_tokens_bar_chart
 import plotly.utils
 import json
 from datetime import datetime
@@ -368,6 +368,9 @@ def create_app():
         
         results_df = preprocessor.get_parsed_results_with_costs('online_mind2web')
         leaderboard_df = create_leaderboard(results_df, benchmark_name='online_mind2web')
+
+        completion_tokens_fig = create_completion_tokens_bar_chart('online_mind2web')
+        completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
         scatter_plot = create_scatter_plot(
             results_df,
@@ -394,7 +397,8 @@ def create_app():
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
-            benchmark_name='online_mind2web'  # Add benchmark name for failure analysis
+            benchmark_name='online_mind2web',  # Add benchmark name for failure analysis
+            completion_tokens_bar=completion_tokens_json
         )
     
     @app.route('/scicode')
