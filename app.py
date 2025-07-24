@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, request
 from utils.db import TracePreprocessor, DEFAULT_PRICING
-from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart, create_completion_tokens_bar_chart
+from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart, create_completion_tokens_bar_chart, create_model_benchmark_heatmap, create_missing_runs_heatmap
 import plotly.utils
 import json
 from datetime import datetime
@@ -42,10 +42,26 @@ def create_app():
     def index():
         total_agents = preprocessor.get_total_agents()
         total_benchmarks = preprocessor.get_total_benchmarks()
+
+        # Get models and benchmarks for the heatmap
+        df = preprocessor.get_model_benchmark_accuracies()
+        heatmap_fig = create_model_benchmark_heatmap(df)
+        heatmap_json = json.dumps(heatmap_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
         return render_template('index.html', 
                              total_agents=total_agents, 
                              total_benchmarks=total_benchmarks,
-                             contributors=CONTRIBUTORS)
+                             contributors=CONTRIBUTORS,
+                             model_benchmark_heatmap=heatmap_json)
+    
+    @app.route("/missing")
+    def missing_runs_heatmap():
+        db = TracePreprocessor()
+        # You may need to adjust this to get all runs with agent/model/benchmark info
+        df = db.get_all_runs()  # Should return DataFrame with columns: benchmark_name, model_name, agent_name, run_id
+        fig = create_missing_runs_heatmap(df)
+        heatmap_json =  json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return render_template("missing_runs_heatmap.html", heatmap_json=heatmap_json)
 
     @app.route('/usaco')
     def usaco():

@@ -48,6 +48,15 @@
 <!-- Section Divider -->
 <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
+<div class="max-w-[1500px] mx-auto px-4 sm:px-8 py-12">
+    <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Model Accuracy Across Benchmarks</h2>
+        <p class="text-xl text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic, fugiat eaque delectus cum qui facere iure magnam repellendus, placeat deleniti voluptatibus similique laborum, consequatur earum nemo laudantium reiciendis molestiae repellat?</p>
+    </div>
+    <div id="modelBenchmarkHeatmap" class="w-full h-[600px]"></div>
+</div>
+
+<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 <!-- Unified Agent Benchmarking Section -->
 <div class="py-24 bg-gradient-to-b from-gray-50 to-white relative">
     <div class="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-gray-100/80 to-transparent"></div>
@@ -619,13 +628,26 @@ year =         {2025}}</pre>
 {% block scripts %}
 <script>
     // Parse the USACO data from Flask
-    const scatter_plot_data = JSON.parse('{{ scatter_plot|safe }}');
+    // const scatter_plot_data = JSON.parse('{{ scatter_plot|safe }}');
     
     // Use the actual USACO data for the plot
-    Plotly.newPlot('usacoScatterPlot', scatter_plot_data.data, {
-        ...scatter_plot_data.layout,
-        title: 'USACO Agent Performance vs Cost',
-        margin: { t: 40, r: 40, b: 60, l: 60 }
+    // Plotly.newPlot('usacoScatterPlot', scatter_plot_data.data, {
+    //     ...scatter_plot_data.layout,
+    //     title: 'USACO Agent Performance vs Cost',
+    //     margin: { t: 40, r: 40, b: 60, l: 60 }
+    // });
+
+    const model_benchmark_heatmap = JSON.parse('{{ model_benchmark_heatmap|safe }}');
+
+    console.log('Model Benchmark Heatmap Data:', model_benchmark_heatmap.data);
+    Plotly.newPlot('modelBenchmarkHeatmap', model_benchmark_heatmap.data, {
+        ...model_benchmark_heatmap.layout,
+        margin: { t: 40, r: 40, b: 80, l: 180 },
+        width: null,
+        height: null
+    }, {
+        responsive: true,
+        displayModeBar: false
     });
     
     window.addEventListener('resize', function() {
@@ -636,7 +658,7 @@ year =         {2025}}</pre>
         const bibtex = `@Misc{hal,
 title =        {HAL: A Holistic Agent Leaderboard for Centralized and Reproducible Agent Evaluation},
 author =       {Benedikt Stroebl and Sayash Kapoor and Arvind Narayanan},
-howpublished = {\url{https://github.com/princeton-pli/hal-harness/}},
+howpublished = {\\url{https://github.com/princeton-pli/hal-harness}},
 year =         {2025}}`;
         navigator.clipboard.writeText(bibtex).then(() => {
             const button = document.querySelector('button[onclick="copyBibtex()"]');

@@ -9,6 +9,123 @@ from scipy import stats
 from plotly.subplots import make_subplots
 from utils.db import DEFAULT_PRICING, TracePreprocessor
 
+def create_missing_runs_heatmap(df):
+    df['agent_name'] = (
+        df['agent_name']
+        .str.replace(r'\s*\(.*\)\s*$', '', regex=True)
+        .str.strip()
+    )
+
+
+    # save df to a CSV file for debugging
+    df.to_csv('missing_runs_heatmap_debug.csv', index=False)
+    # Combine agent and benchmark for unique columns, ordered alphabetically by both
+    df['bench_agent'] = df['agent_name'] + " | " + df['benchmark_name']
+    pivot = df.pivot_table(
+        index='model_name', 
+        columns='bench_agent', 
+        values='run_id', 
+        aggfunc='count'
+    )
+    # Sort columns alphabetically
+    pivot = pivot.reindex(sorted(pivot.columns), axis=1)
+    
+    missing = pivot.isna().astype(int)
+    text = np.where(missing.values, "Missing", "Present")
+
+    fig = go.Figure(data=go.Heatmap(
+        z=missing.values,
+        x=pivot.columns,
+        y=pivot.index,
+        text=text,
+        texttemplate="%{text}",
+        colorscale=[[1, "#f8d7da"], [0, "#d4edda"]],
+        showscale=False,
+        hovertemplate="<b>Model:</b> %{y}<br><b>Agent | Benchmark:</b> %{x}<br><b>Status:</b> %{text}<extra></extra>",
+        xgap=2, ygap=2
+    ))
+
+    fig.update_layout(
+        title="Missing Runs Heatmap",
+        margin=dict(l=180, r=40, t=60, b=180),  # Increased bottom margin for labels
+        xaxis=dict(
+            title="Agent | Benchmark",
+            tickangle=-45,
+            tickfont=dict(size=10),  # Smaller font size for better fit
+            automargin=True,  # Enable auto-margin
+        ),
+        yaxis=dict(
+            title="Model Name", 
+            automargin=True
+        ),
+        height=600,
+        plot_bgcolor='white',
+        paper_bgcolor='white'
+    )
+    return fig
+
+def create_model_benchmark_heatmap(df):
+    # Pivot to matrix
+    pivot = df.pivot(index='benchmark_name', columns='model_name', values='accuracy')
+    pivot = pivot.sort_index().sort_index(axis=1)
+    z = pivot.values
+
+    # Prepare text annotations
+    text = np.empty(z.shape, dtype=object)
+    for i in range(z.shape[0]):
+        for j in range(z.shape[1]):
+            if np.isnan(z[i, j]):
+                text[i, j] = "no runs"
+            else:
+                text[i, j] = f"{z[i, j]*100:.0f}%"
+
+    fig = go.Figure(data=go.Heatmap(
+        z=z,
+        x=pivot.columns,
+        y=pivot.index,
+        text=text,
+        texttemplate="%{text}",
+        colorscale=[
+            [0.0, "#e3f2fd"],   # very light blue
+            [0.2, "#90caf9"],   # lighter blue
+            [0.4, "#64b5f6"],   # light blue
+            [0.6, "#42a5f5"],   # medium blue
+            [0.8, "#2880B9"],   # main blue
+            [1.0, "#1565c0"]    # dark blue
+        ],
+        zmin=0,
+        zmax=0.8,
+        colorbar=dict(title="Accuracy", tickformat=".0%"),
+        hovertemplate="<b>Benchmark:</b> %{y}<br><b>Model:</b> %{x}<br><b>Accuracy:</b> %{text}<extra></extra>",
+        showscale=True,
+        hoverongaps=False,
+        xgap=2, ygap=2
+    ))
+
+    # Add annotation for "no runs" cells (dark grey text)
+    annotations = []
+    for i in range(z.shape[0]):
+        for j in range(z.shape[1]):
+            if np.isnan(z[i, j]):
+                annotations.append(dict(
+                    x=pivot.columns[j],
+                    y=pivot.index[i],
+                    text="no runs",
+                    font=dict(color="#444", size=11, family="Arial"),
+                    showarrow=False
+                ))
+
+    fig.update_layout(
+        margin=dict(l=180, r=40, t=40, b=80),
+        xaxis=dict(title="Model Name", tickangle=-55, side='bottom'),
+        yaxis=dict(title="Benchmark Name", automargin=True, tickfont=dict(size=13, family="Arial", color="black")),
+        height=600,
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        annotations=annotations
+    )
+    return fig
+
 def create_completion_tokens_bar_chart(benchmark_name, pricing_config=None, top_n=20):
     db = TracePreprocessor()
     df = db.get_token_usage_with_costs(benchmark_name, pricing_config)

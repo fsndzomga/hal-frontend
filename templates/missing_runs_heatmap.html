@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Missing Runs Heatmap</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <h2>Missing Runs Heatmap</h2>
+    <div id="missingRunsHeatmap"></div>
+    <script>
+        const heatmap = JSON.parse('{{ heatmap_json|safe }}');
+        Plotly.newPlot('missingRunsHeatmap', heatmap.data, heatmap.layout, {responsive: true});
+    </script>
+</body>
+</html>

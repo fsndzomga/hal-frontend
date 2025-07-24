@@ -283,8 +283,10 @@ MODEL_MAPPING = [
     ("DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
     ("Sonnet3.7", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("O4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
+    ("o4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("GPT4.1", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
     ("O3-low", "o3 Low (April 2025)", "o3-2025-04-16"),
+    ("o3-low", "o3 Low (April 2025)", "o3-2025-04-16"),
     ("Sonnet 3.7", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("o4-mini-low", "o4-mini Low (April 2025)", "o4-mini-2025-04-16"),
     ("o4-mini-2025-04-16 medium", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
@@ -315,13 +317,15 @@ MODEL_MAPPING = [
 ]
 
 MODELS_TO_SKIP = [
-    '2.5-pro',
-    'o1',
-    'o3-mini',
-    'gpt-4o',
-    'o3-2025-04-16 low',
-    'claude-3-7-sonnet-2025-02-19 low',
-    'claude-3-7-sonnet-20250219-thinking-low'
+'Gemini 2.5 Pro Preview (March 2025)',
+'o1 Medium (December 2024)',
+'o3-mini Low (January 2025)',
+'o3-mini Medium (January 2025)',
+'o3-mini High (January 2025)',
+'GPT-4o (November 2024)',
+'GPT-4o (August 2024)',
+'o3 Low (April 2025)',
+'Claude-3.7 Sonnet Low (February 2025)',
 ]
 
 class TracePreprocessor:
@@ -347,21 +351,104 @@ class TracePreprocessor:
     @staticmethod
     def get_model_show_name(model_name):
         for mapping in MODEL_MAPPING:
-            if model_name == mapping[0] or model_name == mapping[2]:
+            if model_name == mapping[0]:
                 return mapping[1]
         return model_name
     
-    @staticmethod
-    def get_show_names_to_skip(mapping, skip_substrings):
-        show_names_to_remove = set()
-        for entry in mapping:
-            # entry is a tuple: (alias1, show_name, alias2)
-            for alias in entry:
-                for substr in skip_substrings:
-                    if substr.lower() in alias.lower():
-                        show_names_to_remove.add(entry[1])
-                        break
-        return list(show_names_to_remove)
+    def get_all_runs(self):
+        records = []
+        for db_file in self.db_dir.glob('*.db'):
+            benchmark_name = db_file.stem
+            with self.get_conn(benchmark_name) as conn:
+                # Try to get all runs from parsed_results
+                df = pd.read_sql_query(
+                    "SELECT benchmark_name, agent_name, model_name, run_id FROM parsed_results",
+                    conn
+                )
+                if not df.empty:
+                    records.append(df)
+        if not records:
+            return pd.DataFrame(columns=['benchmark_name', 'agent_name', 'model_name', 'run_id'])
+        all_df = pd.concat(records, ignore_index=True)
+        return all_df
+    
+    def get_model_benchmark_accuracies(self):
+        EXCLUDE_BENCHMARKS = [
+            'assistantbench',
+            'colbench_backend_programming',
+            'colbench_frontend_design',
+            'scienceagentbench',
+        ]
+
+        BENCHMARK_ALIAS = {
+            "usaco":                 "USACO",
+            "taubench_airline":      "TAU-bench Airline",
+            "swebench_verified_mini":"SWE-bench Verified Mini",
+            "scicode":               "Scicode",
+            "online_mind2web":       "Online Mind2Web",
+            "gaia":                  "GAIA",
+            "corebench_hard":        "CORE-Bench Hard",
+        }
+
+        MODEL_ALIAS = {
+            "Claude-3.7 Sonnet Low (February 2025)":   "Claude-3.7 Feb 25",
+            "DeepSeek R1":                             "DeepSeek R1",
+            "DeepSeek V3":                             "DeepSeek V3",
+            "GPT-4.1 (April 2025)":                    "GPT-4.1 Apr 25",
+            "GPT-4o (August 2024)":                    "GPT-4o Aug 24",
+            "GPT-4o (November 2024)":                  "GPT-4o Nov 24",
+            "Gemini 2.0 Flash":                        "Gemini 2.0 Flash",
+            "Gemini 2.5 Pro Preview (March 2025)":     "Gemini 2.5 Mar 5",
+            "o1 Medium (December 2024)":               "o1 Med Dec 24",
+            "o3 Medium (April 2025)":                  "o3 Med Apr 25",
+            "o3-mini Low (January 2025)":              "o3-mini Low Jan 25",
+            "o4-mini Medium (April 2025)":             "o4-mini Med Apr 25",
+        }
+
+        # MODEL_ALIAS = {
+        #     "Claude-3.7 Sonnet Low (February 2025)":   "Claude-3.7 Sonnet Low (February 2025)",
+        #     "DeepSeek R1":                             "DeepSeek R1",
+        #     "DeepSeek V3":                             "DeepSeek V3",
+        #     "GPT-4.1 (April 2025)":                    "GPT-4.1 (April 2025)",
+        #     "GPT-4o (August 2024)":                    "GPT-4o (August 2024)",
+        #     "GPT-4o (November 2024)":                  "GPT-4o (November 2024)",
+        #     "Gemini 2.0 Flash":                        "Gemini 2.0 Flash",
+        #     "Gemini 2.5 Pro Preview (March 2025)":     "Gemini 2.5 Pro Preview (March 2025)",
+        #     "o1 Medium (December 2024)":               "o1 Medium (December 2024)",
+        #     "o3 Medium (April 2025)":                  "o3 Medium (April 2025)",
+        #     "o3-mini Low (January 2025)":              "o3-mini Low (January 2025)",
+        #     "o4-mini Medium (April 2025)":             "o4-mini Medium (April 2025)",
+        # }
+
+        records = []
+        for db_file in self.db_dir.glob('*.db'):
+            benchmark_name = db_file.stem
+            if benchmark_name in EXCLUDE_BENCHMARKS:
+                continue
+            try:
+                with self.get_conn(benchmark_name) as conn:
+                    # Only select rows with model_name and accuracy
+                    df = pd.read_sql_query(
+                        "SELECT model_name, accuracy FROM parsed_results",
+                        conn
+                    )
+                    if df.empty:
+                        continue
+                    # Group by model_name and compute mean accuracy
+                    grouped = df.groupby('model_name')['accuracy'].mean().reset_index()
+                    grouped['benchmark_name'] = benchmark_name
+                    records.append(grouped)
+            except Exception as e:
+                print(f"Error processing {db_file}: {e}")
+                continue
+        if not records:
+            return pd.DataFrame(columns=['benchmark_name', 'model_name', 'accuracy'])
+        all_df = pd.concat(records, ignore_index=True)
+        # Clean up names if needed
+        all_df = all_df[['benchmark_name', 'model_name', 'accuracy']]
+        all_df["benchmark_name"] = all_df["benchmark_name"].replace(BENCHMARK_ALIAS)
+        # all_df["model_name"] = all_df["model_name"].replace(MODEL_ALIAS)
+        return all_df
         
     def get_conn(self, benchmark_name):
         # Sanitize benchmark name for filename
@@ -431,8 +518,6 @@ class TracePreprocessor:
     def preprocess_traces(self, processed_dir="evals_live"):
         processed_dir = Path(processed_dir)
 
-        skip_show_names = self.get_show_names_to_skip(MODEL_MAPPING, MODELS_TO_SKIP)
-
         for file in processed_dir.glob('*.json'):
             print(f"Processing {file}")
             with open(file, 'r') as f:
@@ -462,25 +547,43 @@ class TracePreprocessor:
             try:
                 total_usage = data.get('total_usage', {})
                 print(f"Total usage is: {total_usage}")
-                
-                # Find the primary model based on total tokens
-                primary_model_name = None
-                max_tokens = -1
-                for model_name, usage in total_usage.items():
-                    total_tokens = usage.get('total_tokens', 0)
-                    if total_tokens > max_tokens:
-                        max_tokens = total_tokens
-                        primary_model_name = model_name
+
+                # Find primary model from agent_name knowing Agent name is in the format "AgentName (ModelName)"
+                primary_model_name = agent_name.split('(')[-1].strip(' )') if '(' in agent_name else None
 
                 show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else None
+                
+                # Find the primary model based on total tokens
+                if show_primary_model_name is None:
+                    max_tokens = -1
+                    for model_name, usage in total_usage.items():
+                        completion_tokens = usage.get('completion_tokens', 0)
+                        if completion_tokens > max_tokens:
+                            max_tokens = completion_tokens
+                            primary_model_name = model_name
+
+                    show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else primary_model_name
+
+                # save in csv for debugging
+                with open('primary_model.csv', 'a') as f:
+                    f.write(f"{benchmark_name},{agent_name},{primary_model_name},{show_primary_model_name}\n")
 
                 # If show_primary_model_name is part of models to  skip, skip this agent
-                if show_primary_model_name in skip_show_names:
+                if show_primary_model_name in MODELS_TO_SKIP:
                     print(f"Skipping agent {agent_name} for benchmark {benchmark_name} due to primary model {show_primary_model_name} being in MODELS_TO_SKIP")
                     continue # This will skip this agent for this benchmark and continue to the next file
 
                 # Rename agent_name with primary model show name (only once)
                 base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
+
+                base_agent_name = (
+                    base_agent_name
+                    .replace('Browser-Use_test', 'Browser-Use')  # Replace Browser-Use_test with Browser-Use
+                    .replace('hal', 'HAL')  # Replace hal with HAL (case sensitive)
+                    .replace('Hal', 'HAL')  # Replace Hal with HAL
+                    .replace('HAl', 'HAL')  # Replace HAl with HAL
+                )
+
                 agent_name_with_model = f"{base_agent_name} ({show_primary_model_name})" if show_primary_model_name else base_agent_name
 
                 for model_name, usage in total_usage.items():
@@ -622,6 +725,7 @@ class TracePreprocessor:
                 ORDER BY accuracy DESC
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
+        
 
         # Load metadata
         with open('agents_metadata.yaml', 'r') as f:
