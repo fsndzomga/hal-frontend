@@ -326,6 +326,7 @@ MODELS_TO_SKIP = [
 'GPT-4o (August 2024)',
 'o3 Low (April 2025)',
 'Claude-3.7 Sonnet Low (February 2025)',
+'o4-mini Medium (April 2025)',
 ]
 
 class TracePreprocessor:
@@ -391,7 +392,8 @@ class TracePreprocessor:
         }
 
         MODEL_ALIAS = {
-            "Claude-3.7 Sonnet Low (February 2025)":   "Claude-3.7 Feb 25",
+            "Claude-3.7 Sonnet High (February 2025)":   "Claude-3.7 High Feb 25",
+            "Claude-3.7 Sonnet (February 2025)":   "Claude-3.7 Feb 25",
             "DeepSeek R1":                             "DeepSeek R1",
             "DeepSeek V3":                             "DeepSeek V3",
             "GPT-4.1 (April 2025)":                    "GPT-4.1 Apr 25",
@@ -403,6 +405,8 @@ class TracePreprocessor:
             "o3 Medium (April 2025)":                  "o3 Med Apr 25",
             "o3-mini Low (January 2025)":              "o3-mini Low Jan 25",
             "o4-mini Medium (April 2025)":             "o4-mini Med Apr 25",
+            "o4-mini Low (April 2025)":             "o4-mini Low Apr 25",
+            "o4-mini High (April 2025)":             "o4-mini High Apr 25",
         }
 
         # MODEL_ALIAS = {
@@ -447,7 +451,7 @@ class TracePreprocessor:
         # Clean up names if needed
         all_df = all_df[['benchmark_name', 'model_name', 'accuracy']]
         all_df["benchmark_name"] = all_df["benchmark_name"].replace(BENCHMARK_ALIAS)
-        # all_df["model_name"] = all_df["model_name"].replace(MODEL_ALIAS)
+        all_df["model_name"] = all_df["model_name"].replace(MODEL_ALIAS)
         return all_df
         
     def get_conn(self, benchmark_name):
@@ -548,8 +552,11 @@ class TracePreprocessor:
                 total_usage = data.get('total_usage', {})
                 print(f"Total usage is: {total_usage}")
 
-                # Find primary model from agent_name knowing Agent name is in the format "AgentName (ModelName)"
-                primary_model_name = agent_name.split('(')[-1].strip(' )') if '(' in agent_name else None
+                if benchmark_name in ['corebench_hard', 'swebench_verified_mini', 'taubench_airline']:
+                    primary_model_name = data['config']['model_name_short']
+                else:
+                    # Find primary model from agent_name knowing Agent name is in the format "AgentName (ModelName)"
+                    primary_model_name = agent_name.split('(')[-1].strip(' )') if '(' in agent_name else None
 
                 show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else None
                 

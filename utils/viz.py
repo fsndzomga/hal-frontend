@@ -16,11 +16,10 @@ def create_missing_runs_heatmap(df):
         .str.strip()
     )
 
-
     # save df to a CSV file for debugging
     df.to_csv('missing_runs_heatmap_debug.csv', index=False)
-    # Combine agent and benchmark for unique columns, ordered alphabetically by both
-    df['bench_agent'] = df['agent_name'] + " | " + df['benchmark_name']
+    # Combine benchmark and agent for unique columns, ordered alphabetically by both
+    df['bench_agent'] = df['benchmark_name'] + " | " + df['agent_name']
     pivot = df.pivot_table(
         index='model_name', 
         columns='bench_agent', 
@@ -41,7 +40,7 @@ def create_missing_runs_heatmap(df):
         texttemplate="%{text}",
         colorscale=[[1, "#f8d7da"], [0, "#d4edda"]],
         showscale=False,
-        hovertemplate="<b>Model:</b> %{y}<br><b>Agent | Benchmark:</b> %{x}<br><b>Status:</b> %{text}<extra></extra>",
+        hovertemplate="<b>Model:</b> %{y}<br><b>Benchmark | Agent:</b> %{x}<br><b>Status:</b> %{text}<extra></extra>",
         xgap=2, ygap=2
     ))
 
@@ -49,7 +48,7 @@ def create_missing_runs_heatmap(df):
         title="Missing Runs Heatmap",
         margin=dict(l=180, r=40, t=60, b=180),  # Increased bottom margin for labels
         xaxis=dict(
-            title="Agent | Benchmark",
+            title="Benchmark | Agent",
             tickangle=-45,
             tickfont=dict(size=10),  # Smaller font size for better fit
             automargin=True,  # Enable auto-margin
@@ -62,6 +61,7 @@ def create_missing_runs_heatmap(df):
         plot_bgcolor='white',
         paper_bgcolor='white'
     )
+
     return fig
 
 def create_model_benchmark_heatmap(df):
@@ -481,8 +481,6 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
                 return model.strip()
         return 'Other'
 
-    df['Model'] = df['Agent Name'].apply(extract_model)
-
     # Create agents using the values directly from the DataFrame
     # The DataFrame should already have aggregated values
     unique_agents = df['Agent Name'].unique()
@@ -505,7 +503,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
 
     # Define color map for models
     color_sequence = px.colors.qualitative.Dark2
-    unique_models = sorted(df['Model'].unique())
+    unique_models = sorted(df['Model Name'].unique())
     color_map = {model: color_sequence[i % len(color_sequence)] for i, model in enumerate(unique_models)}
 
     # Plot scatter points and error bars for each agent
@@ -528,7 +526,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
 
         x_value = [np.mean(agent_data[x].values)]
         y_value = [np.mean(agent_data[y].values)]
-        model = agent_data['Model'].iloc[0]
+        model = agent_data['Model Name'].iloc[0]
         
         # Store coordinates and label for later use
         all_x.extend(x_value)
