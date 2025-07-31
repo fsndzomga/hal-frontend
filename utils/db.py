@@ -284,6 +284,8 @@ MODEL_MAPPING = [
     ("Sonnet3.7", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("O4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("o4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
+    ("o4-mini-2025-04-16 low", "o4-mini Low (April 2025)", "o4-mini-2025-04-16"),
+    ("o4-mini-2025-04-16 high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("GPT4.1", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
     ("O3-low", "o3 Low (April 2025)", "o3-2025-04-16"),
     ("o3-low", "o3 Low (April 2025)", "o3-2025-04-16"),
@@ -307,6 +309,7 @@ MODEL_MAPPING = [
     ("gpt-4.1", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
     ("o3-mini-2025-01-31", "o3-mini Medium (January 2025)", "o3-mini-2025-01-31"),
     ("o3-2025-04-03", "o3 Medium (April 2025)", "o3-2025-04-03"),
+    ("o3-2025-04-16 medium", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("o3-2025-04-16 low", "o3 Low (April 2025)", "o3-2025-04-16"),
     ("openai/o3-2025-04-16 medium", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("o3-mini low", "o3-mini Low (January 2025)", "o3-mini-2025-01-31"),
@@ -519,11 +522,26 @@ class TracePreprocessor:
                 )
             ''')
 
-    def preprocess_traces(self, processed_dir="evals_live"):
+    def preprocess_traces(self, processed_dir="evals_live", skip_existing=True):
         processed_dir = Path(processed_dir)
+        
+        # Track processed files to avoid reprocessing
+        processed_files_log = self.db_dir / "processed_files.txt"
+        processed_files = set()
+        if skip_existing and processed_files_log.exists():
+            with open(processed_files_log, 'r') as f:
+                processed_files = set(line.strip() for line in f)
 
         for file in processed_dir.glob('*.json'):
+            # Skip if file already processed
+            if skip_existing and str(file) in processed_files:
+                print(f"Skipping already processed file: {file}")
+                continue
             print(f"Processing {file}")
+            primary_model_name = None
+            show_primary_model_name = None
+            agent_name_with_model = None
+            model_show_name = None 
             with open(file, 'r') as f:
                 data = json.load(f)
                 stem = file.stem
@@ -553,7 +571,14 @@ class TracePreprocessor:
                 print(f"Total usage is: {total_usage}")
 
                 if benchmark_name in ['corebench_hard', 'swebench_verified_mini', 'taubench_airline']:
-                    primary_model_name = data['config']['model_name_short']
+                    # Use get to avoid KeyError if 'model_name_short' is not present
+                    primary_model_name = data['config'].get('model_name_short')
+                    if primary_model_name is None:
+                        primary_model_name = data['config']['agent_args'].get('model_name')
+                        # get reasoning effort if any
+                        reasoning_effort = data['config']['agent_args'].get('reasoning_effort')
+                        if reasoning_effort:
+                            primary_model_name = f"{primary_model_name} {reasoning_effort}"
                 else:
                     # Find primary model from agent_name knowing Agent name is in the format "AgentName (ModelName)"
                     primary_model_name = agent_name.split('(')[-1].strip(' )') if '(' in agent_name else None
@@ -597,7 +622,7 @@ class TracePreprocessor:
                     model_show_name = self.get_model_show_name(model_name)
                     with self.get_conn(benchmark_name) as conn:
                         conn.execute('''
-                            INSERT INTO token_usage 
+                            INSERT OR REPLACE INTO token_usage 
                             (benchmark_name, agent_name, run_id, model_name, 
                             prompt_tokens, completion_tokens, input_tokens, output_tokens, total_tokens,
                             input_tokens_cache_write, input_tokens_cache_read, is_primary)
@@ -658,11 +683,16 @@ class TracePreprocessor:
                         else results.get(col) for col in columns]
 
                     query = f'''
-                        INSERT INTO parsed_results 
+                        INSERT OR REPLACE INTO parsed_results  
                         ({', '.join(PARSED_RESULTS_COLUMNS.keys())})
                         VALUES ({placeholders})
                     '''
                     conn.execute(query, values)
+                    
+                    # Mark file as processed
+                    if skip_existing:
+                        with open(processed_files_log, 'a') as f:
+                            f.write(f"{file}\n")
             except Exception as e:
                 print(f"Error preprocessing parsed results in {file}: {e}")
 
