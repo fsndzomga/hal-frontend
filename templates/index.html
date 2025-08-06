@@ -45,20 +45,88 @@
     </div>
 </div>
 
-<!-- Section Divider -->
-<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+<!-- Performance Highlights Section -->
+<div class="py-24 bg-gradient-to-b from-white to-gray-50 relative">
+    <div class="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-gray-100/80 to-transparent"></div>
+    <div class="container mx-auto max-w-[1500]px px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Performance Highlights</h2>
+            <p class="text-xl text-gray-600">Top performing agents across different benchmarks</p>
+        </div>
+        
+        <!-- Benchmark Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {% for highlight in highlights %}
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-xl font-bold">{{ highlight.benchmark }}</h3>
+                        <span class="text-xs bg-blue-500 px-2 py-1 rounded-full">{{ highlight.category }}</span>
+                    </div>
+                    <p class="text-blue-100">Top 3 performing agents</p>
+                </div>
+                <div class="p-6">
+                    {% for agent in highlight.agents %}
+                    <div class="flex items-center justify-between py-3 {% if not loop.last %}border-b border-gray-100{% endif %}">
+                        <div class="flex-1">
+                            <div class="font-semibold text-gray-900">{{ agent.base_agent }}</div>
+                            <div class="text-sm text-gray-600">({{ agent.model_name }})</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-bold text-green-600">{{ "%.1f"|format(agent.accuracy) }}%</div>
+                            {% if agent.total_cost > 0 %}
+                            <div class="text-sm text-gray-500">${{ "%.2f"|format(agent.total_cost) }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="mt-4">
+                        <a href="{{ url_for(highlight.benchmark_key) }}" 
+                           class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                            View Full Leaderboard
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
 
-<div class="max-w-[1500px] mx-auto px-4 sm:px-8 py-12">
-    <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">Model Accuracy Across Benchmarks</h2>
-        <p class="text-xl text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic, fugiat eaque delectus cum qui facere iure magnam repellendus, placeat deleniti voluptatibus similique laborum, consequatur earum nemo laudantium reiciendis molestiae repellat?</p>
+        <!-- Quick Stats -->
+        <!-- <div class="bg-white rounded-xl shadow-lg p-8">
+            <h3 class="text-2xl font-bold mb-6">Performance Insights</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    {% set total_agents_count = highlights|map(attribute='agents')|map('length')|sum %}
+                    <div class="text-3xl font-bold text-blue-600 mb-2">{{ total_agents_count }}</div>
+                    <div class="text-gray-600">Top Performing Agents</div>
+                </div>
+                <div class="text-center">
+                    {% set all_accuracies = [] %}
+                    {% for highlight in highlights %}
+                        {% for agent in highlight.agents %}
+                            {% set _ = all_accuracies.append(agent.accuracy) %}
+                        {% endfor %}
+                    {% endfor %}
+                    {% set avg_accuracy = (all_accuracies|sum / all_accuracies|length) if all_accuracies else 0 %}
+                    <div class="text-3xl font-bold text-green-600 mb-2">{{ "%.1f"|format(avg_accuracy) }}%</div>
+                    <div class="text-gray-600">Average Top Performance</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">{{ highlights|length }}</div>
+                    <div class="text-gray-600">Benchmarks Covered</div>
+                </div>
+            </div>
+        </div> -->
     </div>
-    <div id="modelBenchmarkHeatmap" class="w-full h-[600px]"></div>
+    <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-100/80 to-transparent"></div>
 </div>
 
 <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 <!-- Unified Agent Benchmarking Section -->
-<div class="py-24 bg-gradient-to-b from-gray-50 to-white relative">
+<!-- <div class="py-24 bg-gradient-to-b from-gray-50 to-white relative">
     <div class="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-gray-100/80 to-transparent"></div>
     <div class="container mx-auto max-w-[1500]px px-8">
         <div class="text-center mb-16">
@@ -134,13 +202,13 @@
         </div>
     </div>
     <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-100/80 to-transparent"></div>
-</div>
+</div> -->
 
 <!-- Section Divider -->
-<div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+<!-- <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div> -->
 
 <!-- Leaderboards Section -->
-<div id="leaderboards" class="py-24 bg-gradient-to-b from-white to-gray-50 relative">
+<!-- <div id="leaderboards" class="py-24 bg-gradient-to-b from-white to-gray-50 relative">
     <div class="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-gray-100/80 to-transparent"></div>
     <div class="container mx-auto max-w-[1500]px px-8 pb-16">
         <h2 class="text-4xl font-bold mb-16 text-center">HAL Leaderboards</h2>
@@ -245,7 +313,7 @@
         </div>
     </div>
     <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-100/80 to-transparent"></div>
-</div>
+</div> -->
 
 <!-- Section Divider -->
 <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -627,33 +695,6 @@ year =         {2025}}</pre>
 
 {% block scripts %}
 <script>
-    // Parse the USACO data from Flask
-    // const scatter_plot_data = JSON.parse('{{ scatter_plot|safe }}');
-    
-    // Use the actual USACO data for the plot
-    // Plotly.newPlot('usacoScatterPlot', scatter_plot_data.data, {
-    //     ...scatter_plot_data.layout,
-    //     title: 'USACO Agent Performance vs Cost',
-    //     margin: { t: 40, r: 40, b: 60, l: 60 }
-    // });
-
-    const model_benchmark_heatmap = JSON.parse('{{ model_benchmark_heatmap|safe }}');
-
-    console.log('Model Benchmark Heatmap Data:', model_benchmark_heatmap.data);
-    Plotly.newPlot('modelBenchmarkHeatmap', model_benchmark_heatmap.data, {
-        ...model_benchmark_heatmap.layout,
-        margin: { t: 40, r: 40, b: 80, l: 180 },
-        width: null,
-        height: null
-    }, {
-        responsive: true,
-        displayModeBar: false
-    });
-    
-    window.addEventListener('resize', function() {
-        Plotly.Plots.resize('usacoScatterPlot');
-    });
-
     function copyBibtex() {
         const bibtex = `@Misc{hal,
 title =        {HAL: A Holistic Agent Leaderboard for Centralized and Reproducible Agent Evaluation},

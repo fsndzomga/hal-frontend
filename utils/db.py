@@ -262,6 +262,10 @@ DEFAULT_PRICING = {
     "Gemini 2.5 Pro Preview (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 5},
     "Claude-3.7 Sonnet High (February 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
     "gpt-4.5-preview-2025-02-27": {"prompt_tokens": 75, "completion_tokens": 150},
+    "Claude Opus 4 (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
+    "Claude Opus 4 High (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
+    "Claude Opus 4.1 High": {"prompt_tokens": 15, "completion_tokens": 75},
+    "Claude Opus 4.1": {"prompt_tokens": 15, "completion_tokens": 75},
 }
 
 
@@ -273,14 +277,21 @@ MODEL_MAPPING = [
     ("o4-mini-2025-04-16 high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("deepseek-ai/DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
     ("claude-3-7-sonnet-20250219", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("claude-opus-4-20250514", "Claude Opus 4 (May 2025)", "claude-opus-4-20250514"),
+    ("Claude-Opus 4 High (May 2025)", "Claude Opus 4 High (May 2025)", "claude-opus-4-20250514"),
     ("gemini-2.0-flash", "Gemini 2.0 Flash", "gemini-2.0-flash"),
     ("claude-3-7-sonnet-20250219 high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
     ("o3-2025-04-16", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("claude-3-7-sonnet-2025-02-19", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("claude-opus-4-20250514 high", "Claude-Opus 4 High (May 2025)", "claude-opus-4-20250514"),#opus 4
+    ("openrouter/anthropic/claude-opus-4.1", "Claude Opus 4.1", "openrouter/anthropic/claude-opus-4.1"),
     ("deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("claude-3-7-sonnet-2025-02-19 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
     ("DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
+    ("together_ai/deepseek-ai/DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
+    ("together_ai/deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
+    ("openrouter/anthropic/claude-opus-4.1 high", "Claude Opus 4.1 High", "openrouter/anthropic/claude-opus-4.1-high"),
     ("Sonnet3.7", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("O4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("o4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
@@ -378,7 +389,6 @@ class TracePreprocessor:
     
     def get_model_benchmark_accuracies(self):
         EXCLUDE_BENCHMARKS = [
-            'assistantbench',
             'colbench_backend_programming',
             'colbench_frontend_design',
             'scienceagentbench',
@@ -410,6 +420,8 @@ class TracePreprocessor:
             "o4-mini Medium (April 2025)":             "o4-mini Med Apr 25",
             "o4-mini Low (April 2025)":             "o4-mini Low Apr 25",
             "o4-mini High (April 2025)":             "o4-mini High Apr 25",
+            "Claude-Opus 4 High (May 2025)":         "Claude Opus 4 High May 25",
+            "claude-opus-4-20250514":        "Claude Opus 4 May 25",
         }
 
         # MODEL_ALIAS = {
@@ -608,13 +620,32 @@ class TracePreprocessor:
                 # Rename agent_name with primary model show name (only once)
                 base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
 
-                base_agent_name = (
-                    base_agent_name
-                    .replace('Browser-Use_test', 'Browser-Use')  # Replace Browser-Use_test with Browser-Use
-                    .replace('hal', 'HAL')  # Replace hal with HAL (case sensitive)
-                    .replace('Hal', 'HAL')  # Replace Hal with HAL
-                    .replace('HAl', 'HAL')  # Replace HAl with HAL
-                )
+                # Simple string replacements
+                simple_replacements = [
+                    ('Browser-Use_test', 'Browser-Use'),
+                    ('hal', 'HAL'),
+                    ('Hal', 'HAL'),
+                    ('HAl', 'HAL'),
+                    ('TauBench Few Shot', 'TAU-bench Few Shot'),
+                    ('Assistantbench Browser Agent', 'Browser Agent'),
+                    ('TAU-bench Few-shot High', 'TAU-bench Few Shot'),
+                ]
+                
+                # Apply simple replacements
+                for old, new in simple_replacements:
+                    base_agent_name = base_agent_name.replace(old, new)
+                
+                # Exact whole-string mappings (all-to-all swap)
+                exact_mappings = {
+                    'HAL Generalist': 'HAL Generalist Agent',
+                    'HAL Generalist High Reasoning': 'HAL Generalist Agent',
+                    'TauBench Few Shot High Reasoning': 'TAU-bench Few Shot',
+                    'TAU-bench Few-shot No Reasoning': 'TAU-bench Few Shot',
+                }
+                
+                # Apply exact mappings
+                if base_agent_name in exact_mappings:
+                    base_agent_name = exact_mappings[base_agent_name]
 
                 agent_name_with_model = f"{base_agent_name} ({show_primary_model_name})" if show_primary_model_name else base_agent_name
 
@@ -1096,7 +1127,7 @@ class TracePreprocessor:
         benchmarks = set()
         for db_file in self.db_dir.glob('*.db'):
             benchmarks.add(db_file.stem.replace('_', '/'))
-        return len(benchmarks) - 4 # TODO hardcoded -4 because of benchmarks not added for now
+        return len(benchmarks) - 3 # TODO hardcoded -3 because of benchmarks not added for now
 
     def get_total_agents(self):
         """Get the total number of unique agents across all benchmarks"""
@@ -1130,6 +1161,87 @@ class TracePreprocessor:
         except Exception as e:
             print(f"Error getting agent URL: {e}")
         return ''
+
+    def get_highlight_results(self, limit_per_benchmark=3):
+        """Get highlight results organized by benchmark and agent for the landing page"""
+        EXCLUDE_BENCHMARKS = [
+            'colbench_backend_programming',
+            'colbench_frontend_design', 
+            'scienceagentbench',
+        ]
+        
+        BENCHMARK_DISPLAY_NAMES = {
+            "usaco": "USACO",
+            "taubench_airline": "TAU-bench Airline",
+            "swebench_verified_mini": "SWE-bench Verified Mini",
+            "scicode": "Scicode",
+            "online_mind2web": "Online Mind2Web",
+            "gaia": "GAIA",
+            "corebench_hard": "CORE-Bench Hard",
+        }
+        
+        BENCHMARK_CATEGORIES = {
+            "usaco": "Programming",
+            "taubench_airline": "Web Navigation",
+            "swebench_verified_mini": "Software Engineering",
+            "scicode": "Scientific Computing",
+            "online_mind2web": "Web Navigation",
+            "gaia": "General AI Assistant",
+            "corebench_hard": "Scientific Research",
+        }
+        
+        highlights = []
+        
+        for db_file in self.db_dir.glob('*.db'):
+            benchmark_name = db_file.stem
+            if benchmark_name in EXCLUDE_BENCHMARKS:
+                continue
+                
+            display_name = BENCHMARK_DISPLAY_NAMES.get(benchmark_name, benchmark_name.replace('_', ' ').title())
+            category = BENCHMARK_CATEGORIES.get(benchmark_name, "Other")
+            
+            try:
+                with self.get_conn(benchmark_name) as conn:
+                    # Get top performing agent-model combinations
+                    query = '''
+                        SELECT agent_name, model_name, accuracy, total_cost
+                        FROM parsed_results 
+                        WHERE benchmark_name = ? AND accuracy IS NOT NULL
+                        ORDER BY accuracy DESC
+                        LIMIT ?
+                    '''
+                    df = pd.read_sql_query(query, conn, params=(benchmark_name, limit_per_benchmark))
+                    
+                    if df.empty:
+                        continue
+                    
+                    # Convert to list of agent-model combinations
+                    top_agents = []
+                    for _, row in df.iterrows():
+                        # Extract base agent name (without model info)
+                        base_agent = re.sub(r'\s*\(.*?\)$', '', row['agent_name']).strip()
+                        
+                        top_agents.append({
+                            'agent_name': row['agent_name'],
+                            'base_agent': base_agent,
+                            'model_name': row['model_name'],
+                            'accuracy': row['accuracy'] * 100,  # Convert to percentage
+                            'total_cost': row['total_cost'] if row['total_cost'] else 0,
+                        })
+                    
+                    if top_agents:
+                        highlights.append({
+                            'benchmark': display_name,
+                            'benchmark_key': benchmark_name,
+                            'category': category,
+                            'agents': top_agents
+                        })
+                        
+            except Exception as e:
+                print(f"Error processing highlights for {benchmark_name}: {e}")
+                continue
+        
+        return highlights
 
 if __name__ == '__main__':
     preprocessor = TracePreprocessor()

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, request
 from utils.db import TracePreprocessor, DEFAULT_PRICING
-from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart, create_completion_tokens_bar_chart, create_model_benchmark_heatmap, create_missing_runs_heatmap
+from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart, create_completion_tokens_bar_chart, create_missing_runs_heatmap
 import plotly.utils
 import json
 from datetime import datetime
@@ -43,16 +43,14 @@ def create_app():
         total_agents = preprocessor.get_total_agents()
         total_benchmarks = preprocessor.get_total_benchmarks()
 
-        # Get models and benchmarks for the heatmap
-        df = preprocessor.get_model_benchmark_accuracies()
-        heatmap_fig = create_model_benchmark_heatmap(df)
-        heatmap_json = json.dumps(heatmap_fig, cls=plotly.utils.PlotlyJSONEncoder)
+        # Get highlight results organized by benchmark and agent
+        highlights = preprocessor.get_highlight_results(limit_per_benchmark=3)
 
         return render_template('index.html', 
                              total_agents=total_agents, 
                              total_benchmarks=total_benchmarks,
                              contributors=CONTRIBUTORS,
-                             model_benchmark_heatmap=heatmap_json)
+                             highlights=highlights)
     
     @app.route("/missing")
     def missing_runs_heatmap():

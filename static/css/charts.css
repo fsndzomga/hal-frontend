@@ -1,0 +1,238 @@
+/* HAL Frontend Additional Styles */
+
+/* Three.js Chart Container Styles */
+.threejs-chart-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.threejs-chart-container canvas {
+    display: block;
+    border-radius: 0.5rem;
+}
+
+/* Performance Cards */
+.performance-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.performance-card:hover {
+    border-left-color: #3b82f6;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.performance-card .accuracy-badge {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.performance-card .cost-badge {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Chart Control Buttons */
+.chart-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.chart-controls button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.chart-controls button.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.chart-controls button:not(.active) {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.chart-controls button:not(.active):hover {
+    background: #e5e7eb;
+}
+
+/* Highlight Stats */
+.highlight-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 1rem;
+}
+
+.highlight-stat {
+    text-align: center;
+}
+
+.highlight-stat .value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.highlight-stat .label {
+    color: #64748b;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+/* Benchmark Grid */
+.benchmark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+/* Loading Animation */
+.chart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: rgba(248, 250, 252, 0.8);
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .threejs-chart-container {
+        height: 400px !important;
+    }
+    
+    .chart-controls {
+        flex-direction: column;
+    }
+    
+    .chart-controls button {
+        text-align: center;
+    }
+    
+    .benchmark-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .highlight-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+/* Performance Chart Tooltips */
+.threejs-tooltip {
+    position: absolute;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 1000;
+    font-size: 12px;
+    max-width: 250px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+}
+
+.threejs-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.9);
+}
+
+/* Model Performance Indicators */
+.model-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Interactive Elements */
+.interactive-hint {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #93c5fd;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #1e40af;
+}
+
+.interactive-hint strong {
+    color: #1d4ed8;
+}
+
+/* Section Dividers with Gradient */
+.section-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+    margin: 3rem 0;
+}
+
+/* Benchmark Header Styling */
+.benchmark-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem 0.75rem 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.benchmark-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    opacity: 0.1;
+}
