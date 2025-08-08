@@ -288,7 +288,7 @@ MODEL_MAPPING = [
     ("claude-3-7-sonnet-20250219 high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
     ("o3-2025-04-16", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("claude-3-7-sonnet-2025-02-19", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
-    ("claude-opus-4-20250514 high", "Claude Opus 4 High (May 2025)", "claude-opus-4-20250514"),#opus 4
+    ("claude-opus-4-20250514 high", "Claude Opus 4 High (May 2025)", "claude-opus-4-20250514"),
     ("openrouter/anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "openrouter/anthropic/claude-opus-4.1"),
     ("deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
