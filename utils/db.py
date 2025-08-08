@@ -288,7 +288,7 @@ MODEL_MAPPING = [
     ("claude-3-7-sonnet-20250219 high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
     ("o3-2025-04-16", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("claude-3-7-sonnet-2025-02-19", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
-    ("claude-opus-4-20250514 high", "Claude-Opus 4 High (May 2025)", "claude-opus-4-20250514"),#opus 4
+    ("claude-opus-4-20250514 high", "Claude Opus 4 High (May 2025)", "claude-opus-4-20250514"),#opus 4
     ("openrouter/anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "openrouter/anthropic/claude-opus-4.1"),
     ("deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
@@ -348,6 +348,8 @@ MODEL_MAPPING = [
     ("anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "anthropic/claude-opus-4.1"),
     ("anthropic/claude-opus-4", "Claude Opus 4 (May 2025)", "anthropic/claude-opus-4"),
     ("gpt-5-2025-08-07", "GPT-5 Medium", "gpt-5"),
+    ("claude-opus-4.1-20250514 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-20250514"),
+    ("claude-opus-4.1-20250514", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250514"),
 ]
 
 MODELS_TO_SKIP = [
@@ -654,36 +656,82 @@ class TracePreprocessor:
                 for old, new in simple_replacements:
                     base_agent_name = base_agent_name.replace(old, new)
                 
-                # Exact whole-string mappings (all-to-all swap)
-                exact_mappings = {
-                    'HAL Generalist': 'HAL Generalist Agent',
-                    'HAL Generalist High Reasoning': 'HAL Generalist Agent',
-                    'HAL Generalist No Reasoning': 'HAL Generalist Agent',  # Added missing mapping
-                    'HAL Generalist Minimal Reasoning': 'HAL Generalist Agent',  # Added missing mapping
-                    'TauBench Few Shot High Reasoning': 'TAU-bench Few Shot',
-                    'TauBench Few Shot': 'TAU-bench Few Shot',  # Added missing mapping
-                    'TauBench Few-Shot High Reasoning': 'TAU-bench Few Shot',  # Added missing mapping
-                    'TauBench Few-Shot Minimal Reasoning': 'TAU-bench Few Shot',  # Added missing mapping
-                    'TAU-bench Few-shot No Reasoning': 'TAU-bench Few Shot',
-                    'TAU-bench FewShot No Reasoning': 'TAU-bench Few Shot',
-                    'TAU-bench FewShot': 'TAU-bench Few Shot',  # Added missing mapping
-                    'Taubench FewShot High Reasoning': 'TAU-bench Few Shot',
-                    'Taubench FewShot No Reasoning': 'TAU-bench Few Shot',
-                    'TAU-bench Few Shot High Reasoning': 'TAU-bench Few Shot',
-                    'Assistantbench Browser Agent': 'Browser-Use',
-                    'Browser Agent': 'Browser-Use',
-                    'coreagent': 'CORE-Agent',
-                    'CORE-Agent': 'CORE-Agent',  # This one is already correct
-                    'colbench_text_sonnet37': 'Col-bench Text',
-                    'SAB Self-Debug Claude-3-7 low': 'SAB Self-Debug',
-                    'My Agent': 'SWE-Agent',
-                    'SAB Example Agent': 'SAB Self-Debug'
-
-                }
+                # Pattern-based mappings with case-insensitive matching
+                # HAL Generalist patterns
+                if 'hal' in base_agent_name.lower() and 'generalist' in base_agent_name.lower():
+                    base_agent_name = 'HAL Generalist Agent'
                 
-                # Apply exact mappings
-                if base_agent_name in exact_mappings:
-                    base_agent_name = exact_mappings[base_agent_name]
+                # Self-Debug patterns
+                elif 'self-debug' in base_agent_name.lower() or 'selfdebug' in base_agent_name.lower():
+                    base_agent_name = 'SAB Self-Debug'
+                
+                # TAU-bench patterns
+                elif any(pattern in base_agent_name.lower() for pattern in ['few shot', 'fewshot']):
+                    base_agent_name = 'TAU-bench Few Shot'
+                
+                # USACO patterns
+                elif 'usaco' in base_agent_name.lower():
+                    if 'episodic' in base_agent_name.lower() and 'semantic' in base_agent_name.lower():
+                        base_agent_name = 'USACO Episodic + Semantic'
+                    else:
+                        base_agent_name = 'USACO Agent'
+                
+                # Browser/Assistant patterns
+                elif any(pattern in base_agent_name.lower() for pattern in ['browser', 'assistantbench']):
+                    base_agent_name = 'Browser-Use'
+                
+                # CORE-Agent patterns
+                elif 'coreagent' in base_agent_name.lower() or 'core-agent' in base_agent_name.lower():
+                    base_agent_name = 'CORE-Agent'
+                
+                # Col-bench patterns
+                elif 'colbench' in base_agent_name.lower():
+                        base_agent_name = 'Col-bench Text'
+                
+                # SWE-Agent patterns
+                elif any(pattern in base_agent_name.lower() for pattern in ['my_agent', 'my agent', 'sweagent', 'swe-agent']):
+                    base_agent_name = 'SWE-Agent'
+                
+                # SciCode patterns
+                
+                # HF Open Deep Research patterns
+                elif 'hf_open_deep_research' in base_agent_name.lower() or 'hf open deep research' in base_agent_name.lower():
+                    base_agent_name = 'HF Open Deep Research'
+                
+                # SeeAct patterns
+                elif 'seeact' in base_agent_name.lower():
+                    base_agent_name = 'SeeAct'
+                
+                # If no pattern matches, use exact mappings as fallback
+                else:
+                    exact_mappings = {
+                        'HAL Generalist': 'HAL Generalist Agent',
+                        'HAL Generalist High Reasoning': 'HAL Generalist Agent',
+                        'HAL Generalist No Reasoning': 'HAL Generalist Agent',
+                        'HAL Generalist Minimal Reasoning': 'HAL Generalist Agent',
+                        'TauBench Few Shot High Reasoning': 'TAU-bench Few Shot',
+                        'TauBench Few Shot': 'TAU-bench Few Shot',
+                        'TauBench Few-Shot High Reasoning': 'TAU-bench Few Shot',
+                        'TauBench Few-Shot Minimal Reasoning': 'TAU-bench Few Shot',
+                        'TAU-bench Few-shot No Reasoning': 'TAU-bench Few Shot',
+                        'TAU-bench FewShot No Reasoning': 'TAU-bench Few Shot',
+                        'TAU-bench FewShot': 'TAU-bench Few Shot',
+                        'Taubench FewShot High Reasoning': 'TAU-bench Few Shot',
+                        'Taubench FewShot No Reasoning': 'TAU-bench Few Shot',
+                        'TAU-bench Few Shot High Reasoning': 'TAU-bench Few Shot',
+                        'Assistantbench Browser Agent': 'Browser-Use',
+                        'Browser Agent': 'Browser-Use',
+                        'coreagent': 'CORE-Agent',
+                        'CORE-Agent': 'CORE-Agent',
+                        'colbench_text_sonnet37': 'Col-bench Text',
+                        'SAB Self-Debug Claude-3-7 low': 'SAB Self-Debug',
+                        'My Agent': 'SWE-Agent',
+                        'SAB Example Agent': 'SAB Self-Debug'
+                    }
+                    
+                    # Apply exact mappings
+                    if base_agent_name in exact_mappings:
+                        base_agent_name = exact_mappings[base_agent_name]
 
                 agent_name_with_model = f"{base_agent_name} ({show_primary_model_name})" if show_primary_model_name else base_agent_name
 
