@@ -9,8 +9,12 @@ from datetime import datetime
 CONTRIBUTORS = [
     {"name": "Amit Arora", "affiliation": "Amazon"},
     {"name": "Aymeric Roucher", "affiliation": "Hugging Face"},
+    {"name": "Ayush Thakur", "affiliation": "Weights & Biases"},
+    {"name": "Boyi Wei", "affiliation": "Princeton"},
+    {"name": "Daniel Kang", "affiliation": "UIUC"},
     {"name": "Hailey Schoelkopf", "affiliation": "Anthropic"},
     {"name": "Harsh Trivedi", "affiliation": "Stony Brook"},
+    {"name": "Huan Sun", "affiliation": "OSU"},
     {"name": "Iason Gabriel", "affiliation": "Google DeepMind"},
     {"name": "Jelena Luketina", "affiliation": "UK AISI"},
     {"name": "JJ Allaire", "affiliation": "UK AISI"},
@@ -19,16 +23,20 @@ CONTRIBUTORS = [
     {"name": "Marius Hobbhahn", "affiliation": "Apollo Research"},
     {"name": "Maximillian Kaufmann", "affiliation": "UK AISI"},
     {"name": "Morgan McGuire", "affiliation": "Weights & Biases"},
-    {"name": "Nitya Nadgir", "affiliation": "Princeton"},
+    {"name": "Nitya Nadgir", "affiliation": "Brookings"},
     {"name": "Omar Khattab", "affiliation": "MIT"},
     {"name": "Parth Asawa", "affiliation": "UC Berkeley"},
+    {"name": "Percy Liang", "affiliation": "Princeton University"},
     {"name": "Rishi Bommasani", "affiliation": "Stanford"},
     {"name": "Shreya Shankar", "affiliation": "UC Berkeley"},
     {"name": "Shayne Longpre", "affiliation": "MIT"},
+    {"name": "Tianci Xue", "affiliation": "OSU"},
     {"name": "Veniamin Veselovsky", "affiliation": "Princeton"},
     {"name": "William Isaac", "affiliation": "Google DeepMind"},
     {"name": "Yifan Mai", "affiliation": "Stanford"},
-    {"name": "Zachary Siegel", "affiliation": "Princeton"}
+    {"name": "Yu Su", "affiliation": "OSU"},
+    {"name": "Zachary Siegel", "affiliation": "Princeton"},
+    {"name": "Ziru (Ron) Chen", "affiliation": "OSU"}
 ]
 
 def create_app():
