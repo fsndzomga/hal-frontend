@@ -267,6 +267,10 @@ DEFAULT_PRICING = {
     "Claude Opus 4.1 High (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "Claude Opus 4.1 (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "GPT-5 High": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "GPT-5 Medium": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "GPT-5 Low": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "GPT-OSS-120B": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
+    "GPT-OSS-120B High": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
 }
 
 
@@ -344,7 +348,6 @@ MODEL_MAPPING = [
     ("anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "anthropic/claude-opus-4.1"),
     ("anthropic/claude-opus-4", "Claude Opus 4 (May 2025)", "anthropic/claude-opus-4"),
     ("gpt-5-2025-08-07", "GPT-5 Medium", "gpt-5"),
-    ("openai/gpt-oss-120b", "GPT-OSS-120B", "openai/gpt-oss-120b"),
 ]
 
 MODELS_TO_SKIP = [
@@ -673,7 +676,8 @@ class TracePreprocessor:
                     'CORE-Agent': 'CORE-Agent',  # This one is already correct
                     'colbench_text_sonnet37': 'Col-bench Text',
                     'SAB Self-Debug Claude-3-7 low': 'SAB Self-Debug',
-                    'My Agent': 'SWE-Agent'
+                    'My Agent': 'SWE-Agent',
+                    'SAB Example Agent': 'SAB Self-Debug'
 
                 }
                 
@@ -753,6 +757,28 @@ class TracePreprocessor:
                         VALUES ({placeholders})
                     '''
                     conn.execute(query, values)
+                    
+                    # After successful processing, create a reduced version of the JSON file
+                    # Keep only the essential keys used during preprocessing
+                    reduced_data = {
+                        'config': data['config'],
+                        'results': data['results'],
+                        'total_usage': data.get('total_usage', {}),
+                        # Keep any other small essential keys if they exist
+                        'metadata': {
+                            'processed': True,
+                            'original_file_size': len(json.dumps(data)),
+                            'processed_date': date
+                        }
+                    }
+                    
+                    # Overwrite the original file with the reduced version
+                    try:
+                        with open(file, 'w') as f:
+                            json.dump(reduced_data, f, indent=2)
+                        print(f"Reduced file size for {file}")
+                    except Exception as e:
+                        print(f"Error saving reduced file {file}: {e}")
                     
                     # Mark file as processed
                     if skip_existing:
@@ -1168,8 +1194,8 @@ class TracePreprocessor:
         total_agents = set()
         # Use the parsed_results table since it's guaranteed to have all benchmark-agent pairs
         for db_file in self.db_dir.glob('*.db'):
-            # skip assistantbench, colbench, scienceagentbench
-            if db_file.stem in ['assistantbench', 'colbench_backend_programming', 'colbench_frontend_design', 'scienceagentbench']:
+            # skip colbench, scienceagentbench
+            if db_file.stem in ['colbench_backend_programming', 'colbench_frontend_design', 'scienceagentbench']:
                 continue # TODO remove hardcoded skip once these benchmarks are added
             benchmark_name = db_file.stem.replace('_', '/')
             with self.get_conn(benchmark_name) as conn:
