@@ -612,9 +612,12 @@ class TracePreprocessor:
                     # Use get to avoid KeyError if 'model_name_short' is not present
                     primary_model_name = data['config'].get('model_name_short')
                     if primary_model_name is None:
-                        primary_model_name = data['config']['agent_args'].get('model_name')
-                        # get reasoning effort if any
-                        reasoning_effort = data['config']['agent_args'].get('reasoning_effort')
+                        # Try both old and new key formats to cover all possible cases
+                        primary_model_name = (data['config']['agent_args'].get('model_name') or 
+                                            data['config']['agent_args'].get('agent.model.name'))
+                        # get reasoning effort if any - try both old and new key formats
+                        reasoning_effort = (data['config']['agent_args'].get('reasoning_effort') or
+                                          data['config']['agent_args'].get('agent.model.reasoning_effort'))
                         if reasoning_effort:
                             primary_model_name = f"{primary_model_name} {reasoning_effort}"
                 else:
