@@ -266,9 +266,9 @@ DEFAULT_PRICING = {
     "Claude Opus 4 High (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "Claude Opus 4.1 High (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "Claude Opus 4.1 (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
-    "GPT-5 High": {"prompt_tokens": 1.25, "completion_tokens": 10},
-    "GPT-5 Medium": {"prompt_tokens": 1.25, "completion_tokens": 10},
-    "GPT-5 Low": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "GPT-5 High (August 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "GPT-5 Medium (August 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "GPT-5 Low (August 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
     "GPT-OSS-120B": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
     "GPT-OSS-120B High": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
 }
@@ -331,14 +331,14 @@ MODEL_MAPPING = [
     ("gpt-4o-2024-08-06", "GPT-4o (August 2024)", "gpt-4o-2024-08-06"),
     ("o1-2024-12-17", "o1 Medium (December 2024)", "o1-2024-12-17"),
     ("text-embedding-3-small", "Text-Embedding-3 Small", "text-embedding-3-small"),
-    ("gpt-5 high", "GPT-5 Medium", "gpt-5-high"), # Temporary hack because of errors in taubench
-    ("gpt-5 minimal", "GPT-5 Medium", "gpt-5-high"), # Temporary hack because of errors in taubench
-    ("gpt-5", "GPT-5 Medium", "gpt-5"),
-    ("gpt-5 low", "GPT-5 Low", "gpt-5-low"),
-    ("gpt-5 medium", "GPT-5 Medium", "gpt-5-medium"),
+    ("gpt-5 high", "GPT-5 Medium (August 2025)", "gpt-5-high"), # Temporary hack because of errors in taubench
+    ("gpt-5 minimal", "GPT-5 Medium (August 2025)", "gpt-5-high"), # Temporary hack because of errors in taubench
+    ("gpt-5", "GPT-5 Medium (August 2025)", "gpt-5"),
+    ("gpt-5 low", "GPT-5 Low (August 2025)", "gpt-5-low"),
+    ("gpt-5 medium", "GPT-5 Medium (August 2025)", "gpt-5-medium"),
     ("gemini/gemini-2.0-flash", "Gemini 2.0 Flash", "gemini/gemini-2.0-flash"),
     ("openai/o3-mini-2025-01-31 low", "o3-mini Low (January 2025)", "o3-mini-2025-01-31"),
-    ("openai/gpt-5-2025-08-07", "GPT-5 Medium", "gpt-5"),
+    ("openai/gpt-5-2025-08-07", "GPT-5 Medium (August 2025)", "gpt-5"),
     ("openrouter/openai/gpt-oss-120b high", "GPT-OSS-120B High", "openrouter/openai/gpt-oss-120b"),
     ("openrouter/openai/gpt-oss-120b", "GPT-OSS-120B", "openrouter/openai/gpt-oss-120b"),
     ("openai/gpt-oss-120b high", "GPT-OSS-120B High", "openai/gpt-oss-120b"),
@@ -349,9 +349,13 @@ MODEL_MAPPING = [
     ("claude-opus-4", "Claude Opus 4 (May 2025)", "claude-opus-4"),
     ("anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "anthropic/claude-opus-4.1"),
     ("anthropic/claude-opus-4", "Claude Opus 4 (May 2025)", "anthropic/claude-opus-4"),
-    ("gpt-5-2025-08-07", "GPT-5 Medium", "gpt-5"),
+    ("gpt-5-2025-08-07", "GPT-5 Medium (August 2025)", "gpt-5"),
     ("claude-opus-4.1-20250514 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-20250514"),
     ("claude-opus-4.1-20250514", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250514"),
+    ("gpt-5-2025-08-07", "GPT-5 Medium (August 2025)", "gpt-5-2025-08-07"),
+    ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4-1-20250805"),
+    ("gpt-5-2025-08-07 high", "GPT-5 High (August 2025)", "gpt-5-2025-08-07"),
+    ("claude-opus-4-1-20250805 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4-1-20250805")
 ]
 
 MODELS_TO_SKIP = [
