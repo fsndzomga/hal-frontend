@@ -264,8 +264,9 @@ DEFAULT_PRICING = {
     "gpt-4.5-preview-2025-02-27": {"prompt_tokens": 75, "completion_tokens": 150},
     "Claude Opus 4 (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "Claude Opus 4 High (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
-    "Claude Opus 4.1 High": {"prompt_tokens": 15, "completion_tokens": 75},
-    "Claude Opus 4.1": {"prompt_tokens": 15, "completion_tokens": 75},
+    "Claude Opus 4.1 High (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
+    "Claude Opus 4.1 (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
+    "GPT-5 High": {"prompt_tokens": 1.25, "completion_tokens": 10},
 }
 
 
@@ -284,19 +285,17 @@ MODEL_MAPPING = [
     ("o3-2025-04-16", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("claude-3-7-sonnet-2025-02-19", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("claude-opus-4-20250514 high", "Claude-Opus 4 High (May 2025)", "claude-opus-4-20250514"),#opus 4
-    ("openrouter/anthropic/claude-opus-4.1", "Claude Opus 4.1", "openrouter/anthropic/claude-opus-4.1"),
+    ("openrouter/anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "openrouter/anthropic/claude-opus-4.1"),
     ("deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("claude-3-7-sonnet-2025-02-19 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
     ("DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
     ("together_ai/deepseek-ai/DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
     ("together_ai/deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
-    ("openrouter/anthropic/claude-opus-4.1 high", "Claude Opus 4.1 High", "openrouter/anthropic/claude-opus-4.1-high"),
+    ("openrouter/anthropic/claude-opus-4.1 high", "Claude Opus 4.1 High (August 2025)", "openrouter/anthropic/claude-opus-4.1-high"),
     ("Sonnet3.7", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("O4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("o4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
-    ("o4-mini-2025-04-16 low", "o4-mini Low (April 2025)", "o4-mini-2025-04-16"),
-    ("o4-mini-2025-04-16 high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("GPT4.1", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
     ("O3-low", "o3 Low (April 2025)", "o3-2025-04-16"),
     ("o3-low", "o3 Low (April 2025)", "o3-2025-04-16"),
@@ -327,7 +326,25 @@ MODEL_MAPPING = [
     ("o3-mini high", "o3-mini High (January 2025)", "o3-mini-2025-01-31"),
     ("gpt-4o-2024-08-06", "GPT-4o (August 2024)", "gpt-4o-2024-08-06"),
     ("o1-2024-12-17", "o1 Medium (December 2024)", "o1-2024-12-17"),
-    ("text-embedding-3-small", "Text-Embedding-3 Small", "text-embedding-3-small")
+    ("text-embedding-3-small", "Text-Embedding-3 Small", "text-embedding-3-small"),
+    ("gpt-5 high", "GPT-5 Medium", "gpt-5-high"), # Temporary hack because of errors in taubench
+    ("gpt-5 minimal", "GPT-5 Medium", "gpt-5-high"), # Temporary hack because of errors in taubench
+    ("gpt-5", "GPT-5 Medium", "gpt-5"),
+    ("gpt-5 low", "GPT-5 Low", "gpt-5-low"),
+    ("gpt-5 medium", "GPT-5 Medium", "gpt-5-medium"),
+    ("gemini/gemini-2.0-flash", "Gemini 2.0 Flash", "gemini/gemini-2.0-flash"),
+    ("openai/o3-mini-2025-01-31 low", "o3-mini Low (January 2025)", "o3-mini-2025-01-31"),
+    ("openai/gpt-5-2025-08-07", "GPT-5 Medium", "gpt-5"),
+    ("openrouter/openai/gpt-oss-120b high", "GPT-OSS-120B High", "openrouter/openai/gpt-oss-120b"),
+    ("openrouter/openai/gpt-oss-120b", "GPT-OSS-120B", "openrouter/openai/gpt-oss-120b"),
+    ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250805"),
+    ("claude-opus-4-1-20250514", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250514"),
+    ("claude-opus-4-1-20250514 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-20250514"),
+    ("claude-opus-4", "Claude Opus 4 (May 2025)", "claude-opus-4"),
+    ("anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "anthropic/claude-opus-4.1"),
+    ("anthropic/claude-opus-4", "Claude Opus 4 (May 2025)", "anthropic/claude-opus-4"),
+    ("gpt-5-2025-08-07", "GPT-5 Medium", "gpt-5"),
+    ("openai/gpt-oss-120b", "GPT-OSS-120B", "openai/gpt-oss-120b"),
 ]
 
 MODELS_TO_SKIP = [
@@ -420,8 +437,10 @@ class TracePreprocessor:
             "o4-mini Medium (April 2025)":             "o4-mini Med Apr 25",
             "o4-mini Low (April 2025)":             "o4-mini Low Apr 25",
             "o4-mini High (April 2025)":             "o4-mini High Apr 25",
-            "Claude-Opus 4 High (May 2025)":         "Claude Opus 4 High May 25",
-            "claude-opus-4-20250514":        "Claude Opus 4 May 25",
+            "Claude Opus 4 High (May 2025)":         "Claude Opus 4 High May 25",
+            "Claude Opus 4 (May 2025)":              "Claude Opus 4 May 25",
+            "Claude Opus 4.1 (August 2025)":         "Claude Opus 4.1 Aug 25",
+            "Claude Opus 4.1 High (August 2025)":    "Claude Opus 4.1 High Aug 25",
         }
 
         # MODEL_ALIAS = {
@@ -626,9 +645,6 @@ class TracePreprocessor:
                     ('hal', 'HAL'),
                     ('Hal', 'HAL'),
                     ('HAl', 'HAL'),
-                    ('TauBench Few Shot', 'TAU-bench Few Shot'),
-                    ('Assistantbench Browser Agent', 'Browser Agent'),
-                    ('TAU-bench Few-shot High', 'TAU-bench Few Shot'),
                 ]
                 
                 # Apply simple replacements
@@ -639,8 +655,26 @@ class TracePreprocessor:
                 exact_mappings = {
                     'HAL Generalist': 'HAL Generalist Agent',
                     'HAL Generalist High Reasoning': 'HAL Generalist Agent',
+                    'HAL Generalist No Reasoning': 'HAL Generalist Agent',  # Added missing mapping
+                    'HAL Generalist Minimal Reasoning': 'HAL Generalist Agent',  # Added missing mapping
                     'TauBench Few Shot High Reasoning': 'TAU-bench Few Shot',
+                    'TauBench Few Shot': 'TAU-bench Few Shot',  # Added missing mapping
+                    'TauBench Few-Shot High Reasoning': 'TAU-bench Few Shot',  # Added missing mapping
+                    'TauBench Few-Shot Minimal Reasoning': 'TAU-bench Few Shot',  # Added missing mapping
                     'TAU-bench Few-shot No Reasoning': 'TAU-bench Few Shot',
+                    'TAU-bench FewShot No Reasoning': 'TAU-bench Few Shot',
+                    'TAU-bench FewShot': 'TAU-bench Few Shot',  # Added missing mapping
+                    'Taubench FewShot High Reasoning': 'TAU-bench Few Shot',
+                    'Taubench FewShot No Reasoning': 'TAU-bench Few Shot',
+                    'TAU-bench Few Shot High Reasoning': 'TAU-bench Few Shot',
+                    'Assistantbench Browser Agent': 'Browser-Use',
+                    'Browser Agent': 'Browser-Use',
+                    'coreagent': 'CORE-Agent',
+                    'CORE-Agent': 'CORE-Agent',  # This one is already correct
+                    'colbench_text_sonnet37': 'Col-bench Text',
+                    'SAB Self-Debug Claude-3-7 low': 'SAB Self-Debug',
+                    'My Agent': 'SWE-Agent'
+
                 }
                 
                 # Apply exact mappings
@@ -1178,16 +1212,19 @@ class TracePreprocessor:
             "online_mind2web": "Online Mind2Web",
             "gaia": "GAIA",
             "corebench_hard": "CORE-Bench Hard",
+            "assistantbench": "AssistantBench"
         }
         
         BENCHMARK_CATEGORIES = {
             "usaco": "Programming",
-            "taubench_airline": "Web Navigation",
+            "taubench_airline": "Customer Service",
             "swebench_verified_mini": "Software Engineering",
-            "scicode": "Scientific Computing",
-            "online_mind2web": "Web Navigation",
-            "gaia": "General AI Assistant",
-            "corebench_hard": "Scientific Research",
+            "scicode": "Scientific Programming",
+            "online_mind2web": "Web Assistance",
+            "gaia": "Web Assistance",
+            "corebench_hard": "Scientific Programming",
+            "assistantbench": "Web Assistance",
+            "scienceagentbench": "Scientific Programming",
         }
         
         highlights = []
