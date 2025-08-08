@@ -70,7 +70,7 @@
                     <div class="flex items-center justify-between py-3 {% if not loop.last %}border-b border-gray-100{% endif %}">
                         <div class="flex-1">
                             <div class="font-semibold text-gray-900">{{ agent.base_agent }}</div>
-                            <div class="text-sm text-gray-600">({{ agent.model_name }})</div>
+                            <div class="text-sm text-gray-600">{{ agent.model_name }}</div>
                         </div>
                         <div class="text-right">
                             <div class="text-lg font-bold text-green-600">{{ "%.1f"|format(agent.accuracy) }}%</div>

@@ -341,6 +341,8 @@ MODEL_MAPPING = [
     ("openai/gpt-5-2025-08-07", "GPT-5 Medium", "gpt-5"),
     ("openrouter/openai/gpt-oss-120b high", "GPT-OSS-120B High", "openrouter/openai/gpt-oss-120b"),
     ("openrouter/openai/gpt-oss-120b", "GPT-OSS-120B", "openrouter/openai/gpt-oss-120b"),
+    ("openai/gpt-oss-120b high", "GPT-OSS-120B High", "openai/gpt-oss-120b"),
+    ("openai/gpt-oss-120b", "GPT-OSS-120B", "openai/gpt-oss-120b"),
     ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250805"),
     ("claude-opus-4-1-20250514", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250514"),
     ("claude-opus-4-1-20250514 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-20250514"),
