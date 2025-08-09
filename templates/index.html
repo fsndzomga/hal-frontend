@@ -46,7 +46,7 @@
 </div>
 
 <!-- Performance Highlights Section -->
-<div class="py-24 bg-gradient-to-b from-white to-gray-50 relative">
+<div id="leaderboards" class="py-24 bg-gradient-to-b from-white to-gray-50 relative">
     <div class="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-gray-100/80 to-transparent"></div>
     <div class="container mx-auto max-w-[1500]px px-8">
         <div class="text-center mb-16">
@@ -55,13 +55,14 @@
         </div>
         
         <!-- Benchmark Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {% for highlight in highlights %}
             <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-4 text-white">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-xl font-bold">{{ highlight.benchmark }}</h3>
-                        <span class="text-xs bg-blue-500 px-2 py-1 rounded-full">{{ highlight.category }}</span>
+                        <!-- Truncate so there is no overflow -->
+                        <span class="text-[10px] text-center bg-blue-500 px-2 py-1 rounded-full">{{ highlight.category }}</span>
                     </div>
                     <p class="text-blue-100">Top 3 performing agents</p>
                 </div>
