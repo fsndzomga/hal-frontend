@@ -735,7 +735,8 @@ class TracePreprocessor:
                         'colbench_text_sonnet37': 'Col-bench Text',
                         'SAB Self-Debug Claude-3-7 low': 'SAB Self-Debug',
                         'My Agent': 'SWE-Agent',
-                        'SAB Example Agent': 'SAB Self-Debug'
+                        'SAB Example Agent': 'SAB Self-Debug',
+                        'SciCode Tool Calling Agent': 'Scicode Tool Calling Agent'
                     }
                     
                     # Apply exact mappings
