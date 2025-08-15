@@ -355,6 +355,7 @@ MODEL_MAPPING = [
     ("gpt-5-2025-08-07", "GPT-5 Medium (August 2025)", "gpt-5-2025-08-07"),
     ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4-1-20250805"),
     ("gpt-5-2025-08-07 high", "GPT-5 High (August 2025)", "gpt-5-2025-08-07"),
+    ("gpt-5-2025-08-07 medium", "GPT-5 Medium (August 2025)", "gpt-5-2025-08-07"),
     ("claude-opus-4-1-20250805 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4-1-20250805")
 ]
 
