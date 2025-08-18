@@ -276,9 +276,11 @@ DEFAULT_PRICING = {
 
 MODEL_MAPPING = [
     ("o4-mini-2025-04-16", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
+    ("openai/o4-mini-2025-04-16", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
     ("gpt-4.1-2025-04-14", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
     ("o4-mini-2025-04-16 low", "o4-mini Low (April 2025)", "o4-mini-2025-04-16"),
     ("claude-3-7-sonnet-20250219 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("anthropic/claude-3-7-sonnet-20250219 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
     ("o4-mini-2025-04-16 high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("deepseek-ai/DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
     ("claude-3-7-sonnet-20250219", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
@@ -343,7 +345,9 @@ MODEL_MAPPING = [
     ("openrouter/openai/gpt-oss-120b", "GPT-OSS-120B", "openrouter/openai/gpt-oss-120b"),
     ("openai/gpt-oss-120b high", "GPT-OSS-120B High", "openai/gpt-oss-120b"),
     ("openai/gpt-oss-120b", "GPT-OSS-120B", "openai/gpt-oss-120b"),
-    ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250805"),
+    ("gpt-oss-120b high", "GPT-OSS-120B High", "gpt-oss-120b"),
+    ("gpt-oss-120b", "GPT-OSS-120B", "gpt-oss-120b"),
+    ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4-1-20250805"),
     ("claude-opus-4-1-20250514", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1-20250514"),
     ("claude-opus-4-1-20250514 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-20250514"),
     ("claude-opus-4", "Claude Opus 4 (May 2025)", "claude-opus-4"),
@@ -356,7 +360,10 @@ MODEL_MAPPING = [
     ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4-1-20250805"),
     ("gpt-5-2025-08-07 high", "GPT-5 High (August 2025)", "gpt-5-2025-08-07"),
     ("gpt-5-2025-08-07 medium", "GPT-5 Medium (August 2025)", "gpt-5-2025-08-07"),
-    ("claude-opus-4-1-20250805 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4-1-20250805")
+    ("claude-opus-4-1-20250805 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4-1-20250805"),
+    ("claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1"),
+    ("claude-opus-4.1 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-high"),
+
 ]
 
 MODELS_TO_SKIP = [
@@ -584,7 +591,8 @@ class TracePreprocessor:
             primary_model_name = None
             show_primary_model_name = None
             agent_name_with_model = None
-            model_show_name = None 
+            model_show_name = None
+
             with open(file, 'r') as f:
                 data = json.load(f)
                 stem = file.stem
@@ -613,7 +621,7 @@ class TracePreprocessor:
                 total_usage = data.get('total_usage', {})
                 print(f"Total usage is: {total_usage}")
 
-                if benchmark_name in ['corebench_hard', 'swebench_verified_mini', 'taubench_airline']:
+                if benchmark_name in ['corebench_hard', 'swebench_verified_mini', 'taubench_airline', 'scienceagentbench'] or '(' not in agent_name:
                     # Use get to avoid KeyError if 'model_name_short' is not present
                     primary_model_name = data['config'].get('model_name_short')
                     if primary_model_name is None:
@@ -628,9 +636,17 @@ class TracePreprocessor:
                 else:
                     # Find primary model from agent_name knowing Agent name is in the format "AgentName (ModelName)"
                     primary_model_name = agent_name.split('(')[-1].strip(' )') if '(' in agent_name else None
+                
+                # if primary model has a provider in will be in the form "anthropic/claude-3-7-sonnet-20250219"
+                # split on "/" and just take the model name
+                if primary_model_name and "/" in primary_model_name:
+                    primary_model_name = primary_model_name.split("/")[-1]
 
                 show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else None
-                
+
+                if show_primary_model_name is None:
+                    print(f"Impossible to find the show of this primary model name: {primary_model_name}")
+
                 # Find the primary model based on total tokens
                 if show_primary_model_name is None:
                     max_tokens = -1
