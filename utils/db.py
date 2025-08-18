@@ -379,6 +379,10 @@ MODELS_TO_SKIP = [
 'o4-mini Medium (April 2025)',
 ]
 
+RUNIDS_TO_SKIP = [
+    'swebench_verified_mini_my_agento320250416_1745453708'
+]
+
 class TracePreprocessor:
     def __init__(self, db_dir='preprocessed_traces'):
         self.db_dir = Path(db_dir)
@@ -596,12 +600,19 @@ class TracePreprocessor:
             with open(file, 'r') as f:
                 data = json.load(f)
                 stem = file.stem
-                agent_name = data['config']['agent_name']
-                benchmark_name = data['config']['benchmark_name']
+
+                config = data['config']
+                run_id = config.get('run_id')
+                if run_id in RUNIDS_TO_SKIP:
+                    continue
+
+                agent_name = config['agent_name']
+                benchmark_name = config['benchmark_name']
                 if "inspect" in benchmark_name:
                     benchmark_name = benchmark_name.split("/")[-1]
-                date = data['config']['date']
-                config = data['config']
+                date = config['date']
+
+
 
             # Create tables for this benchmark if they don't exist
             self.create_tables(benchmark_name)
