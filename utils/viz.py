@@ -17,7 +17,10 @@ def create_missing_runs_heatmap(df):
     )
 
     # remove some rows based on a list of model names
-    models_to_remove = ["GPT-OSS-120B", "GPT-OSS-120B High", "Claude Opus 4 (May 2025)", "Claude Opus 4 High (May 2025)"]
+    models_to_remove = ["GPT-OSS-120B", "GPT-OSS-120B High", "Claude Opus 4 (May 2025)", 
+                        "Claude Opus 4 High (May 2025)", "Claude Sonnet 4 (May 2025)",
+                        "Claude Sonnet 4 High (May 2025)"]
+    
     df = df[~df['model_name'].isin(models_to_remove)]
 
     # save df to a CSV file for debugging

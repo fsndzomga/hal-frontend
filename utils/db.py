@@ -335,7 +335,7 @@ MODEL_MAPPING = [
     ("o1-2024-12-17", "o1 Medium (December 2024)", "o1-2024-12-17"),
     ("text-embedding-3-small", "Text-Embedding-3 Small", "text-embedding-3-small"),
     ("gpt-5 high", "GPT-5 Medium (August 2025)", "gpt-5-high"), # Temporary hack because of errors in taubench
-    ("gpt-5 minimal", "GPT-5 Medium (August 2025)", "gpt-5-high"), # Temporary hack because of errors in taubench
+    ("gpt-5 minimal", "GPT-5 Minimal (August 2025)", "gpt-5-high"), # Temporary hack because of errors in taubench
     ("gpt-5", "GPT-5 Medium (August 2025)", "gpt-5"),
     ("gpt-5 low", "GPT-5 Low (August 2025)", "gpt-5-low"),
     ("gpt-5 medium", "GPT-5 Medium (August 2025)", "gpt-5-medium"),
@@ -385,9 +385,6 @@ MODELS_TO_SKIP = [
 'o4-mini Medium (April 2025)',
 'GPT-5 High (August 2025)',
 'GPT-5 Minimal (August 2025)',
-'Claude Sonnet 4 (May 2025)',
-'Claude Sonnet 4 High (May 2025)',
-
 ]
 
 RUNIDS_TO_SKIP = [
