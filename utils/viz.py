@@ -16,16 +16,32 @@ def create_missing_runs_heatmap(df):
         .str.strip()
     )
 
+    # remove some rows based on a list of model names
+    models_to_remove = ["GPT-OSS-120B", "GPT-OSS-120B High", "Claude Opus 4 (May 2025)", "Claude Opus 4 High (May 2025)"]
+    df = df[~df['model_name'].isin(models_to_remove)]
+
     # save df to a CSV file for debugging
     df.to_csv('missing_runs_heatmap_debug.csv', index=False)
+    
     # Combine benchmark and agent for unique columns, ordered alphabetically by both
     df['bench_agent'] = df['benchmark_name'] + " | " + df['agent_name']
+
+    # remove some rows based on bench_agent list
+    bench_agents_to_remove = ["assistantbench | HAL Generalist Agent",
+                              "gaia | HAL Generalist Agent",
+                              "usaco | HAL Generalist Agent",
+                              "scicode | HAL Generalist Agent"
+                              ]
+    
+    df = df[~df['bench_agent'].isin(bench_agents_to_remove)]
+
     pivot = df.pivot_table(
         index='model_name', 
         columns='bench_agent', 
         values='run_id', 
         aggfunc='count'
     )
+
     # Sort columns alphabetically
     pivot = pivot.reindex(sorted(pivot.columns), axis=1)
     

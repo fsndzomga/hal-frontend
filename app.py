@@ -26,7 +26,7 @@ CONTRIBUTORS = [
     {"name": "Nitya Nadgir", "affiliation": "Brookings"},
     {"name": "Omar Khattab", "affiliation": "MIT"},
     {"name": "Parth Asawa", "affiliation": "UC Berkeley"},
-    {"name": "Percy Liang", "affiliation": "Princeton University"},
+    {"name": "Percy Liang", "affiliation": "Stanford"},
     {"name": "Rishi Bommasani", "affiliation": "Stanford"},
     {"name": "Shreya Shankar", "affiliation": "UC Berkeley"},
     {"name": "Shayne Longpre", "affiliation": "MIT"},

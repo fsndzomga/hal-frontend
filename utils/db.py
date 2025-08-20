@@ -294,6 +294,7 @@ MODEL_MAPPING = [
     ("openrouter/anthropic/claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "openrouter/anthropic/claude-opus-4.1"),
     ("deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
+    ("deepseek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("claude-3-7-sonnet-2025-02-19 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
     ("DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
     ("together_ai/deepseek-ai/DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
@@ -360,9 +361,14 @@ MODEL_MAPPING = [
     ("claude-opus-4-1-20250805", "Claude Opus 4.1 (August 2025)", "claude-opus-4-1-20250805"),
     ("gpt-5-2025-08-07 high", "GPT-5 High (August 2025)", "gpt-5-2025-08-07"),
     ("gpt-5-2025-08-07 medium", "GPT-5 Medium (August 2025)", "gpt-5-2025-08-07"),
+    ("gpt-5-2025-08-07_minimal_reasoning_effort", "GPT-5 Minimal (August 2025)", "gpt-5-2025-08-07_minimal_reasoning_effort"),
+    ("gpt-5-2025-08-07_medium_reasoning_effort", "GPT-5 Medium (August 2025)", "gpt-5-2025-08-07_medium_reasoning_effort"),
+    ("gpt-5-2025-08-07_high_reasoning_effort", "GPT-5 High (August 2025)", "gpt-5-2025-08-07_high_reasoning_effort"),
     ("claude-opus-4-1-20250805 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4-1-20250805"),
     ("claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1"),
     ("claude-opus-4.1 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-high"),
+    ("claude-sonnet-4-20250514_thinking_high_4096", "Claude Sonnet 4 High (May 2025)", "claude-sonnet-4-20250514_thinking_high_4096"),
+    ("claude-sonnet-4-20250514", "Claude Sonnet 4 (May 2025)", "claude-sonnet-4-20250514")
 
 ]
 
@@ -377,6 +383,11 @@ MODELS_TO_SKIP = [
 'o3 Low (April 2025)',
 'Claude-3.7 Sonnet Low (February 2025)',
 'o4-mini Medium (April 2025)',
+'GPT-5 High (August 2025)',
+'GPT-5 Minimal (August 2025)',
+'Claude Sonnet 4 (May 2025)',
+'Claude Sonnet 4 High (May 2025)',
+
 ]
 
 RUNIDS_TO_SKIP = [
@@ -632,34 +643,21 @@ class TracePreprocessor:
                 total_usage = data.get('total_usage', {})
                 print(f"Total usage is: {total_usage}")
 
+                # get reasoning effort if any - try both old and new key formats
+                reasoning_effort = (data['config']['agent_args'].get('reasoning_effort') or
+                                    data['config']['agent_args'].get('agent.model.reasoning_effort'))
+
                 if benchmark_name in ['corebench_hard', 'swebench_verified_mini', 'taubench_airline', 'scienceagentbench'] or '(' not in agent_name:
-                    # Use get to avoid KeyError if 'model_name_short' is not present
-                    primary_model_name = data['config'].get('model_name_short')
-                    if primary_model_name is None:
-                        # Try both old and new key formats to cover all possible cases
-                        primary_model_name = (data['config']['agent_args'].get('model_name') or 
-                                            data['config']['agent_args'].get('agent.model.name'))
-                        # get reasoning effort if any - try both old and new key formats
-                        reasoning_effort = (data['config']['agent_args'].get('reasoning_effort') or
-                                          data['config']['agent_args'].get('agent.model.reasoning_effort'))
-                        if reasoning_effort:
-                            primary_model_name = f"{primary_model_name} {reasoning_effort}"
+                    # Try both old and new key formats to cover all possible cases
+                    primary_model_name = (data['config']['agent_args'].get('model_name') or 
+                                        data['config']['agent_args'].get('agent.model.name'))
                 else:
                     # Find primary model from agent_name knowing Agent name is in the format "AgentName (ModelName)"
                     primary_model_name = agent_name.split('(')[-1].strip(' )') if '(' in agent_name else None
+
                 
-                # if primary model has a provider in will be in the form "anthropic/claude-3-7-sonnet-20250219"
-                # split on "/" and just take the model name
-                if primary_model_name and "/" in primary_model_name:
-                    primary_model_name = primary_model_name.split("/")[-1]
-
-                show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else None
-
-                if show_primary_model_name is None:
-                    print(f"Impossible to find the show of this primary model name: {primary_model_name}")
-
                 # Find the primary model based on total tokens
-                if show_primary_model_name is None:
+                if primary_model_name is None:
                     max_tokens = -1
                     for model_name, usage in total_usage.items():
                         completion_tokens = usage.get('completion_tokens', 0)
@@ -667,7 +665,16 @@ class TracePreprocessor:
                             max_tokens = completion_tokens
                             primary_model_name = model_name
 
-                    show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else primary_model_name
+                # Add reasoning effort if it exists and isn't already in the model name
+                if reasoning_effort and primary_model_name and reasoning_effort.lower() not in primary_model_name.lower():
+                    primary_model_name = f"{primary_model_name} {reasoning_effort}"
+                
+                # if primary model has a provider in will be in the form "anthropic/claude-3-7-sonnet-20250219"
+                # split on "/" and just take the model name
+                if primary_model_name and "/" in primary_model_name:
+                    primary_model_name = primary_model_name.split("/")[-1]
+
+                show_primary_model_name = self.get_model_show_name(primary_model_name) if primary_model_name else primary_model_name
 
                 # save in csv for debugging
                 with open('primary_model.csv', 'a') as f:
