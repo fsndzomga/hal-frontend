@@ -264,6 +264,8 @@ DEFAULT_PRICING = {
     "gpt-4.5-preview-2025-02-27": {"prompt_tokens": 75, "completion_tokens": 150},
     "Claude Opus 4 (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "Claude Opus 4 High (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
+    "Claude Sonnet 4 High (May 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
+    "Claude Sonnet 4 (May 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
     "Claude Opus 4.1 High (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "Claude Opus 4.1 (August 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
     "GPT-5 High (August 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
@@ -368,7 +370,9 @@ MODEL_MAPPING = [
     ("claude-opus-4.1", "Claude Opus 4.1 (August 2025)", "claude-opus-4.1"),
     ("claude-opus-4.1 high", "Claude Opus 4.1 High (August 2025)", "claude-opus-4.1-high"),
     ("claude-sonnet-4-20250514_thinking_high_4096", "Claude Sonnet 4 High (May 2025)", "claude-sonnet-4-20250514_thinking_high_4096"),
-    ("claude-sonnet-4-20250514", "Claude Sonnet 4 (May 2025)", "claude-sonnet-4-20250514")
+    ("claude-sonnet-4-20250514", "Claude Sonnet 4 (May 2025)", "claude-sonnet-4-20250514"),
+    ("anthropic/claude-sonnet-4", "Claude Sonnet 4 (May 2025)", "anthropic/claude-sonnet-4"),
+    ("anthropic/claude-sonnet-4 high", "Claude Sonnet 4 High (May 2025)", "anthropic/claude-sonnet-4-high")
 
 ]
 
