@@ -543,6 +543,30 @@ def create_app():
     def creators():
         return render_template('creators.html', contributors=CONTRIBUTORS)
 
+    @app.route('/about')
+    def about():
+        return render_template('about.html')
+
+    @app.route('/press')
+    def press():
+        # News articles data
+        news_articles = [
+            {
+                'title': 'Is AI hitting a wall?',
+                'url': 'https://www.ft.com/content/d01290c9-cc92-4c1f-bd70-ac332cd40f94',
+                'source': 'Financial Times',
+                'date': 'August 2025'
+            },
+            {
+                'title': 'Developers Say GPT-5 Is a Mixed Bag',
+                'url': 'https://www.wired.com/story/gpt-5-coding-review-software-engineering/',
+                'source': 'WIRED',
+                'date': 'August 2025'
+            }
+        ]
+        
+        return render_template('press.html', news_articles=news_articles)
+
     return app
 
 

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}About HAL - Holistic Agent Leaderboard{% endblock %}
+{% block description %}Learn about HAL's mission to standardize AI agent evaluations through cost-controlled benchmarking and reproducible evaluation practices.{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-8 py-16">
+    <!-- Header -->
+    <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">About HAL</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="prose prose-lg max-w-none mb-16">
+        <p class="text-gray-700 leading-relaxed mb-6">
+            The current landscape of AI agent evaluation faces several critical challenges. Benchmark evaluations tend to focus on accuracy while ignoring costs, leading to uninformative evaluations for downstream developers. What does it mean if an agent has 1% higher accuracy on a benchmark but is 10x more expensive? The lack of standardized evaluation practices makes it difficult to assess real-world capabilities and prevents meaningful comparisons between different approaches. As shown in <a href="https://arxiv.org/abs/2407.01502" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener">"AI Agents That Matter" (arXiv:2407.01502)</a>, these issues have led to confusion about which advances actually improve performance.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-6">
+            HAL addresses these challenges through two key components: 1) A central leaderboard platform that incorporates cost-controlled evaluations by default, providing clear insights into the cost-performance tradeoffs of different agents, and 2) A standardized evaluation harness that enables reproducible agent evaluations across various benchmarks while tracking token usage and traces and without requiring any changes to the agent code or constraining agent developers to follow a certain agent framework. Evaluations can be run locally or in the cloud and fully parallelized.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-6">
+            <strong>TLDR:</strong> We aim to standardize AI agent evaluations by providing a third-party platform for comparing agents across various benchmarks. Our goal with HAL is to serve as a one-stop shop for agent evaluations, taking into account both accuracy and cost by default. The accompanying HAL harness offers a simple and scalable way to run agent evals - locally or in the cloud.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-8">
+            Check out <a href="https://github.com/princeton-pli/hal-harness/issues/16" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener">this issue</a> for more details on the motivation behind HAL and what differentiates it from other agent eval frameworks.
+        </p>
+    </div>
+
+    <!-- Links Section -->
+    <div class="border-t border-gray-200 pt-16">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Explore</h3>
+                <div class="space-y-2">
+                    <a href="/#leaderboards" class="block text-blue-600 hover:text-blue-800 transition-colors">View Leaderboards</a>
+                    <a href="{{ url_for('creators') }}" class="block text-blue-600 hover:text-blue-800 transition-colors">Meet the Team</a>
+                    <a href="{{ url_for('press') }}" class="block text-blue-600 hover:text-blue-800 transition-colors">Press Coverage</a>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Contribute</h3>
+                <div class="space-y-2">
+                    <a href="https://github.com/princeton-pli/hal-harness/tree/main/agents" class="block text-blue-600 hover:text-blue-800 transition-colors">Add Your Agent</a>
+                    <a href="https://github.com/princeton-pli/hal-harness/tree/main/hal/benchmarks" class="block text-blue-600 hover:text-blue-800 transition-colors">Add a Benchmark</a>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Resources</h3>
+                <div class="space-y-2">
+                    <a href="https://github.com/princeton-pli/hal-harness" class="block text-blue-600 hover:text-blue-800 transition-colors">GitHub Repository</a>
+                    <a href="https://arxiv.org/abs/2407.01502" class="block text-blue-600 hover:text-blue-800 transition-colors">Research Paper</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
