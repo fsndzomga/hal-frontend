@@ -260,7 +260,6 @@ def create_task_success_heatmap(df, benchmark_name):
         df['Task ID'] = df['Task ID'].str.replace('-', '_') # TODO - remove hardcoding
     
     # Calculate agent accuracy (now using mean success rate)
-    print(df.head(10))
     agent_accuracy = df.groupby('Agent Name')['Success'].mean().sort_values(ascending=False)
     
     # Calculate task success rate (first take mean success rate by task and agent, then take mean success rate by task)
