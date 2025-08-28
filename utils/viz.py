@@ -8,6 +8,7 @@ import pandas as pd
 from scipy import stats
 from plotly.subplots import make_subplots
 from utils.db import DEFAULT_PRICING, TracePreprocessor
+from utils.pareto import Agent, compute_pareto_frontier
 
 def create_missing_runs_heatmap(df):
     df['agent_name'] = (
@@ -19,7 +20,7 @@ def create_missing_runs_heatmap(df):
     # remove some rows based on a list of model names
     models_to_remove = ["GPT-OSS-120B", "GPT-OSS-120B High", "Claude Opus 4 (May 2025)", 
                         "Claude Opus 4 High (May 2025)", "Claude Sonnet 4 (May 2025)",
-                        "Claude Sonnet 4 High (May 2025)"]
+                        "Claude Sonnet 4 High (May 2025)", "Gemini 2.5 Pro Preview (March 2025)"]
     
     df = df[~df['model_name'].isin(models_to_remove)]
 
@@ -33,7 +34,8 @@ def create_missing_runs_heatmap(df):
     bench_agents_to_remove = ["assistantbench | HAL Generalist Agent",
                               "gaia | HAL Generalist Agent",
                               "usaco | HAL Generalist Agent",
-                              "scicode | HAL Generalist Agent"
+                              "scicode | HAL Generalist Agent",
+                              "scicode | Scicode Zero Shot Agent"
                               ]
     
     df = df[~df['bench_agent'].isin(bench_agents_to_remove)]
@@ -191,61 +193,77 @@ def create_completion_tokens_bar_chart(benchmark_name, pricing_config=None, top_
     )
     return fig
 
-
 def create_leaderboard(df, benchmark_name = None):
-    df = df.groupby('Agent Name', as_index=False).agg({
-                'Date': 'first',
-                'Total Cost': 'mean',
-                'Accuracy': 'mean',
-                'Precision': 'mean',
-                'Recall': 'mean',
-                'F1 Score': 'mean',
-                'AUC': 'mean',
-                'Overall Score': 'mean',
-                'Vectorization Score': 'mean',
-                'Fathomnet Score': 'mean',
-                'Feedback Score': 'mean',
-                'House Price Score': 'mean',
-                'Spaceship Titanic Score': 'mean',
-                'AMP Parkinsons Disease Progression Prediction Score': 'mean',
-                'CIFAR10 Score': 'mean',
-                'IMDB Score': 'mean',
-                'Scenario Goal Completion': 'mean',
-                'Task Goal Completion': 'mean',
-                'Level 1 Accuracy': 'mean',
-                'Level 2 Accuracy': 'mean',
-                'Level 3 Accuracy': 'mean',
-                'Verified': 'first',
-                'Traces': 'first',
-                'Runs': 'first',
-                'Accuracy CI': 'first',
-                'Total Cost CI': 'first',
-                'URL': 'first',
-                'Refusals': 'mean',
-                'Non-Refusal Harm Score': 'mean',  # Preserve URL
-                'Model Name': 'first',
-            })
+    # Define the columns we want to aggregate and their aggregation methods
+    desired_agg = {
+        'Date': 'first',
+        'Total Cost': 'mean',
+        'Accuracy': 'mean',
+        'Precision': 'mean',
+        'Recall': 'mean',
+        'F1 Score': 'mean',
+        'AUC': 'mean',
+        'Overall Score': 'mean',
+        'Vectorization Score': 'mean',
+        'Fathomnet Score': 'mean',
+        'Feedback Score': 'mean',
+        'House Price Score': 'mean',
+        'Spaceship Titanic Score': 'mean',
+        'AMP Parkinsons Disease Progression Prediction Score': 'mean',
+        'CIFAR10 Score': 'mean',
+        'IMDB Score': 'mean',
+        'Scenario Goal Completion': 'mean',
+        'Task Goal Completion': 'mean',
+        'Level 1 Accuracy': 'mean',
+        'Level 2 Accuracy': 'mean',
+        'Level 3 Accuracy': 'mean',
+        'Verified': 'first',
+        'Traces': 'first',
+        'Runs': 'first',
+        'Accuracy CI': 'first',
+        'Total Cost CI': 'first',
+        'URL': 'first',
+        'Refusals': 'mean',
+        'Non-Refusal Harm Score': 'mean',
+        'Model Name': 'first',
+    }
     
-    # Sort by Accuracy in descending order
+    # Only use columns that actually exist in the DataFrame
+    actual_agg = {col: agg for col, agg in desired_agg.items() if col in df.columns}
+    
+    df = df.groupby('Agent Name', as_index=False).agg(actual_agg)
+
+    # Sort by Accuracy (AgentHarm ascending, others descending)
     if benchmark_name == 'agentharm':
         df = df.sort_values('Accuracy', ascending=True)
     else:
         df = df.sort_values('Accuracy', ascending=False)
-    
-    # cast dtypes to string
-    df = df.astype(str)
 
-    # Count number of runs per agent
+    # Compute Pareto frontier on numeric columns
+    df['Total Cost'] = pd.to_numeric(df['Total Cost'], errors='coerce')
+    df['Accuracy'] = pd.to_numeric(df['Accuracy'], errors='coerce')
+
+    valid = df[['Total Cost', 'Accuracy']].dropna()
+    if len(valid) > 0:
+        agents = [Agent(c, a) for c, a in zip(valid['Total Cost'].values, valid['Accuracy'].values)]
+        frontier = compute_pareto_frontier(agents)
+        frontier_pts = {(round(a.total_cost, 6), round(a.accuracy, 6)) for a in frontier}
+        df['Is Pareto'] = df.apply(
+            lambda r: (round(r['Total Cost'], 6), round(r['Accuracy'], 6)) in frontier_pts
+            if pd.notna(r['Total Cost']) and pd.notna(r['Accuracy']) else False, axis=1
+        )
+    else:
+        df['Is Pareto'] = False
+
+    # Count runs (kept for compatibility)
     runs_per_agent = df.groupby('Agent Name').size().reset_index()
     runs_per_agent.columns = ['Agent Name', 'Runs']
-    runs_per_agent.drop("Runs",inplace=True, axis=1)
-    
-    # Merge runs count back into the dataframe
+    runs_per_agent.drop("Runs", inplace=True, axis=1)
     df = df.merge(runs_per_agent, on='Agent Name', how='left')
-    
+
     # Add model names to leaderboard data
     df.rename(columns={'Model Name': 'Models'}, inplace=True)
-    
+
     # Remove model names from agent name
     df['Agent Name'] = (
         df['Agent Name']
@@ -491,118 +509,89 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         # Remove URL part if present
         if '[' in agent_name:
             agent_name = agent_name.split(']')[0].split('[')[1]
-        
-        # Look for model name in parentheses at the end
         if '(' in agent_name and ')' in agent_name:
             model = agent_name.split('(')[-1].rstrip(')')
             if any(model_prefix in model.lower() for model_prefix in ['gpt-', 'claude-', 'gemini-', 'meta-llama', 'openai', 'anthropic', 'o1-', 'o3-']):
                 return model.strip()
         return 'Other'
 
-    # Create agents using the values directly from the DataFrame
-    # The DataFrame should already have aggregated values
+    # Compute per-agent means and Pareto frontier
     unique_agents = df['Agent Name'].unique()
-    agents = [Agent(df[df['Agent Name'] == agent]['Total Cost'].mean(), df[df['Agent Name'] == agent]['Accuracy'].mean()) for agent in unique_agents]
+    agent_means = {
+        agent: (
+            df[df['Agent Name'] == agent]['Total Cost'].mean(),
+            df[df['Agent Name'] == agent]['Accuracy'].mean()
+        )
+        for agent in unique_agents
+    }
+    agents = [Agent(cost, acc) for cost, acc in agent_means.values()]
     pareto_frontier = compute_pareto_frontier(agents)
+
+    # Set of rounded frontier points for robust matching
+    frontier_points = {(round(a.total_cost, 6), round(a.accuracy, 6)) for a in pareto_frontier}
 
     fig = go.Figure()
 
-    # Sort the Pareto frontier points by x-coordinate
-    pareto_points = sorted([(agent.total_cost, agent.accuracy) for agent in pareto_frontier], key=lambda x: x[0])
-    # Add the Pareto frontier line
+    # Pareto frontier line
+    pareto_points = sorted([(a.total_cost, a.accuracy) for a in pareto_frontier], key=lambda p: p[0])
     fig.add_trace(go.Scatter(
-        x=[point[0] for point in pareto_points],
-        y=[point[1] for point in pareto_points],
+        x=[p[0] for p in pareto_points],
+        y=[p[1] for p in pareto_points],
         mode='lines',
         name='Pareto Frontier',
         hoverinfo=None,
         line=dict(color='black', width=1, dash='dash')
     ))
 
-    # Define color map for models
+    # Colors by model
     color_sequence = px.colors.qualitative.Dark2
     unique_models = sorted(df['Model Name'].unique())
     color_map = {model: color_sequence[i % len(color_sequence)] for i, model in enumerate(unique_models)}
 
-    # Plot scatter points and error bars for each agent
+    # Plot each agent (markers + optional annotation if on frontier)
     unique_agents = df[hover_data[0]].unique()
-    
-    # Create lists to store all point coordinates for label placement
-    all_x = []
-    all_y = []
-    all_labels = []
-    
-    # Keep track of which models we've already added to the legend
-    models_in_legend = set()
-    
+
     for agent in unique_agents:
         agent_data = df[df[hover_data[0]] == agent]
-                
-        # remove url from tooltip name
+
+        # Clean tooltip name (remove URL if present)
         if '[' in str(agent_data['Agent Name'].iloc[0]):
             agent_data.loc[:, 'Agent Name'] = agent_data['Agent Name'].str.rsplit(']').str[0].str[1:]
 
-        x_value = [np.mean(agent_data[x].values)]
-        y_value = [np.mean(agent_data[y].values)]
+        x_value = [float(np.mean(agent_data[x].values))]
+        y_value = [float(np.mean(agent_data[y].values))]
         model = agent_data['Model Name'].iloc[0]
-        
-        # Store coordinates and label for later use
-        all_x.extend(x_value)
-        all_y.extend(y_value)
-        all_labels.extend([agent_data['Agent Name'].iloc[0]])
 
+        # Error bars (if multiple runs)
         if len(agent_data) > 1:
-            # Add error bars for x (cost minmax)
             fig.add_trace(go.Scatter(
-                x=x_value,
-                y=y_value,
-                error_x=dict(
-                    type='data',
-                    symmetric=False,
-                    array=[np.max(agent_data[x]) - x_value[0]],
-                    arrayminus=[x_value[0] - np.min(agent_data[x])],
-                    color='#fec44f',
-                    thickness=1.5,
-                    width=4,
-                ),
-                mode='markers',
-                marker=dict(size=1, color='#fec44f'),
-                showlegend=False,
-                hoverinfo='skip'
+                x=x_value, y=y_value,
+                error_x=dict(type='data', symmetric=False,
+                             array=[np.max(agent_data[x]) - x_value[0]],
+                             arrayminus=[x_value[0] - np.min(agent_data[x])],
+                             color='#fec44f', thickness=1.5, width=4),
+                mode='markers', marker=dict(size=1, color='#fec44f'),
+                showlegend=False, hoverinfo='skip'
+            ))
+            fig.add_trace(go.Scatter(
+                x=x_value, y=y_value,
+                error_y=dict(type='data', symmetric=False,
+                             array=[np.max(agent_data[y]) - y_value[0]],
+                             arrayminus=[y_value[0] - np.min(agent_data[y])],
+                             color='#bdbdbd', thickness=1.5, width=4),
+                mode='markers', marker=dict(size=1, color='#bdbdbd'),
+                showlegend=False, hoverinfo='skip'
             ))
 
-            # Add error bars for y (accuracy minmax)
-            fig.add_trace(go.Scatter(
-                x=x_value,
-                y=y_value,
-                error_y=dict(
-                    type='data',
-                    symmetric=False,
-                    array=[np.max(agent_data[y]) - y_value[0]],
-                    arrayminus=[y_value[0] - np.min(agent_data[y])],
-                    color='#bdbdbd',
-                    thickness=1.5,
-                    width=4,
-                ),
-                mode='markers',
-                marker=dict(size=1, color='#bdbdbd'),
-                showlegend=False,
-                hoverinfo='skip'
-            ))
-
-        # Add scatter points for this agent
-        show_in_legend = model not in models_in_legend
-        if show_in_legend:
-            models_in_legend.add(model)
-            
+        # Marker for this agent
         fig.add_trace(go.Scatter(
             x=x_value,
             y=y_value,
             mode='markers',
-            name=model,  # Use model as the name for legend grouping
-            marker=dict(size=10, color=color_map[model]),
+            name=model,
+            marker=dict(size=10, color=color_map.get(model, '#1f77b4')),
             customdata=agent_data[hover_data],
-            showlegend=show_in_legend,
+            showlegend=False,  # legend stays minimal elsewhere
             hovertemplate="<br>".join([
                 "<b>Agent</b>: %{customdata[0]}",
                 "<b>Model</b>: " + model,
@@ -612,7 +601,24 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
             hoverlabel=dict(bgcolor="white", font_size=12, font_family="Arial"),
         ))
 
-    # Add legend entries for error bars
+        # Annotate ONLY if this point is on the Pareto frontier
+        if (round(x_value[0], 6), round(y_value[0], 6)) in frontier_points:
+            label = agent_data['Agent Name'].iloc[0]
+            fig.add_annotation(
+                x=x_value[0],
+                y=y_value[0],
+                text=label,
+                showarrow=True,
+                arrowhead=0,
+                arrowsize=1,
+                arrowwidth=1,
+                arrowcolor="#CCCCCC",
+                ax=60,   # modest offset
+                ay=20,
+                font=dict(size=10),
+            )
+
+    # Legend entries for CI
     fig.add_trace(go.Scatter(
         x=[None], y=[None], mode='markers',
         marker=dict(color='#fec44f', size=10),
@@ -624,108 +630,29 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         name='Accuracy CI (Min-Max)'
     ))
 
-    # Update layout to handle overlapping labels
     fig.update_layout(
         height=600,
         xaxis_title=x_label,
         yaxis_title=y_label,
-        xaxis=dict(
-            showline=True,
-            linecolor='black',
-            showgrid=False
-        ),
-        yaxis=dict(
-            showline=True,
-            showgrid=False,
-            linecolor='black'
-        ),
+        xaxis=dict(showline=True, linecolor='black', showgrid=False),
+        yaxis=dict(showline=True, showgrid=False, linecolor='black'),
         plot_bgcolor='white',
-        legend=dict(
-            yanchor="bottom",
-            y=0.01,
-            xanchor="right",
-            x=0.98,
-            bgcolor="rgba(255, 255, 255, 0.5)"
-        ),
+        legend=dict(yanchor="bottom", y=0.01, xanchor="right", x=0.98, bgcolor="rgba(255, 255, 255, 0.5)"),
         modebar=dict(
             activecolor='#1f77b4',
             orientation='h',
             bgcolor='rgba(255,255,255,0.8)',
             color='#777',
             add=['pan2d'],
-            remove=[
-                'zoom2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d',
-                'hoverClosestCartesian', 'hoverCompareCartesian',
-                'toggleSpikelines', 'lasso2d', 'lasso', 'select2d', 'select'
-            ]
+            remove=['zoom2d','zoomIn2d','zoomOut2d','resetScale2d','hoverClosestCartesian','hoverCompareCartesian','toggleSpikelines','lasso2d','lasso','select2d','select']
         ),
         dragmode='pan',
-        # Add configuration for handling overlapping labels
         showlegend=True,
-        annotations=[],
+        annotations=list(fig.layout.annotations)  # keep added annotations
     )
-
-    # Add non-overlapping labels using annotations
-    for i in range(len(all_x)):
-        # Default position: lower right
-        ax = 60
-        ay = 20
-        
-        # Adjust position if near axes
-        x_range = max(all_x) - min(all_x)
-        y_range = max(all_y) - min(all_y)
-        
-        # If point is near minimum x-axis (left side)
-        if all_x[i] < min(all_x) + 0.05 * x_range:
-            ax = 140  # Large shift for points very close to left axis
-            
-        # If point is near maximum x-axis (right side)
-        if all_x[i] > max(all_x) - 0.1 * x_range:
-            ax = -20  # Move label to the left
-        
-        # If point is near minimum y-axis (bottom)
-        if all_y[i] < min(all_y) + 0.05 * y_range:
-            ay = -30  # Move label up
-        
-        # If point is near maximum y-axis (top)
-        if all_y[i] > max(all_y) - 0.1 * y_range:
-            ay = -20  # Move label down
-               
-        # Check for overlap with previous labels
-        overlap = False
-        for j in range(i):
-            # Simple distance check between points
-            dx = abs(all_x[i] - all_x[j])
-            dy = abs(all_y[i] - all_y[j])
-            
-            # Reduced overlap threshold from 0.2 to 0.1
-            if dx < 0.2 * x_range and dy < 0.2 * y_range:
-                # If points are close, try different positions
-                if not overlap:
-                    ax += 20  # Smaller increment (from 40 to 20)
-                    ay += 20  # Smaller increment (from 40 to 20)
-                overlap = True
-        
-        if not overlap or i == 0:  # Always show first label
-            fig.add_annotation(
-                x=all_x[i],
-                y=all_y[i],
-                text=all_labels[i],
-                showarrow=True,
-                arrowhead=0,
-                arrowsize=1,
-                arrowwidth=1,
-                arrowcolor="#CCCCCC",
-                ax=ax,
-                ay=ay,
-                font=dict(
-                    size=10
-                ),
-            )
 
     fig.update_yaxes(rangemode="tozero")
     fig.update_xaxes(rangemode="tozero")
-
     return fig
 
 

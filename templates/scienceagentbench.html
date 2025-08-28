@@ -10,26 +10,22 @@
 <!-- Hero Section -->
 <div class="bg-gradient-to-b from-blue-50 to-white">
     <div class="mx-auto max-w-[1500]px px-8 py-16">
-        <h1 class="text-4xl font-bold mb-4">SWE-bench Verified Mini</h1>
+        <h1 class="text-4xl font-bold mb-4">ScienceAgentBench</h1>
         <p class="text-xl text-gray-600 mb-8 max-w-3xl">
-                SWE-bench Verified (Mini) is a random subset of 50 tasks of the original <a href="/swebench" class="text-blue-600 hover:text-blue-800">SWE-bench Verified</a>. It is a light-weight version of the original SWE-bench Verified and is thus cheaper to evaluate.
+                ScienceAgentBench is a benchmark for rigourously evaluating the ability of language agents to conduct data-driven scientific discovery.
         </p>
         <p class="text-sm text-gray-500 mb-8 max-w-3xl">
-            Paper: <a href="https://arxiv.org/abs/2310.06770" class="text-blue-600 hover:text-blue-800">
-                SWE-bench: Can Language Models Resolve Real-World GitHub Issues? (Jimenez et al., 2023)</a><br>
-            OpenAI Blog: <a href="https://openai.com/index/introducing-swe-bench-verified/" class="text-blue-600 hover:text-blue-800">
-                SWE-bench Verified: Introducing SWE-bench Verified</a>
-                <br><br>
-                Note: This subset of the original SWE-bench Verified contains different tasks then <a href="https://huggingface.co/datasets/MariusHobbhahn/swe-bench-verified-mini" class="text-blue-600 hover:text-blue-800">this recently released version</a> with the same name. We are working on reconciling the two versions.
+            Paper: <a href="https://arxiv.org/abs/2410.05080" class="text-blue-600 hover:text-blue-800">
+                ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery (Chen et al., 2025)</a>
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">50</div>
-                <div class="text-gray-600">Verified Tasks</div>
+                <div class="text-3xl font-bold text-blue-600 mb-2">102</div>
+                <div class="text-gray-600">Tasks</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="text-3xl font-bold text-blue-600 mb-2">100%</div>
-                <div class="text-gray-600">Human Validated</div>
+                <div class="text-3xl font-bold text-blue-600 mb-2">42</div>
+                <div class="text-gray-600">Peer reviewed publications</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
@@ -42,24 +38,24 @@
 <div class="mx-auto max-w-[1500]px px-8 py-6">
     <!-- Key Features Section -->
     <div class="mb-12">
-        <h2 class="text-3xl font-bold mb-8">Key Features of SWE-bench Verified</h2>
+        <h2 class="text-3xl font-bold mb-8">Key Features of ScienceAgentBench</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Real-World Tasks</h3>
+                <h3 class="text-xl font-semibold mb-4">Real-World Scientific Tasks</h3>
                 <p class="text-gray-600">
-                    All tasks are sourced from actual GitHub issues, representing real software engineering problems.
+                    All tasks are sourced from 44 peer-reviewed publications.
                 </p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Human Validation</h3>
+                <h3 class="text-xl font-semibold mb-4">Expert Validation</h3>
                 <p class="text-gray-600">
-                    Every task has been reviewed and validated by software engineers to be non-problematic.
+                    Each of the 102 tasks was validated by nine subject matter experts (senior PhD students and professors) to ensure quality.
                 </p>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Diverse Tasks</h3>
+                <h3 class="text-xl font-semibold mb-4">Rigourous and Fair Evaluation</h3>
                 <p class="text-gray-600">
-                    Tasks originate from PRs of 12 open-source Python repositories covering various domains.
+                    Evaluation metrics are diverse and effective strategies are employed to mitigate data contamination, ensure annotation quality and scientific plausibility.
                 </p>
             </div>
         </div>
@@ -72,8 +68,7 @@
         <!-- Leaderboard Table -->
         <div class="bg-white rounded-xl shadow-md p-8 mb-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-3xl font-semibold">SWE-Bench Verified Mini Leaderboard</h3>
-                
+                <h3 class="text-3xl font-semibold">ScienceAgentBench Leaderboard</h3>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full">
@@ -159,7 +154,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for row in leaderboard %}
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50 {% if row.get('Is Pareto') %}bg-blue-50/40{% endif %}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ loop.index }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">
@@ -171,13 +166,18 @@
                                             </svg>
                                         </a>
                                     {% else %}
-                                        {{ row['Agent Name'] }}
+                                        <a href="{{ url_for('agent_page', agent_name=row['Agent Name']) }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                                            {{ row['Agent Name'] }}
+                                        </a>
+                                    {% endif %}
+                                    {% if row.get('Is Pareto') %}
+                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Pareto</span>
                                     {% endif %}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {% for model in row['Models'].split(',') %}
-                                    <span class="inline-block text-blue-600 mr-2 py-0.5 rounded">{{ model.strip() }}</span>
+                                    <a href="{{ url_for('model_page', model_name=model.strip()) }}" class="inline-block text-blue-600 hover:text-blue-800 mr-2 py-0.5 rounded font-medium">{{ model.strip() }}</a>
                                 {% endfor %}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -221,16 +221,11 @@
             </div>
         </div>
         
-        <!-- Note about Agentless agent -->
-        <div class="text-sm text-gray-500 mt-2 mb-8">
-            Note: The cost of Agentless (gpt-4o-mini-2024-07-18) does currently not update when token pricing is changed.
-        </div>
-        
         <!-- Visualization Section -->
         <div class="space-y-8 mb-12">
             <!-- Cost vs Accuracy Plot -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for SWE-Bench Verified Mini</h3>
+                <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for ScienceAgentBench</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     This plot shows the relationship between an agent's performance and its token cost.
                     The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
@@ -241,18 +236,29 @@
             </div>
 
             <!-- Heatmap -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-3xl font-semibold mb-2">Heatmap for SWE-Bench Verified Mini</h3>
+            <!-- <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-3xl font-semibold mb-2">Heatmap for CORE-Bench</h3>
                 <p class="text-sm text-gray-500 mb-4">
                     The heatmap visualizes success rates across tasks and agents. Colorscale shows the fraction of times a task was solved across reruns of the same agent. The "any agent" performance indicates the level of saturation of the benchmark and gives a sense of overall progress.
                 </p>
-                <div class="overflow-x-auto sm:overflow-x-visible">
-                    <div id="taskSuccessHeatmap" class="w-[800px] sm:w-full h-[500px]"></div>
+                <div class="max-h-[500px] overflow-y-auto overscroll-contain">
+                    <div id="taskSuccessHeatmap" class="w-[800px] sm:w-full min-h-[1100px]"></div>
+                </div>
+            </div> -->
+
+            <!-- Total Completion Tokens Used per Agent -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-3xl font-semibold mb-2">Total Completion Tokens Used per Agent</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    The bar chart shows the total completion tokens used by each agent, with the height of each bar representing the total number of completion tokens used across all tasks. 
+                    Secondary models usually contribute a relatively small amount of tokens in comparison, and are used for RAG or image processing only.
+                </p>
+                <div class="max-h-[500px] overflow-y-auto overscroll-contain">
+                    <div id="completionTokensBar" class="w-[800px] sm:w-full min-h-[1100px]"></div>
                 </div>
             </div>
 
             <!-- Failure Analysis Section -->
-            {% include 'failure_analysis.html' %}
         </div>
 
         <!-- Token Pricing Configuration -->
@@ -337,7 +343,7 @@
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Getting Started</h3>
                 <p class="text-gray-600 mb-4">
-                    Want to evaluate your agent on SWE-bench? Follow our comprehensive guide to get started:
+                    Want to evaluate your agent on ScienceAgentBench ? Follow our comprehensive guide to get started:
                 </p>
                 <a href="https://github.com/princeton-pli/hal-harness" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Documentation
@@ -349,9 +355,9 @@
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Task Details</h3>
                 <p class="text-gray-600 mb-4">
-                    Browse the complete list of SWE-bench tasks, including problem descriptions and test cases:
+                    Browse the complete list of ScienceAgentBench tasks, including problem descriptions and test cases:
                 </p>
-                <a href="https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                <a href="https://huggingface.co/datasets/osunlp/ScienceAgentBench" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
                     View Tasks
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -367,7 +373,6 @@
 <script>
     // Parse the JSON data from Flask
     const scatter_plot_data = JSON.parse('{{ scatter_plot|safe }}');
-    const heatmap_data = JSON.parse('{{ heatmap|safe }}');
     
     // Initialize plots with adjusted margins
     Plotly.newPlot('costAccuracyPlot', scatter_plot_data.data, {
@@ -380,8 +385,12 @@
         displayModeBar: false
     });
     
-    Plotly.newPlot('taskSuccessHeatmap', heatmap_data.data, {
-        ...heatmap_data.layout,
+
+    const completion_tokens_bar = JSON.parse('{{ completion_tokens_bar|safe }}');
+
+    // Initialize completion tokens bar chart with consistent styling
+    Plotly.newPlot('completionTokensBar', completion_tokens_bar.data, {
+        ...completion_tokens_bar.layout,
         margin: { t: 10, r: 10, b: 40, l: 60 },
         width: null,  // Make plot responsive
         height: null  // Make plot responsive
@@ -412,7 +421,7 @@
             spinner.classList.remove('hidden');
             
             // Send pricing update request
-            const response = await fetch('/update_pricing/swebench_verified_mini', {
+            const response = await fetch('/update_pricing/scienceagentbench', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -171,7 +171,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for row in leaderboard %}
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50 {% if row.get('Is Pareto') %}bg-blue-50/40{% endif %}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm">{{ loop.index }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">
@@ -183,13 +183,18 @@
                                             </svg>
                                         </a>
                                     {% else %}
-                                        {{ row['Agent Name'] }}
+                                        <a href="{{ url_for('agent_page', agent_name=row['Agent Name']) }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                                            {{ row['Agent Name'] }}
+                                        </a>
+                                    {% endif %}
+                                    {% if row.get('Is Pareto') %}
+                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Pareto</span>
                                     {% endif %}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {% for model in row['Models'].split(',') %}
-                                    <span class="inline-block text-blue-600 mr-2 py-0.5 rounded">{{ model.strip() }}</span>
+                                    <a href="{{ url_for('model_page', model_name=model.strip()) }}" class="inline-block text-blue-600 hover:text-blue-800 mr-2 py-0.5 rounded font-medium">{{ model.strip() }}</a>
                                 {% endfor %}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -253,8 +258,9 @@
                 <p class="text-sm text-gray-500 mb-4">
                     The heatmap visualizes success rates across tasks and agents. Colorscale shows the fraction of times a task was solved across reruns of the same agent. The "any agent" performance indicates the level of saturation of the benchmark and gives a sense of overall progress.
                 </p>
-                <div class="overflow-x-auto sm:overflow-x-visible">
-                    <div id="taskSuccessHeatmap" class="w-[800px] sm:w-full h-[500px]"></div>
+                <div class="max-h-[500px] overflow-y-auto overscroll-contain">
+                    <!-- Make plot taller than wrapper to enable inner scrolling -->
+                    <div id="taskSuccessHeatmap" class="w-[800px] sm:w-full min-h-[1100px]"></div>
                 </div>
             </div>
 
@@ -265,8 +271,8 @@
                     The bar chart shows the total completion tokens used by each agent, with the height of each bar representing the total number of completion tokens used across all tasks. 
                     Secondary models usually contribute a relatively small amount of tokens in comparison, and are used for RAG or image processing only.
                 </p>
-                <div class="overflow-x-auto sm:overflow-x-visible">
-                    <div id="completionTokensBar" class="w-[800px] sm:w-full h-[500px]"></div>
+                <div class="max-h-[500px] overflow-y-auto overscroll-contain">
+                    <div id="completionTokensBar" class="w-[800px] sm:w-full min-h-[1100px]"></div>
                 </div>
             </div>
 
@@ -460,7 +466,7 @@
             // Update leaderboard
             const leaderboardBody = document.querySelector('tbody');
             leaderboardBody.innerHTML = data.leaderboard.map((row, index) => `
-                <tr class="hover:bg-gray-50">
+                <tr class="hover:bg-gray-50 ${row['Is Pareto'] ? 'bg-blue-50/40' : ''}">
                     <td class="px-6 py-4 whitespace-nowrap text-sm">${index + 1}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-gray-900">
@@ -473,6 +479,7 @@
                                 </a>` 
                                 : row['Agent Name']
                             }
+                            ${row['Is Pareto'] ? '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Pareto</span>' : ''}
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-blue-600 mr-2 py-0.5 rounded text-sm">

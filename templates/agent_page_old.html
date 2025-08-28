@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Hero Section -->
+<div class="min-h-[40vh] flex items-center bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+  <div class="mx-auto max-w-7xl w-full px-4 sm:px-8 md:px-16 lg:px-36">
+    <div class="text-center">
+      <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+        {{ agent_info.name }}
+      </h1>
+      <p class="text-xl text-gray-600 mb-8">
+        Agent Performance Overview
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Agent Information Cards -->
+<div class="py-16 bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-8 md:px-16 lg:px-36">
+    <!-- Key Metrics with Beautiful Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
+      <div class="bg-white rounded-lg shadow-md p-6 text-center border border-gray-100">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-chart-bar text-blue-600 text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">{{ agent_info.total_benchmarks }}</div>
+        <div class="text-gray-600">Benchmarks</div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 text-center border border-gray-100">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-microchip text-blue-600 text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">{{ agent_info.models | length }}</div>
+        <div class="text-gray-600">Models Used</div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 text-center border border-gray-100">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-bullseye text-blue-600 text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">{{ "%.1f%%" % (agent_info.avg_accuracy * 100) }}</div>
+        <div class="text-gray-600">Avg Accuracy</div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 text-center border border-gray-100">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">${{ "%.2f" % agent_info.avg_cost }}</div>
+        <div class="text-gray-600">Avg Cost</div>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 text-center border border-gray-100">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-star text-blue-600 text-xl"></i>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">{{ benchmark_performance | selectattr('on_frontier') | list | length }}</div>
+        <div class="text-gray-600">Pareto Benchmarks</div>
+      </div>
+    </div>
+
+    <!-- Models Used Card -->
+    {% if agent_info.models %}
+    <div class="bg-white rounded-lg shadow-md p-8 mb-12 border border-gray-100">
+      <div class="flex items-center justify-center mb-6">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+          <i class="fas fa-brain text-blue-600 text-xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">Models Used</h2>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4">
+        {% for model in agent_info.models %}
+        <a href="{{ url_for('model_page', model_name=model) }}" 
+           class="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hover:bg-blue-50 hover:border-blue-200 transition-colors shadow-sm">
+          <i class="fas fa-microchip mr-2 text-gray-600"></i>
+          {{ model }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Benchmark Performance Card -->
+    <div class="bg-white rounded-lg shadow-md border border-gray-100">
+      <div class="px-8 py-6 border-b border-gray-200">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+            <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900">Benchmark Performance</h2>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Benchmark</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accuracy</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Runs</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ranking</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pareto Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for benchmark in benchmark_performance %}
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 font-medium text-gray-900">{{ benchmark.benchmark_title }}</td>
+              <td class="px-6 py-4 text-gray-900">
+                {{ "%.1f%%" % (benchmark.accuracy * 100) }}
+                {% if benchmark.max_accuracy_note %}
+                <span class="text-gray-500 text-sm ml-1">{{ benchmark.max_accuracy_note }}</span>
+                {% endif %}
+              </td>
+              <td class="px-6 py-4 text-gray-900">
+                ${{ "%.2f" % benchmark.cost }}
+                {% if benchmark.min_cost_note %}
+                <span class="text-gray-500 text-sm ml-1">{{ benchmark.min_cost_note }}</span>
+                {% endif %}
+              </td>
+              <td class="px-6 py-4 text-gray-900">{{ benchmark.runs }}</td>
+              <td class="px-6 py-4">
+                {% if benchmark.ranking %}
+                  {% if benchmark.ranking == 1 %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                      <i class="fas fa-medal text-yellow-600 mr-1"></i>
+                      #1
+                    </span>
+                  {% elif benchmark.ranking == 2 %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                      <i class="fas fa-medal text-gray-600 mr-1"></i>
+                      #2
+                    </span>
+                  {% elif benchmark.ranking == 3 %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
+                      <i class="fas fa-medal text-orange-600 mr-1"></i>
+                      #3
+                    </span>
+                  {% elif benchmark.ranking <= 10 %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                      <i class="fas fa-trophy text-blue-600 mr-1"></i>
+                      #{{ benchmark.ranking }}
+                    </span>
+                  {% else %}
+                    <span class="text-gray-700">#{{ benchmark.ranking }}</span>
+                  {% endif %}
+                {% else %}
+                  <span class="text-gray-500">-</span>
+                {% endif %}
+              </td>
+              <td class="px-6 py-4">
+                {% if benchmark.on_frontier %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                  <i class="fas fa-star mr-1"></i>
+                  Pareto Optimal
+                </span>
+                {% else %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                  Standard
+                </span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

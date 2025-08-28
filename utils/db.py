@@ -250,9 +250,10 @@ DEFAULT_PRICING = {
     "o3 Medium (April 2025)": {"prompt_tokens": 2, "completion_tokens": 8},
     "GPT-4.1 (April 2025)": {"prompt_tokens": 2, "completion_tokens": 8},
     "Claude-3.7 Sonnet (February 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
-    "DeepSeek V3": {"prompt_tokens": 0.27, "completion_tokens": 1.1},
+    "DeepSeek V3": {"prompt_tokens": 0.2, "completion_tokens": 0.8},
+    "DeepSeek V3.1": {"prompt_tokens": 0.2, "completion_tokens": 0.8},
     "Gemini 2.0 Flash": {"prompt_tokens": 0.1, "completion_tokens": 0.4},
-    "DeepSeek R1": {"prompt_tokens": 0.55, "completion_tokens": 2.19},
+    "DeepSeek R1": {"prompt_tokens": 0.2, "completion_tokens": 0.8},
     "o4-mini Low (April 2025)": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "Claude-3.7 Sonnet Low (February 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
     "o4-mini High (April 2025)": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
@@ -289,6 +290,7 @@ MODEL_MAPPING = [
     ("claude-opus-4-20250514", "Claude Opus 4 (May 2025)", "claude-opus-4-20250514"),
     ("Claude-Opus 4 High (May 2025)", "Claude Opus 4 High (May 2025)", "claude-opus-4-20250514"),
     ("gemini-2.0-flash", "Gemini 2.0 Flash", "gemini-2.0-flash"),
+    ("models/gemini-2.0-flash", "Gemini 2.0 Flash", "models/gemini-2.0-flash"),
     ("claude-3-7-sonnet-20250219 high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
     ("o3-2025-04-16", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("claude-3-7-sonnet-2025-02-19", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
@@ -299,9 +301,9 @@ MODEL_MAPPING = [
     ("deepseek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("claude-3-7-sonnet-2025-02-19 low", "Claude-3.7 Sonnet Low (February 2025)", "claude-3-7-sonnet-20250219"),
     ("DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
-    ("deepseek-r1-0528", "DeepSeek R1 (May 2025)", "deepseek-ai/DeepSeek-R1"),
-    ("deepseek-chat-v3.1", "DeepSeek Chat V3 (May 2025)", "deepseek-ai/DeepSeek-Chat-V3.1"),
-    ("deepseek-chat-v3-0324", "DeepSeek Chat V3 (May 2025)", "deepseek-ai/DeepSeek-Chat-V3.1"),
+    ("deepseek-r1-0528", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
+    ("deepseek-chat-v3.1", "DeepSeek V3.1", "deepseek-ai/DeepSeek-Chat-V3.1"),
+    ("deepseek-chat-v3-0324", "DeepSeek V3", "deepseek-ai/DeepSeek-Chat-V3.1"),
     ("together_ai/deepseek-ai/DeepSeek-V3", "DeepSeek V3", "deepseek-ai/DeepSeek-V3"),
     ("together_ai/deepseek-ai/DeepSeek-R1", "DeepSeek R1", "deepseek-ai/DeepSeek-R1"),
     ("openrouter/anthropic/claude-opus-4.1 high", "Claude Opus 4.1 High (August 2025)", "openrouter/anthropic/claude-opus-4.1-high"),
@@ -398,7 +400,22 @@ MODELS_TO_SKIP = [
 ]
 
 RUNIDS_TO_SKIP = [
-    'swebench_verified_mini_my_agento320250416_1745453708'
+    'swebench_verified_mini_my_agento320250416_1745453708',
+    'assistantbench_hal_generalist_agent_claude37sonnet20250219_1746223066',
+    'assistantbench_hal_generalist_agent_claude37sonnet20250219_high_1748661923',
+    'assistantbench_hal_generalist_agent_claude37sonnet20250219_low_1748660152',
+    'assistantbench_hal_generalist_agent_claudeopus41_high_1754936482',
+    'assistantbench_hal_generalist_agent_claudeopus4120250514_1754545969',
+    'assistantbench_hal_generalist_agent_claudeopus4120250514_high_1754543029',
+    'assistantbench_hal_generalist_agent_deepseekaideepseekr1_1748900721',
+    'assistantbench_hal_generalist_agent_deepseekaideepseekv3_1746221486',
+    'assistantbench_hal_generalist_agent_gemini20flash_1746220438',
+    'assistantbench_hal_generalist_agent_gpt4120250414_1746216493',
+    'assistantbench_hal_generalist_agent_o4mini20250416_1746216959',
+    'assistantbench_hal_generalist_agent_o4mini20250416_high_1746217844',
+    'assistantbench_hal_generalist_agent_o4mini20250416_low_1746217634',
+    'assistantbench_hal_generalist_agent_o320250416_1746219524',
+
 ]
 
 class TracePreprocessor:
@@ -449,7 +466,6 @@ class TracePreprocessor:
         EXCLUDE_BENCHMARKS = [
             'colbench_backend_programming',
             'colbench_frontend_design',
-            'scienceagentbench',
         ]
 
         BENCHMARK_ALIAS = {
@@ -689,8 +705,12 @@ class TracePreprocessor:
 
                 # If show_primary_model_name is part of models to  skip, skip this agent
                 if show_primary_model_name in MODELS_TO_SKIP:
-                    print(f"Skipping agent {agent_name} for benchmark {benchmark_name} due to primary model {show_primary_model_name} being in MODELS_TO_SKIP")
-                    continue # This will skip this agent for this benchmark and continue to the next file
+                    # Do not skip 'Gemini 2.5 Pro Preview (March 2025)' if it's part of corebench
+                    if benchmark_name == 'corebench_hard' and show_primary_model_name == 'Gemini 2.5 Pro Preview (March 2025)':
+                        print(f"Not skipping agent {agent_name} for benchmark {benchmark_name} despite primary model {show_primary_model_name} being in MODELS_TO_SKIP")
+                    else:
+                        print(f"Skipping agent {agent_name} for benchmark {benchmark_name} due to primary model {show_primary_model_name} being in MODELS_TO_SKIP")
+                        continue # This will skip this agent for this benchmark and continue to the next file
 
                 # Rename agent_name with primary model show name (only once)
                 base_agent_name = re.sub(r'\s*\(.*?\)$', '', agent_name)
@@ -953,7 +973,6 @@ class TracePreprocessor:
                 ORDER BY accuracy DESC
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
-        
 
         # Load metadata
         with open('agents_metadata.yaml', 'r') as f:
@@ -1015,7 +1034,6 @@ class TracePreprocessor:
         df['Level 3 Accuracy'] = df['Level 3 Accuracy'] * 100
         df['Refusals'] = df['Refusals'] * 100
         df['Non-Refusal Harm Score'] = df['Non-Refusal Harm Score'] * 100
-        
         return df
     
     def get_task_success_data(self, benchmark_name):
@@ -1287,7 +1305,7 @@ class TracePreprocessor:
         benchmarks = set()
         for db_file in self.db_dir.glob('*.db'):
             benchmarks.add(db_file.stem.replace('_', '/'))
-        return len(benchmarks) - 3 # TODO hardcoded -3 because of benchmarks not added for now
+        return len(benchmarks) - 2 # TODO hardcoded -2 because of benchmarks not added for now
 
     def get_total_agents(self):
         """Get the total number of unique agents across all benchmarks"""
@@ -1295,7 +1313,7 @@ class TracePreprocessor:
         # Use the parsed_results table since it's guaranteed to have all benchmark-agent pairs
         for db_file in self.db_dir.glob('*.db'):
             # skip colbench, scienceagentbench
-            if db_file.stem in ['colbench_backend_programming', 'colbench_frontend_design', 'scienceagentbench']:
+            if db_file.stem in ['colbench_backend_programming', 'colbench_frontend_design']:
                 continue # TODO remove hardcoded skip once these benchmarks are added
             benchmark_name = db_file.stem.replace('_', '/')
             with self.get_conn(benchmark_name) as conn:
@@ -1326,8 +1344,7 @@ class TracePreprocessor:
         """Get highlight results organized by benchmark and agent for the landing page"""
         EXCLUDE_BENCHMARKS = [
             'colbench_backend_programming',
-            'colbench_frontend_design', 
-            'scienceagentbench',
+            'colbench_frontend_design',
         ]
         
         BENCHMARK_DISPLAY_NAMES = {
@@ -1338,7 +1355,8 @@ class TracePreprocessor:
             "online_mind2web": "Online Mind2Web",
             "gaia": "GAIA",
             "corebench_hard": "CORE-Bench Hard",
-            "assistantbench": "AssistantBench"
+            "assistantbench": "AssistantBench",
+            "scienceagentbench": "ScienceAgentBench"
         }
         
         BENCHMARK_CATEGORIES = {
@@ -1405,6 +1423,246 @@ class TracePreprocessor:
                 continue
         
         return highlights
+
+    def get_model_data_across_benchmarks(self, model_name):
+        """Get data for a specific model across all benchmarks"""
+        all_data = []
+        
+        for db_file in self.db_dir.glob('*.db'):
+            benchmark_name = db_file.stem
+            try:
+                # Use get_parsed_results_with_costs to get correct token-based costs
+                df = self.get_parsed_results_with_costs(benchmark_name, aggregate=False)
+                
+                if not df.empty:
+                    # Filter for the specific model
+                    df = df[df['Model Name'] == model_name]
+                    
+                    if not df.empty:
+                        # Add benchmark name for reference
+                        df['benchmark_name'] = benchmark_name
+                        all_data.append(df)
+                        
+            except Exception as e:
+                print(f"Error processing model {model_name} for {benchmark_name}: {e}")
+                continue
+        
+        if not all_data:
+            return pd.DataFrame()
+            
+        # Combine all benchmark data
+        combined_df = pd.concat(all_data, ignore_index=True)
+        
+        # The data already has the correct column names from get_parsed_results_with_costs
+        # and includes URL information
+        
+        return combined_df
+
+    def get_agent_data_across_benchmarks(self, agent_name):
+        """Get data for a specific agent across all benchmarks
+        Note: agent_name should be the base name without model in parentheses"""
+        all_data = []
+        
+        for db_file in self.db_dir.glob('*.db'):
+            benchmark_name = db_file.stem
+            try:
+                # Use get_parsed_results_with_costs to get correct token-based costs
+                df = self.get_parsed_results_with_costs(benchmark_name, aggregate=False)
+                
+                if not df.empty:
+                    # Search for agents that start with the base agent name
+                    # This handles cases like "AgentName (ModelName)"
+                    mask = df['Agent Name'].str.startswith(agent_name, na=False)
+                    df = df[mask]
+                    
+                    if not df.empty:
+                        # Add benchmark name for reference
+                        df['benchmark_name'] = benchmark_name
+                        all_data.append(df)
+                        
+            except Exception as e:
+                print(f"Error processing agent {agent_name} for {benchmark_name}: {e}")
+                continue
+        
+        if not all_data:
+            return pd.DataFrame()
+            
+        # Combine all benchmark data
+        combined_df = pd.concat(all_data, ignore_index=True)
+        
+        # The data already has the correct column names from get_parsed_results_with_costs
+        # and includes URL information
+        
+        return combined_df
+
+    def get_model_performance_data(self, model_name):
+        """Get performance data for a specific model with Pareto flag based on agent performance"""
+        data = self.get_model_data_across_benchmarks(model_name)
+        
+        if data.empty:
+            return {
+                'model_name': model_name,
+                'benchmarks': [],
+                'is_pareto': False,
+                'pricing': self.get_model_pricing(model_name)
+            }
+        
+        # Check if any agent using this model is Pareto optimal
+        is_pareto = False
+        if 'Is Pareto' in data.columns:
+            is_pareto = data['Is Pareto'].any()
+        
+        # Group by benchmark for easier display
+        benchmark_data = []
+        for benchmark_name in data['benchmark_name'].unique():
+            benchmark_df = data[data['benchmark_name'] == benchmark_name]
+            
+            benchmark_info = {
+                'name': benchmark_name,
+                'agents': []
+            }
+            
+            for _, row in benchmark_df.iterrows():
+                agent_info = {
+                    'agent_name': row.get('Agent Name', ''),
+                    'accuracy': row.get('Accuracy', 0),
+                    'total_cost': row.get('Total Cost', 0),
+                    'url': row.get('URL', ''),
+                    'is_pareto': row.get('Is Pareto', False),
+                    'date': row.get('Date', '')
+                }
+                benchmark_info['agents'].append(agent_info)
+            
+            benchmark_data.append(benchmark_info)
+        
+        return {
+            'model_name': model_name,
+            'benchmarks': benchmark_data,
+            'is_pareto': is_pareto,
+            'pricing': self.get_model_pricing(model_name)
+        }
+    
+    def get_agent_performance_data(self, agent_name):
+        """Get performance data for a specific agent"""
+        data = self.get_agent_data_across_benchmarks(agent_name)
+        
+        if data.empty:
+            return {
+                'agent_name': agent_name,
+                'benchmarks': [],
+                'is_pareto': False
+            }
+        
+        # Check if this agent is Pareto optimal in any benchmark
+        is_pareto = False
+        if 'Is Pareto' in data.columns:
+            is_pareto = data['Is Pareto'].any()
+        
+        # Group by benchmark
+        benchmark_data = []
+        for benchmark_name in data['benchmark_name'].unique():
+            benchmark_df = data[data['benchmark_name'] == benchmark_name]
+            
+            benchmark_info = {
+                'name': benchmark_name,
+                'runs': []
+            }
+            
+            for _, row in benchmark_df.iterrows():
+                run_info = {
+                    'model_name': row.get('Model Name', ''),
+                    'accuracy': row.get('Accuracy', 0),
+                    'total_cost': row.get('Total Cost', 0),
+                    'url': row.get('URL', ''),
+                    'is_pareto': row.get('Is Pareto', False),
+                    'date': row.get('Date', '')
+                }
+                benchmark_info['runs'].append(run_info)
+            
+            benchmark_data.append(benchmark_info)
+        
+        return {
+            'agent_name': agent_name,
+            'benchmarks': benchmark_data,
+            'is_pareto': is_pareto
+        }
+    
+    def get_model_pricing(self, model_name):
+        """Get pricing information for a model from DEFAULT_PRICING"""
+        # First try exact match
+        if model_name in DEFAULT_PRICING:
+            pricing_info = DEFAULT_PRICING[model_name]
+            return {
+                'prompt_tokens': pricing_info.get('prompt_tokens', 0),
+                'completion_tokens': pricing_info.get('completion_tokens', 0),
+                'unit': 'per 1M tokens'
+            }
+        
+        # Try fuzzy matching for slight variations
+        clean_model = model_name.lower().replace('-', '').replace('_', '').replace(' ', '')
+        
+        for pricing_key, pricing_info in DEFAULT_PRICING.items():
+            clean_key = pricing_key.lower().replace('-', '').replace('_', '').replace(' ', '')
+            if clean_model in clean_key or clean_key in clean_model:
+                return {
+                    'prompt_tokens': pricing_info.get('prompt_tokens', 0),
+                    'completion_tokens': pricing_info.get('completion_tokens', 0),
+                    'unit': 'per 1M tokens'
+                }
+        
+        return {
+            'prompt_tokens': 0,
+            'completion_tokens': 0, 
+            'unit': 'per 1M tokens'
+        }
+
+    def get_model_pareto_per_benchmark(self, model_name):
+        """Return {benchmark: {is_pareto: bool, pareto_agents: [..]}} for a model.
+        A model is Pareto on a benchmark if at least one Pareto agent on that
+        benchmark uses this model (membership in the 'Models' column)."""
+        pareto_data = {}
+
+        for db_file in self.db_dir.glob('*.db'):
+            benchmark_name = db_file.stem
+            try:
+                from utils.viz import create_leaderboard
+                full_benchmark_df = self.get_parsed_results(benchmark_name, aggregate=True)
+                leaderboard = create_leaderboard(full_benchmark_df, benchmark_name)
+
+                def model_used(cell):
+                    # Handle list or string in 'Models' column
+                    if isinstance(cell, list):
+                        return any(model_name in str(m) for m in cell)
+                    if isinstance(cell, str):
+                        return model_name in cell
+                    return False
+
+                if 'Models' in leaderboard.columns:
+                    mask = leaderboard['Models'].apply(model_used)
+                elif 'Model Name' in leaderboard.columns:
+                    mask = leaderboard['Model Name'].astype(str).str.contains(model_name, na=False)
+                else:
+                    mask = pd.Series(False, index=leaderboard.index)
+
+                model_rows = leaderboard[mask]
+                is_pareto = False
+                pareto_agents = []
+                if not model_rows.empty and 'Is Pareto' in model_rows.columns:
+                    pareto_mask = model_rows['Is Pareto'] == True
+                    is_pareto = pareto_mask.any()
+                    if 'Agent Name' in model_rows.columns:
+                        pareto_agents = list(model_rows.loc[pareto_mask, 'Agent Name'])
+
+                pareto_data[benchmark_name] = {
+                    'is_pareto': bool(is_pareto),
+                    'pareto_agents': pareto_agents,
+                }
+
+            except Exception as e:
+                print(f"Error calculating Pareto for {model_name} in {benchmark_name}: {e}")
+                pareto_data[benchmark_name] = {'is_pareto': False, 'pareto_agents': []}
+
+        return pareto_data
 
 if __name__ == '__main__':
     preprocessor = TracePreprocessor()
