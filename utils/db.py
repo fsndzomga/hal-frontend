@@ -1432,6 +1432,9 @@ class TracePreprocessor:
                 print(f"Error processing highlights for {benchmark_name}: {e}")
                 continue
         
+        # Sort highlights alphabetically by benchmark display name
+        highlights.sort(key=lambda x: x['benchmark'])
+        
         return highlights
 
     def get_model_data_across_benchmarks(self, model_name):
