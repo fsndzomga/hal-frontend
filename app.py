@@ -596,92 +596,73 @@ def create_app():
         # Decode URL-encoded characters
         model_name = unquote(model_name)
         
-        # Use the specialized function to get model data
         try:
-            combined_data = preprocessor.get_model_data_across_benchmarks(model_name)
+            # Get leaderboards for all benchmarks (excluding specified ones)
+            excluded_benchmarks = ['colbench_backend_programming', 'colbench_frontend_design']
+            all_leaderboards = []
             
-            if combined_data.empty:
+            # Get available benchmarks by iterating through db files
+            available_benchmarks = []
+            for db_file in preprocessor.db_dir.glob('*.db'):
+                benchmark_name = db_file.stem
+                if benchmark_name not in excluded_benchmarks:
+                    available_benchmarks.append(benchmark_name)
+            
+            for benchmark in available_benchmarks:
+                try:
+                    full_benchmark_df = preprocessor.get_parsed_results(benchmark, aggregate=True)
+                    if not full_benchmark_df.empty:
+                        leaderboard = create_leaderboard(full_benchmark_df, benchmark)
+                        # Add benchmark column for aggregation
+                        leaderboard['benchmark_name'] = benchmark
+                        all_leaderboards.append(leaderboard)
+                except Exception as e:
+                    print(f"Error creating leaderboard for {benchmark}: {e}")
+                    continue
+            
+            if not all_leaderboards:
+                return render_template('error.html', message=f"No leaderboard data found for model '{model_name}'")
+            
+            # Aggregate all leaderboards (with empty check to avoid future warning)
+            non_empty_leaderboards = [lb for lb in all_leaderboards if not lb.empty]
+            if not non_empty_leaderboards:
+                return render_template('error.html', message=f"No valid leaderboard data found for model '{model_name}'")
+            
+            aggregated_data = pd.concat(non_empty_leaderboards, ignore_index=True)
+            
+            # Filter for the specific model
+            model_data = aggregated_data[aggregated_data['Models'] == model_name]
+            
+            if model_data.empty:
                 return render_template('error.html', message=f"No data found for model '{model_name}'")
-                
-            # Get model info
+
+            # Calculate model info
             model_info = {
                 'name': model_name,
-                'total_benchmarks': combined_data['benchmark_name'].nunique(),
-                'total_agents': combined_data['Agent Name'].nunique(),
-                'avg_accuracy': combined_data['Accuracy'].mean(),
-                'avg_cost': combined_data['Total Cost'].mean(),
-                'first_seen': combined_data['Date'].min() if 'Date' in combined_data.columns and not combined_data['Date'].isna().all() else 'Unknown',
-                'last_seen': combined_data['Date'].max() if 'Date' in combined_data.columns and not combined_data['Date'].isna().all() else 'Unknown',
+                'total_benchmarks': model_data['benchmark_name'].nunique(),
+                'total_agents': model_data['Agent Name'].nunique(),
+                'avg_accuracy': model_data['Accuracy'].mean(),
+                'avg_cost': model_data['Total Cost'].mean(),
+                'first_seen': model_data['Date'].min() if 'Date' in model_data.columns and not model_data['Date'].isna().all() else 'Unknown',
+                'last_seen': model_data['Date'].max() if 'Date' in model_data.columns and not model_data['Date'].isna().all() else 'Unknown',
                 'pricing': preprocessor.get_model_pricing(model_name)
             }
-            
-            # Get benchmark performance with per-benchmark Pareto status
+
+            # Prepare benchmark performance data
             benchmark_performance = []
-            pareto_per_benchmark = preprocessor.get_model_pareto_per_benchmark(model_name)
-
-            for benchmark in combined_data['benchmark_name'].unique():
-                benchmark_df = combined_data[combined_data['benchmark_name'] == benchmark].copy()
-
-                benchmark_pareto = pareto_per_benchmark.get(benchmark, {'is_pareto': False, 'pareto_agents': []})
-                benchmark_title = benchmark.replace('_', ' ').title()
-                
-                agents_count = benchmark_df['Agent Name'].nunique()
-                
-                # For model pages, calculate cost properly based on token usage
-                # If multiple agents use this model, show appropriate cost based on requirements
-                cost_display = ""
-                if benchmark_pareto['is_pareto'] and benchmark_pareto['pareto_agents']:
-                    # Model is Pareto efficient for this benchmark
-                    pareto_df = benchmark_df[benchmark_df['Agent Name'].isin(benchmark_pareto['pareto_agents'])]
-                    if not pareto_df.empty:
-                        # Use the best Pareto agent's stats
-                        best_pareto = pareto_df.loc[pareto_df['Accuracy'].idxmax()]
-                        display_accuracy = best_pareto['Accuracy']
-                        pareto_cost = best_pareto['Total Cost']
-                        
-                        # Check if there are other agents using this model with higher costs
-                        max_cost = benchmark_df['Total Cost'].max()
-                        if max_cost > pareto_cost:
-                            cost_display = f"${pareto_cost:.2f} (max: ${max_cost:.2f})"
-                            display_cost = pareto_cost  # For sorting purposes
-                        else:
-                            cost_display = f"${pareto_cost:.2f}"
-                            display_cost = pareto_cost
-                    else:
-                        # Fallback to best accuracy agent for this model
-                        best_agent = benchmark_df.loc[benchmark_df['Accuracy'].idxmax()]
-                        display_accuracy = best_agent['Accuracy']
-                        display_cost = best_agent['Total Cost']
-                        cost_display = f"${display_cost:.2f}"
-                else:
-                    # Model is not Pareto efficient, show max cost
-                    if len(benchmark_df) > 1:
-                        # Multiple agents use this model, show max cost
-                        max_cost_agent = benchmark_df.loc[benchmark_df['Total Cost'].idxmax()]
-                        best_accuracy_agent = benchmark_df.loc[benchmark_df['Accuracy'].idxmax()]
-                        display_accuracy = best_accuracy_agent['Accuracy']
-                        display_cost = benchmark_df['Total Cost'].max()
-                        cost_display = f"${display_cost:.2f}"
-                    else:
-                        # Only one agent uses this model
-                        best_agent = benchmark_df.iloc[0]
-                        display_accuracy = best_agent['Accuracy']
-                        display_cost = best_agent['Total Cost']
-                        cost_display = f"${display_cost:.2f}"
-                
+            for _, row in model_data.iterrows():
                 benchmark_performance.append({
-                    'benchmark': benchmark,
-                    'benchmark_title': benchmark_title,
-                    'accuracy': display_accuracy,
-                    'cost': display_cost,
-                    'cost_display': cost_display,
-                    'agents_count': agents_count,
-                    'on_frontier': benchmark_pareto['is_pareto'],
-                    'pareto_agents': benchmark_pareto['pareto_agents']
+                    'benchmark': row['benchmark_name'],
+                    'benchmark_title': row['benchmark_name'].replace('_', ' ').title(),
+                    'accuracy': row['Accuracy'],
+                    'cost': row['Total Cost'],
+                    'cost_display': f"${row['Total Cost']:.2f}",
+                    'on_frontier': row.get('Is Pareto', False),
+                    'agent_name': row['Agent Name']
                 })
-            
-            # Sort by accuracy descending
-            benchmark_performance.sort(key=lambda x: x['accuracy'], reverse=True)
+
+            # Sort by benchmark name alphabetically
+            benchmark_performance.sort(key=lambda x: x['benchmark_title'])
             
             return render_template('model_page.html', 
                                  model_info=model_info, 
@@ -698,77 +679,70 @@ def create_app():
         base_agent_name = agent_name.split(' (')[0] if ' (' in agent_name else agent_name
 
         try:
-            combined_data = preprocessor.get_agent_data_across_benchmarks(base_agent_name)
-            if combined_data.empty:
-                return render_template('error.html', message=f"No data found for agent '{agent_name}'")
-
-            agent_info = {
-                'name': agent_name,
-                'models': list(combined_data['Model Name'].unique()) if 'Model Name' in combined_data.columns else [],
-                'total_benchmarks': combined_data['benchmark_name'].nunique() if 'benchmark_name' in combined_data.columns else 0,
-                'first_seen': combined_data['Date'].min() if 'Date' in combined_data.columns and not combined_data['Date'].isna().all() else 'Unknown',
-                'last_seen': combined_data['Date'].max() if 'Date' in combined_data.columns and not combined_data['Date'].isna().all() else 'Unknown',
-                'total_runs': len(combined_data)
-            }
-
-            benchmark_performance = []
-            pareto_count = 0  # Track total Pareto efficient runs across all benchmarks
+            # Get leaderboards for all benchmarks (excluding specified ones)
+            excluded_benchmarks = ['colbench_backend_programming', 'colbench_frontend_design']
+            all_leaderboards = []
             
-            for benchmark in combined_data['benchmark_name'].unique():
-                benchmark_df = combined_data[combined_data['benchmark_name'] == benchmark].copy()
-                rank = None
-                on_frontier = False
-                
+            # Get available benchmarks by iterating through db files
+            available_benchmarks = []
+            for db_file in preprocessor.db_dir.glob('*.db'):
+                benchmark_name = db_file.stem
+                if benchmark_name not in excluded_benchmarks:
+                    available_benchmarks.append(benchmark_name)
+            
+            for benchmark in available_benchmarks:
                 try:
                     full_benchmark_df = preprocessor.get_parsed_results(benchmark, aggregate=True)
-                    leaderboard = create_leaderboard(full_benchmark_df, benchmark)
-                    if 'Agent Name' in leaderboard.columns:
-                        # Find ALL agents that start with the base agent name
-                        agent_rows = leaderboard[leaderboard['Agent Name'].str.startswith(base_agent_name, na=False)]
-                        if not agent_rows.empty:
-                            # Count how many are Pareto efficient
-                            pareto_rows = agent_rows[agent_rows.get('Is Pareto', False) == True]
-                            pareto_count += len(pareto_rows)
-                            
-                            # Get the best performing agent instance for this base agent (for ranking)
-                            best_agent_row = agent_rows.loc[agent_rows['Accuracy'].idxmax()]
-                            rank = int(best_agent_row.name + 1)  # Convert index to rank (1-based)
-                            on_frontier = bool(best_agent_row.get('Is Pareto', False))
+                    if not full_benchmark_df.empty:
+                        leaderboard = create_leaderboard(full_benchmark_df, benchmark)
+                        # Add benchmark column for aggregation
+                        leaderboard['benchmark_name'] = benchmark
+                        all_leaderboards.append(leaderboard)
                 except Exception as e:
-                    print(f"Error getting ranking for {base_agent_name} in {benchmark}: {e}")
-                    rank = None
-                    on_frontier = False
+                    print(f"Error creating leaderboard for {benchmark}: {e}")
+                    continue
+            
+            if not all_leaderboards:
+                return render_template('error.html', message=f"No leaderboard data found for agent '{agent_name}'")
+            
+            # Aggregate all leaderboards (with empty check to avoid future warning)
+            non_empty_leaderboards = [lb for lb in all_leaderboards if not lb.empty]
+            if not non_empty_leaderboards:
+                return render_template('error.html', message=f"No valid leaderboard data found for agent '{agent_name}'")
+            
+            aggregated_data = pd.concat(non_empty_leaderboards, ignore_index=True)
+            
+            # Filter for the specific agent
+            agent_data = aggregated_data[aggregated_data['Agent Name'] == base_agent_name]
+            
+            if agent_data.empty:
+                return render_template('error.html', message=f"No data found for agent '{agent_name}'")
 
-                runs_count = len(benchmark_df)
-                
-                # Use similar logic as model page for cost calculation
-                # Note: benchmark_df doesn't have 'Is Pareto' column, we get that from leaderboard
-                if on_frontier:
-                    # Agent is Pareto efficient - use best accuracy run for this agent
-                    best_run = benchmark_df.loc[benchmark_df['Accuracy'].idxmax()]
-                    display_accuracy = best_run['Accuracy']
-                    display_cost = best_run['Total Cost']
-                else:
-                    # Agent is not Pareto efficient - use max accuracy and corresponding cost
-                    best_run = benchmark_df.loc[benchmark_df['Accuracy'].idxmax()]
-                    display_accuracy = best_run['Accuracy']
-                    display_cost = best_run['Total Cost']
+            # Calculate agent info
+            agent_info = {
+                'name': agent_name,
+                'models': list(agent_data['Models'].unique()) if 'Models' in agent_data.columns else [],
+                'total_benchmarks': agent_data['benchmark_name'].nunique(),
+                'first_seen': agent_data['Date'].min() if 'Date' in agent_data.columns and not agent_data['Date'].isna().all() else 'Unknown',
+                'last_seen': agent_data['Date'].max() if 'Date' in agent_data.columns and not agent_data['Date'].isna().all() else 'Unknown',
+                'total_runs': len(agent_data),
+                'pareto_benchmarks': len(agent_data[agent_data.get('Is Pareto', False) == True])
+            }
 
+            # Prepare benchmark performance data
+            benchmark_performance = []
+            for _, row in agent_data.iterrows():
                 benchmark_performance.append({
-                    'benchmark': benchmark,
-                    'benchmark_title': benchmark.replace('_', ' ').title(),
-                    'accuracy': display_accuracy,  # Already multiplied by 100
-                    'cost': display_cost,
-                    'runs': runs_count,
-                    'rank': rank,  # Changed from 'ranking' to 'rank'
-                    'on_frontier': on_frontier
+                    'benchmark': row['benchmark_name'],
+                    'benchmark_title': row['benchmark_name'].replace('_', ' ').title(),
+                    'accuracy': row['Accuracy'],
+                    'cost': row['Total Cost'],
+                    'on_frontier': row.get('Is Pareto', False),
+                    'model_name': row.get('Models', 'Unknown')
                 })
 
-            # Sort by accuracy (descending)
-            benchmark_performance.sort(key=lambda x: x['accuracy'], reverse=True)
-            
-            # Use the total count of Pareto efficient runs across all benchmarks
-            agent_info['pareto_benchmarks'] = pareto_count
+            # Sort by benchmark name alphabetically
+            benchmark_performance.sort(key=lambda x: x['benchmark_title'])
             
             return render_template('agent_page.html', agent_info=agent_info, benchmark_performance=benchmark_performance)
 
