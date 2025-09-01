@@ -610,7 +610,7 @@ def create_app():
             
             for benchmark in available_benchmarks:
                 try:
-                    full_benchmark_df = preprocessor.get_parsed_results(benchmark, aggregate=True)
+                    full_benchmark_df = preprocessor.get_parsed_results_with_costs(benchmark, aggregate=False)
                     if not full_benchmark_df.empty:
                         leaderboard = create_leaderboard(full_benchmark_df, benchmark)
                         # Add benchmark column for aggregation
@@ -692,7 +692,7 @@ def create_app():
             
             for benchmark in available_benchmarks:
                 try:
-                    full_benchmark_df = preprocessor.get_parsed_results(benchmark, aggregate=True)
+                    full_benchmark_df = preprocessor.get_parsed_results_with_costs(benchmark, aggregate=False)
                     if not full_benchmark_df.empty:
                         leaderboard = create_leaderboard(full_benchmark_df, benchmark)
                         # Add benchmark column for aggregation

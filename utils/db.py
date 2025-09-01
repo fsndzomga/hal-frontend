@@ -260,7 +260,7 @@ DEFAULT_PRICING = {
     "o3 Low (April 2025)": {"prompt_tokens": 2, "completion_tokens": 8},
     "o3-mini Low (January 2025)": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "o3-mini High (January 2025)": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
-    "Gemini 2.5 Pro Preview (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 5},
+    "Gemini 2.5 Pro Preview (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
     "Claude-3.7 Sonnet High (February 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
     "gpt-4.5-preview-2025-02-27": {"prompt_tokens": 75, "completion_tokens": 150},
     "Claude Opus 4 (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},

@@ -515,6 +515,20 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
                 return model.strip()
         return 'Other'
 
+    # Map model names to developers
+    def get_model_developer(model_name):
+        model_lower = model_name.lower()
+        if any(prefix in model_lower for prefix in ['gpt', 'o1', 'o3', 'o4', 'openai']):
+            return 'OpenAI'
+        elif any(prefix in model_lower for prefix in ['claude', 'anthropic']):
+            return 'Anthropic'
+        elif any(prefix in model_lower for prefix in ['gemini', 'google']):
+            return 'Google'
+        elif any(prefix in model_lower for prefix in ['deepseek']):
+            return 'DeepSeek'
+        else:
+            return 'Other'
+
     # Compute per-agent means and Pareto frontier
     unique_agents = df['Agent Name'].unique()
     agent_means = {
@@ -543,10 +557,13 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         line=dict(color='black', width=1, dash='dash')
     ))
 
-    # Colors by model
+    # Colors by developer instead of individual models
     color_sequence = px.colors.qualitative.Dark2
-    unique_models = sorted(df['Model Name'].unique())
-    color_map = {model: color_sequence[i % len(color_sequence)] for i, model in enumerate(unique_models)}
+    unique_developers = ['OpenAI', 'Anthropic', 'Google', 'DeepSeek', 'Other']
+    developer_color_map = {dev: color_sequence[i % len(color_sequence)] for i, dev in enumerate(unique_developers)}
+    
+    # Track which developers we've seen to manage legend
+    developers_seen = set()
 
     # Plot each agent (markers + optional annotation if on frontier)
     unique_agents = df[hover_data[0]].unique()
@@ -561,6 +578,7 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         x_value = [float(np.mean(agent_data[x].values))]
         y_value = [float(np.mean(agent_data[y].values))]
         model = agent_data['Model Name'].iloc[0]
+        developer = get_model_developer(model)
 
         # Error bars (if multiple runs)
         if len(agent_data) > 1:
@@ -584,17 +602,23 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
             ))
 
         # Marker for this agent
+        # Only show in legend if this is the first time we see this developer
+        show_in_legend = developer not in developers_seen and developer in unique_developers
+        if show_in_legend:
+            developers_seen.add(developer)
+        
         fig.add_trace(go.Scatter(
             x=x_value,
             y=y_value,
             mode='markers',
-            name=model,
-            marker=dict(size=10, color=color_map.get(model, '#1f77b4')),
+            name=developer,  # Show developer name in legend instead of model
+            marker=dict(size=10, color=developer_color_map.get(developer, '#1f77b4')),
             customdata=agent_data[hover_data],
-            showlegend=False,  # legend stays minimal elsewhere
+            showlegend=show_in_legend,  # Only show first occurrence of each developer
+            legendgroup=developer,  # Group by developer
             hovertemplate="<br>".join([
                 "<b>Agent</b>: %{customdata[0]}",
-                "<b>Model</b>: " + model,
+                "<b>Model</b>: " + model,  # Keep detailed model info in hover
                 "<b>Total Cost</b>: $%{x:.1f}",
                 "<b>Accuracy</b>: %{y:.1f}%<extra></extra>",
             ]),
