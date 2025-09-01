@@ -239,18 +239,33 @@ def create_leaderboard(df, benchmark_name = None):
     else:
         df = df.sort_values('Accuracy', ascending=False)
 
-    # Compute Pareto frontier on numeric columns
+    # Compute Pareto frontier on numeric columns (using agent means like scatter plot)
     df['Total Cost'] = pd.to_numeric(df['Total Cost'], errors='coerce')
     df['Accuracy'] = pd.to_numeric(df['Accuracy'], errors='coerce')
 
-    valid = df[['Total Cost', 'Accuracy']].dropna()
-    if len(valid) > 0:
-        agents = [Agent(c, a) for c, a in zip(valid['Total Cost'].values, valid['Accuracy'].values)]
+    # Get unique agents and their mean costs/accuracy (consistent with scatter plot)
+    unique_agents = df['Agent Name'].unique()
+    agent_means = {
+        agent: (
+            df[df['Agent Name'] == agent]['Total Cost'].mean(),
+            df[df['Agent Name'] == agent]['Accuracy'].mean()
+        )
+        for agent in unique_agents
+    }
+    
+    # Filter out agents with NaN values
+    valid_agent_means = {agent: (cost, acc) for agent, (cost, acc) in agent_means.items() 
+                        if pd.notna(cost) and pd.notna(acc)}
+    
+    if len(valid_agent_means) > 0:
+        agents = [Agent(cost, acc) for cost, acc in valid_agent_means.values()]
         frontier = compute_pareto_frontier(agents)
         frontier_pts = {(round(a.total_cost, 6), round(a.accuracy, 6)) for a in frontier}
+        
+        # Mark agents as Pareto optimal based on their mean values
         df['Is Pareto'] = df.apply(
-            lambda r: (round(r['Total Cost'], 6), round(r['Accuracy'], 6)) in frontier_pts
-            if pd.notna(r['Total Cost']) and pd.notna(r['Accuracy']) else False, axis=1
+            lambda r: (round(agent_means[r['Agent Name']][0], 6), round(agent_means[r['Agent Name']][1], 6)) in frontier_pts
+            if r['Agent Name'] in valid_agent_means else False, axis=1
         )
     else:
         df['Is Pareto'] = False

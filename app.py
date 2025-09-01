@@ -129,7 +129,7 @@ def create_app():
         
         # Create scatter plot
         scatter_plot = create_scatter_plot(
-            preprocessor.get_parsed_results('usaco', aggregate=False),
+            results_df,  # Use the same data as leaderboard (with recalculated costs)
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
@@ -180,7 +180,7 @@ def create_app():
         
         # Create scatter plot
         scatter_plot = create_scatter_plot(
-            preprocessor.get_parsed_results('assistantbench', aggregate=False),
+            results_df,  # Use the same data as leaderboard (with recalculated costs)
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
