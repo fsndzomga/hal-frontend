@@ -1392,41 +1392,46 @@ class TracePreprocessor:
             category = BENCHMARK_CATEGORIES.get(benchmark_name, "Other")
             
             try:
-                with self.get_conn(benchmark_name) as conn:
-                    # Get top performing agent-model combinations
-                    query = '''
-                        SELECT agent_name, model_name, accuracy, total_cost
-                        FROM parsed_results 
-                        WHERE benchmark_name = ? AND accuracy IS NOT NULL
-                        ORDER BY accuracy DESC
-                        LIMIT ?
-                    '''
-                    df = pd.read_sql_query(query, conn, params=(benchmark_name, limit_per_benchmark))
-                    
-                    if df.empty:
-                        continue
-                    
-                    # Convert to list of agent-model combinations
-                    top_agents = []
-                    for _, row in df.iterrows():
-                        # Extract base agent name (without model info)
-                        base_agent = re.sub(r'\s*\(.*?\)$', '', row['agent_name']).strip()
-                        
-                        top_agents.append({
-                            'agent_name': row['agent_name'],
-                            'base_agent': base_agent,
-                            'model_name': row['model_name'],
-                            'accuracy': row['accuracy'] * 100,  # Convert to percentage
-                            'total_cost': row['total_cost'] if row['total_cost'] else 0,
-                        })
-                    
-                    if top_agents:
-                        highlights.append({
-                            'benchmark': display_name,
-                            'benchmark_key': benchmark_name,
-                            'category': category,
-                            'agents': top_agents
-                        })
+                # Use get_parsed_results_with_costs to ensure consistent cost calculations
+                df = self.get_parsed_results_with_costs(benchmark_name, aggregate=False)
+                
+                if df.empty:
+                    continue
+                
+                # Sort by accuracy and take top results
+                df_sorted = df.sort_values('Accuracy', ascending=False).head(limit_per_benchmark)
+                
+                # Convert to list of agent-model combinations
+                top_agents = []
+                for _, row in df_sorted.iterrows():
+                    # Extract base agent name (without model info and URL formatting)
+                    agent_name = row['Agent Name']
+                    # Remove URL formatting if present
+                    if '[' in agent_name and ']' in agent_name:
+                        base_agent = agent_name.split('[')[1].split(']')[0]
+                    else:
+                        base_agent = re.sub(r'\s*\(.*?\)$', '', agent_name).strip()
+
+                    # Get model name - try from Model Name column first, then extract from agent name
+                    model_name = row.get('Model Name', '')
+                    if not model_name and '(' in agent_name and ')' in agent_name:
+                        model_name = agent_name.split('(')[-1].split(')')[0]
+
+                    top_agents.append({
+                        'agent_name': agent_name,
+                        'base_agent': base_agent,
+                        'model_name': model_name,
+                        'accuracy': row['Accuracy'],  # Already in percentage form
+                        'total_cost': row['Total Cost'] if pd.notna(row['Total Cost']) else 0,
+                    })
+                
+                if top_agents:
+                    highlights.append({
+                        'benchmark': display_name,
+                        'benchmark_key': benchmark_name,
+                        'category': category,
+                        'agents': top_agents
+                    })
                         
             except Exception as e:
                 print(f"Error processing highlights for {benchmark_name}: {e}")
