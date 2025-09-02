@@ -99,6 +99,10 @@ def create_app():
         completion_tokens_fig = create_completion_tokens_bar_chart('scienceagentbench')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
 
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'scienceagentbench')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
+
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
 
         return render_template(
@@ -109,7 +113,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='scienceagentbench',
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
 
     @app.route('/usaco')
@@ -149,6 +154,10 @@ def create_app():
 
         completion_tokens_fig = create_completion_tokens_bar_chart('usaco')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'usaco')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         # Get last updated time
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
@@ -161,7 +170,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='usaco',  # Add benchmark name for failure analysis
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
 
     @app.route('/assistantbench')
@@ -312,6 +322,10 @@ def create_app():
 
         completion_tokens_fig = create_completion_tokens_bar_chart('corebench_hard')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'corebench_hard')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -324,7 +338,8 @@ def create_app():
             pricing=pricing,
             difficulty="Hard",
             benchmark_name='corebench_hard',  # Add benchmark name for failure analysis
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
 
     @app.route('/gaia')
@@ -353,6 +368,10 @@ def create_app():
 
         completion_tokens_fig = create_completion_tokens_bar_chart('gaia')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'gaia')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -364,7 +383,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='gaia',  # Add benchmark name for failure analysis
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
 
     @app.route('/taubench_airline')
@@ -401,6 +421,10 @@ def create_app():
 
         completion_tokens_fig = create_completion_tokens_bar_chart('taubench_airline')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'taubench_airline')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         # Get last updated time
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
@@ -413,7 +437,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='taubench_airline',
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
 
     @app.route('/swebench_verified_mini')
@@ -442,6 +467,10 @@ def create_app():
 
         completion_tokens_fig = create_completion_tokens_bar_chart('swebench_verified_mini')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'swebench_verified_mini')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -453,7 +482,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='swebench_verified_mini',  # Add benchmark name for failure analysis
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
     
     @app.route('/online_mind2web')
@@ -482,6 +512,10 @@ def create_app():
             'Online Mind2Web'
         )
         heatmap_json = json.dumps(heatmap, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'online_mind2web')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -493,7 +527,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='online_mind2web',  # Add benchmark name for failure analysis
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
     
     @app.route('/scicode')
@@ -522,6 +557,10 @@ def create_app():
 
         completion_tokens_fig = create_completion_tokens_bar_chart('scicode')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'scicode')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
         
@@ -533,7 +572,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='scicode',  # Add benchmark name for failure analysis
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
 
 

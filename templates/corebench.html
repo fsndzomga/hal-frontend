@@ -292,6 +292,17 @@
 
         </div>
 
+        <!-- Model Performance Timeline -->
+        {% if timeline_chart %}
+        <div class="bg-white rounded-xl shadow-md p-8 mt-8 mb-8">
+            <h3 class="text-3xl font-semibold mb-2">Model Performance Over Time</h3>
+            <p class="text-sm text-gray-500 mb-6">
+                Track how model accuracy has evolved over time since their release dates. Each point represents the best performance achieved by that model on CORE-Bench {{ difficulty }}.
+            </p>
+            <div id="timeline-chart" class="w-full"></div>
+        </div>
+        {% endif %}
+
         <!-- Failure Analysis Section -->
 
         <!-- Token Pricing Configuration -->
@@ -441,6 +452,20 @@
         responsive: true,
         displayModeBar: false
     });
+
+    // Initialize timeline chart
+    {% if timeline_chart %}
+    const timeline_chart = {{ timeline_chart|safe }};
+    Plotly.newPlot('timeline-chart', timeline_chart.data, {
+        ...timeline_chart.layout,
+        margin: { t: 80, r: 20, b: 80, l: 60 },
+        width: null,
+        height: null
+    }, {
+        responsive: true,
+        displayModeBar: false,
+    });
+    {% endif %}
     
     // Handle pricing updates
     document.getElementById('updatePricing').addEventListener('click', async function() {

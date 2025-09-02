@@ -249,6 +249,23 @@
                     <div id="completionTokensBar" class="w-[800px] sm:w-full min-h-[1100px]"></div>
                 </div>
             </div>
+            
+            <!-- Model Performance Timeline Chart -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-3xl font-semibold mb-2">Model Performance Over Time</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    Timeline showing model accuracy evolution over release dates. Each point represents the best performance achieved by that model on TAU-bench Airline.
+                </p>
+                <div class="overflow-x-auto sm:overflow-x-visible">
+                    {% if timeline_chart %}
+                        <div id="timeline-chart" class="w-full h-96"></div>
+                    {% else %}
+                        <div class="text-center py-8 text-gray-500">
+                            <p>Timeline chart data not available</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -403,6 +420,20 @@
         responsive: true,
         displayModeBar: false
     });
+
+    // Initialize timeline chart if data is available
+    {% if timeline_chart %}
+    const timeline_chart_data = JSON.parse('{{ timeline_chart|safe }}');
+    Plotly.newPlot('timeline-chart', timeline_chart_data.data, {
+        ...timeline_chart_data.layout,
+        margin: { t: 10, r: 10, b: 40, l: 60 },
+        width: null,  // Make plot responsive
+        height: null  // Make plot responsive
+    }, {
+        responsive: true,
+        displayModeBar: false
+    });
+    {% endif %}
     
     // Handle window resize
     window.addEventListener('resize', function() {

@@ -968,15 +968,50 @@ def create_model_timeline_chart(leaderboard_df, benchmark_name):
     # Create the timeline chart
     fig = go.Figure()
     
+    # Sort timeline data by accuracy for collision detection
+    timeline_df_sorted = timeline_df.sort_values(['accuracy', 'release_date'])
+    
+    # Calculate label positions to avoid collisions
+    label_positions = []
+    position_cycle = ['middle left', 'middle right', 'top center', 'bottom center']
+    accuracy_threshold = 2.0  # Consider models within 2% accuracy as potentially colliding
+    
+    for i, row in timeline_df_sorted.iterrows():
+        current_accuracy = row['accuracy']
+        
+        # Special case: if accuracy is 0%, always put label on top
+        if current_accuracy == 0:
+            position = 'top center'
+        else:
+            # Find how many models have similar accuracy (within threshold)
+            similar_models = timeline_df_sorted[
+                (abs(timeline_df_sorted['accuracy'] - current_accuracy) <= accuracy_threshold)
+            ]
+            
+            if len(similar_models) == 1:
+                # Only one model at this accuracy level, use default position
+                position = 'middle left'
+            else:
+                # Multiple models with similar accuracy, cycle through positions
+                model_index = list(similar_models.index).index(i)
+                position = position_cycle[model_index % len(position_cycle)]
+        
+        label_positions.append(position)
+    
+    # Create a mapping from original index to position
+    position_map = dict(zip(timeline_df_sorted.index, label_positions))
+    
     # Add traces for each provider
     for provider in timeline_df['provider'].unique():
         provider_data = timeline_df[timeline_df['provider'] == provider]
         
-        # Clean model names (remove parentheses content)
+        # Clean model names and get positions for this provider
         clean_model_names = []
-        for model in provider_data['model']:
+        text_positions = []
+        for idx, model in zip(provider_data.index, provider_data['model']):
             clean_name = model.split('(')[0].strip()
             clean_model_names.append(clean_name)
+            text_positions.append(position_map[idx])
         
         fig.add_trace(go.Scatter(
             x=provider_data['release_date'],
@@ -990,10 +1025,19 @@ def create_model_timeline_chart(leaderboard_df, benchmark_name):
                 opacity=0.8
             ),
             text=clean_model_names,
-            textposition='top center',
+            textposition=text_positions,
             textfont=dict(size=10, color='black'),
             hovertemplate='<b>%{text}</b><br>Release: %{x}<br>Accuracy: %{y:.1f}%<extra></extra>'
         ))
+    
+    # Calculate y-axis max value
+    max_accuracy = timeline_df['accuracy'].max()
+    y_max = int((max_accuracy + 10) // 10 * 10 + 10)  # Round up to nearest 10 after adding 10
+    
+    # Calculate x-axis max value (max release date + 2 months)
+    max_date = pd.to_datetime(timeline_df['release_date'].max())
+    x_max_date = max_date + pd.DateOffset(months=2)
+    x_max = x_max_date.strftime('%Y-%m')
     
     # Update layout
     fig.update_layout(
@@ -1014,22 +1058,28 @@ def create_model_timeline_chart(leaderboard_df, benchmark_name):
         paper_bgcolor='white'
     )
     
-    # Customize x-axis to show dates nicely
+    # Customize x-axis to show dates nicely and start from November 2024
     fig.update_xaxes(
-        tickangle=45,
         tickformat='%b %Y',
         showgrid=True,
         gridwidth=1,
-        gridcolor='lightgray'
+        gridcolor='rgba(200, 200, 200, 0.3)',
+        dtick='M1',  # Monthly ticks
+        zeroline=True,
+        zerolinewidth=1,
+        zerolinecolor='lightgray',
+        range=['2024-11', x_max]  # Start from November 2024, end 2 months after max date
     )
     
     fig.update_yaxes(
         showgrid=True,
         gridwidth=1,
-        gridcolor='lightgray',
+        gridcolor='rgba(200, 200, 200, 0.3)',
+        dtick=5,  # Step of 5 for y-axis
         zeroline=True,
         zerolinewidth=1,
-        zerolinecolor='lightgray'
+        zerolinecolor='lightgray',
+        range=[0, y_max]  # Set custom range from 0 to calculated max
     )
     
     return fig
