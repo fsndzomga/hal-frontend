@@ -874,3 +874,162 @@ def create_flow_chart(steps):
     fig.update_layout(modebar=config)
     
     return fig
+
+def create_model_timeline_chart(leaderboard_df, benchmark_name):
+    """
+    Create a timeline chart showing model accuracies over time of release.
+    """
+    # Model release date mapping (using exact data_original)
+    data_original = [
+        ("Claude Opus 4 (May 2025)", "May 2025"),
+        ("Claude Opus 4 High (May 2025)", "May 2025"),
+        ("Claude Opus 4.1 (August 2025)", "August 2025"),
+        ("Claude Opus 4.1 High (August 2025)", "August 2025"),
+        ("Claude-3.7 Sonnet (February 2025)", "February 2025"),
+        ("Claude-3.7 Sonnet High (February 2025)", "February 2025"),
+        ("GPT-4.1 (April 2025)", "April 2025"),
+        ("GPT-5 Medium (August 2025)", "August 2025"),
+        ("GPT-5 High (August 2025)", "August 2025"),
+        ("o3 Medium (April 2025)", "April 2025"),
+        ("o4-mini High (April 2025)", "April 2025"),
+        ("o4-mini Low (April 2025)", "April 2025"),
+        ("DeepSeek R1", "January 2025"),
+        ("DeepSeek V3", "December 2024"),
+        ("GPT-OSS-120B", "August 2025"),
+        ("GPT-OSS-120B High", "August 2025"),
+        ("Gemini 2.0 Flash", "February 2025"),
+    ]
+    
+    # Convert to date format mapping
+    model_release_dates = {}
+    for model_name, date_str in data_original:
+        if date_str == "January 2025":
+            model_release_dates[model_name] = "2025-01"
+        elif date_str == "February 2025":
+            model_release_dates[model_name] = "2025-02"
+        elif date_str == "April 2025":
+            model_release_dates[model_name] = "2025-04"
+        elif date_str == "May 2025":
+            model_release_dates[model_name] = "2025-05"
+        elif date_str == "August 2025":
+            model_release_dates[model_name] = "2025-08"
+        elif date_str == "December 2024":
+            model_release_dates[model_name] = "2024-12"
+    
+    # Color mapping for different providers (same as pareto chart)
+    color_sequence = px.colors.qualitative.Dark2
+    unique_developers = ['OpenAI', 'Anthropic', 'Google', 'DeepSeek', 'Other']
+    provider_colors = {dev: color_sequence[i % len(color_sequence)] for i, dev in enumerate(unique_developers)}
+    
+    def get_provider(model_name):
+        """Determine provider from model name (same logic as pareto chart)"""
+        model_lower = model_name.lower()
+        if any(prefix in model_lower for prefix in ['gpt', 'o1', 'o3', 'o4', 'openai']):
+            return 'OpenAI'
+        elif any(prefix in model_lower for prefix in ['claude', 'anthropic']):
+            return 'Anthropic'
+        elif any(prefix in model_lower for prefix in ['gemini', 'google']):
+            return 'Google'
+        elif any(prefix in model_lower for prefix in ['deepseek']):
+            return 'DeepSeek'
+        else:
+            return 'Other'
+    
+    # Prepare data for the chart
+    timeline_data = []
+    
+    # Get the best accuracy for each model in the leaderboard
+    model_accuracies = leaderboard_df.groupby('Models')['Accuracy'].max().reset_index()
+    
+    for _, row in model_accuracies.iterrows():
+        model_name = row['Models']
+        accuracy = row['Accuracy']
+        
+        # Use exact matching only
+        if model_name in model_release_dates:
+            release_date = model_release_dates[model_name]
+            provider = get_provider(model_name)
+            timeline_data.append({
+                'model': model_name,
+                'accuracy': accuracy,
+                'release_date': release_date,
+                'provider': provider,
+                'color': provider_colors[provider]
+            })
+    
+    if not timeline_data:
+        return None
+    
+    # Convert to DataFrame and sort by date
+    timeline_df = pd.DataFrame(timeline_data)
+    timeline_df['date_sort'] = pd.to_datetime(timeline_df['release_date'])
+    timeline_df = timeline_df.sort_values('date_sort')
+    
+    # Create the timeline chart
+    fig = go.Figure()
+    
+    # Add traces for each provider
+    for provider in timeline_df['provider'].unique():
+        provider_data = timeline_df[timeline_df['provider'] == provider]
+        
+        # Clean model names (remove parentheses content)
+        clean_model_names = []
+        for model in provider_data['model']:
+            clean_name = model.split('(')[0].strip()
+            clean_model_names.append(clean_name)
+        
+        fig.add_trace(go.Scatter(
+            x=provider_data['release_date'],
+            y=provider_data['accuracy'],
+            mode='markers+text',
+            name=provider,
+            marker=dict(
+                size=12,
+                color=provider_colors[provider],
+                line=dict(width=2, color='white'),
+                opacity=0.8
+            ),
+            text=clean_model_names,
+            textposition='top center',
+            textfont=dict(size=10, color='black'),
+            hovertemplate='<b>%{text}</b><br>Release: %{x}<br>Accuracy: %{y:.1f}%<extra></extra>'
+        ))
+    
+    # Update layout
+    fig.update_layout(
+        xaxis_title='Release Date',
+        yaxis_title='Accuracy (%)',
+        height=500,
+        hovermode='closest',
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        ),
+        margin=dict(t=40, b=60, l=60, r=20),
+        plot_bgcolor='white',
+        paper_bgcolor='white'
+    )
+    
+    # Customize x-axis to show dates nicely
+    fig.update_xaxes(
+        tickangle=45,
+        tickformat='%b %Y',
+        showgrid=True,
+        gridwidth=1,
+        gridcolor='lightgray'
+    )
+    
+    fig.update_yaxes(
+        showgrid=True,
+        gridwidth=1,
+        gridcolor='lightgray',
+        zeroline=True,
+        zerolinewidth=1,
+        zerolinecolor='lightgray'
+    )
+    
+    return fig

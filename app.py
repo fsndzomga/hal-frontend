@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, redirect, request
 from urllib.parse import unquote
 from utils.db import TracePreprocessor, DEFAULT_PRICING
-from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart, create_completion_tokens_bar_chart, create_missing_runs_heatmap
+from utils.viz import create_scatter_plot, create_task_success_heatmap, create_leaderboard, create_bar_chart, create_completion_tokens_bar_chart, create_missing_runs_heatmap, create_model_timeline_chart
 import plotly.utils
 import json
 import pandas as pd
@@ -200,6 +200,10 @@ def create_app():
 
         completion_tokens_fig = create_completion_tokens_bar_chart('assistantbench')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        # Create timeline chart
+        timeline_chart = create_model_timeline_chart(leaderboard_df, 'assistantbench')
+        timeline_chart_json = json.dumps(timeline_chart, cls=plotly.utils.PlotlyJSONEncoder)
         
         # Get last updated time
         last_updated = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
@@ -212,7 +216,8 @@ def create_app():
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='assistantbench',  # Add benchmark name for failure analysis
-            completion_tokens_bar=completion_tokens_json
+            completion_tokens_bar=completion_tokens_json,
+            timeline_chart=timeline_chart_json
         )
     
     @app.route('/update_pricing/<benchmark>', methods=['POST'])
