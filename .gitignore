@@ -26,5 +26,6 @@ hal_traces/
 *.txt
 *.sh
 *.csv
-!hal-frontend/preprocessed_traces/*.csv
+!preprocessed_traces/
+!preprocessed_traces/*.csv
 
