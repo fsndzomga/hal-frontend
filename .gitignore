@@ -25,6 +25,6 @@ hal-harness/
 hal_traces/
 *.txt
 *.sh
-!hal-frontend/preprocessed_traces/*.csv
 *.csv
+!hal-frontend/preprocessed_traces/*.csv
 
