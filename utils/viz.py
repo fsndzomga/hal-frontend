@@ -898,6 +898,8 @@ def create_model_timeline_chart(leaderboard_df, benchmark_name):
         ("GPT-OSS-120B", "August 2025"),
         ("GPT-OSS-120B High", "August 2025"),
         ("Gemini 2.0 Flash", "February 2025"),
+        ("Claude Sonnet 4 (May 2025)", "May 2025"),
+        ("Claude Sonnet 4 High (May 2025)", "May 2025"),
     ]
     
     # Convert to date format mapping
@@ -926,7 +928,7 @@ def create_model_timeline_chart(leaderboard_df, benchmark_name):
         model_lower = model_name.lower()
         if any(prefix in model_lower for prefix in ['gpt', 'o1', 'o3', 'o4', 'openai']):
             return 'OpenAI'
-        elif any(prefix in model_lower for prefix in ['claude', 'anthropic']):
+        elif any(prefix in model_lower for prefix in ['claude', 'anthropic', 'sonnet']):
             return 'Anthropic'
         elif any(prefix in model_lower for prefix in ['gemini', 'google']):
             return 'Google'
