@@ -28,4 +28,5 @@ hal_traces/
 *.csv
 !preprocessed_traces/
 !preprocessed_traces/*.csv
+.vscode/*
 
