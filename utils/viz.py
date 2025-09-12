@@ -879,44 +879,50 @@ def create_model_timeline_chart(leaderboard_df, benchmark_name):
     """
     Create a timeline chart showing model accuracies over time of release.
     """
-    # Model release date mapping (using exact data_original)
-    data_original = [
-        ("Claude Opus 4 (May 2025)", "May 2025"),
-        ("Claude Opus 4 High (May 2025)", "May 2025"),
-        ("Claude Opus 4.1 (August 2025)", "August 2025"),
-        ("Claude Opus 4.1 High (August 2025)", "August 2025"),
-        ("Claude-3.7 Sonnet (February 2025)", "February 2025"),
-        ("Claude-3.7 Sonnet High (February 2025)", "February 2025"),
-        ("GPT-4.1 (April 2025)", "April 2025"),
-        ("GPT-5 Medium (August 2025)", "August 2025"),
-        ("GPT-5 High (August 2025)", "August 2025"),
-        ("o3 Medium (April 2025)", "April 2025"),
-        ("o4-mini High (April 2025)", "April 2025"),
-        ("o4-mini Low (April 2025)", "April 2025"),
-        ("DeepSeek R1", "January 2025"),
-        ("DeepSeek V3", "December 2024"),
-        ("GPT-OSS-120B", "August 2025"),
-        ("GPT-OSS-120B High", "August 2025"),
-        ("Gemini 2.0 Flash", "February 2025"),
-        ("Claude Sonnet 4 (May 2025)", "May 2025"),
-        ("Claude Sonnet 4 High (May 2025)", "May 2025"),
-    ]
+    import re
     
-    # Convert to date format mapping
+    def extract_release_date(model_name):
+        """Extract release date from model name in format '(Month YYYY)' or 'Month YYYY'"""
+        # Pattern to match (Month YYYY) or just Month YYYY at the end
+        pattern = r'(?:\(([A-Za-z]+ \d{4})\))|([A-Za-z]+ \d{4})$'
+        match = re.search(pattern, model_name)
+        
+        if match:
+            # Get the matched group (either from parentheses or end of string)
+            date_str = match.group(1) if match.group(1) else match.group(2)
+            return date_str
+        return None
+    
+    def convert_date_to_format(date_str):
+        """Convert 'Month YYYY' format to 'YYYY-MM' format"""
+        if not date_str:
+            return None
+            
+        # Month name to number mapping
+        month_map = {
+            'January': '01', 'February': '02', 'March': '03', 'April': '04',
+            'May': '05', 'June': '06', 'July': '07', 'August': '08',
+            'September': '09', 'October': '10', 'November': '11', 'December': '12'
+        }
+        
+        try:
+            parts = date_str.split()
+            if len(parts) == 2:
+                month_name, year = parts
+                month_num = month_map.get(month_name)
+                if month_num:
+                    return f"{year}-{month_num}"
+        except:
+            pass
+        return None
+    
+    # Extract model release dates from DEFAULT_PRICING
     model_release_dates = {}
-    for model_name, date_str in data_original:
-        if date_str == "January 2025":
-            model_release_dates[model_name] = "2025-01"
-        elif date_str == "February 2025":
-            model_release_dates[model_name] = "2025-02"
-        elif date_str == "April 2025":
-            model_release_dates[model_name] = "2025-04"
-        elif date_str == "May 2025":
-            model_release_dates[model_name] = "2025-05"
-        elif date_str == "August 2025":
-            model_release_dates[model_name] = "2025-08"
-        elif date_str == "December 2024":
-            model_release_dates[model_name] = "2024-12"
+    for model_name in DEFAULT_PRICING.keys():
+        release_date_str = extract_release_date(model_name)
+        formatted_date = convert_date_to_format(release_date_str)
+        if formatted_date:
+            model_release_dates[model_name] = formatted_date
     
     # Color mapping for different providers (same as pareto chart)
     color_sequence = px.colors.qualitative.Dark2
