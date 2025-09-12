@@ -237,7 +237,8 @@ def create_leaderboard(df, benchmark_name = None):
     if benchmark_name == 'agentharm':
         df = df.sort_values('Accuracy', ascending=True)
     else:
-        df = df.sort_values('Accuracy', ascending=False)
+        # In case of ties in Accuracy, sort by Total Cost ascending
+        df = df.sort_values(['Accuracy', 'Total Cost'], ascending=[False, True])
 
     # Compute Pareto frontier on numeric columns (using agent means like scatter plot)
     df['Total Cost'] = pd.to_numeric(df['Total Cost'], errors='coerce')
