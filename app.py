@@ -41,6 +41,54 @@ CONTRIBUTORS = [
     {"name": "Ziru (Ron) Chen", "affiliation": "OSU"}
 ]
 
+# Agent scaffold links mapping
+AGENT_LINKS = {
+    "Browser-Use": {
+        "type": "GitHub",
+        "url": "https://github.com/browser-use/browser-use"
+    },
+    "CORE-Agent": {
+        "type": "GitHub", 
+        "url": "https://github.com/siegelz/core-bench/tree/main/agents/AutoGPT-CORE"
+    },
+    "HAL Generalist Agent": {
+        "type": "GitHub",
+        "url": "https://github.com/princeton-pli/hal-harness/tree/main/agents/hal_generalist_agent"
+    },
+    "HF Open Deep Research": {
+        "type": "Blog",
+        "url": "https://huggingface.co/blog/open-deep-research"
+    },
+    "SeeAct": {
+        "type": "GitHub",
+        "url": "https://github.com/OSU-NLP-Group/SeeAct"
+    },
+    "Scicode Tool Calling Agent": {
+        "type": "GitHub",
+        "url": "https://github.com/scicode-bench/SciCode"
+    },
+    "Scicode Zero Shot Agent": {
+        "type": "GitHub", 
+        "url": "https://github.com/scicode-bench/SciCode"
+    },
+    "SAB (Self-Debug)": {
+        "type": "Paper",
+        "url": "https://arxiv.org/abs/2410.11114"
+    },
+    "SWE-Agent": {
+        "type": "GitHub",
+        "url": "https://github.com/SWE-agent/SWE-agent"
+    },
+    "TAU-bench Few Shot": {
+        "type": "Paper",
+        "url": "https://arxiv.org/abs/2308.16744"
+    },
+    "USACO Episodic + Semantic": {
+        "type": "Paper",
+        "url": "https://arxiv.org/abs/2404.10952"
+    }
+}
+
 def create_app():
     app = Flask(__name__, 
                static_folder='static',
@@ -764,6 +812,7 @@ def create_app():
                 return render_template('error.html', message=f"No data found for agent '{agent_name}'")
 
             # Calculate agent info
+            agent_link = AGENT_LINKS.get(base_agent_name, None)
             agent_info = {
                 'name': agent_name,
                 'models': list(agent_data['Models'].unique()) if 'Models' in agent_data.columns else [],
@@ -771,7 +820,8 @@ def create_app():
                 'first_seen': agent_data['Date'].min() if 'Date' in agent_data.columns and not agent_data['Date'].isna().all() else 'Unknown',
                 'last_seen': agent_data['Date'].max() if 'Date' in agent_data.columns and not agent_data['Date'].isna().all() else 'Unknown',
                 'total_runs': len(agent_data),
-                'pareto_benchmarks': len(agent_data[agent_data.get('Is Pareto', False) == True])
+                'pareto_benchmarks': len(agent_data[agent_data.get('Is Pareto', False) == True]),
+                'link': agent_link
             }
 
             # Prepare benchmark performance data
