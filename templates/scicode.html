@@ -30,8 +30,21 @@
                 <div class="text-gray-600">Subproblems</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
+                {% set unique_scaffolds = [] %}
+                {% set unique_models = [] %}
+                {% for row in leaderboard %}
+                    {% if row['Agent Name'] not in unique_scaffolds %}
+                        {% set _ = unique_scaffolds.append(row['Agent Name']) %}
+                    {% endif %}
+                    {% for model in row['Models'].split(',') %}
+                        {% set model_name = model.strip() %}
+                        {% if model_name not in unique_models %}
+                            {% set _ = unique_models.append(model_name) %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
-                <div class="text-gray-600">Agents Evaluated</div>
+                <div class="text-gray-600">Evaluations ({{ unique_scaffolds|length }} scaffolds, {{ unique_models|length }} models)</div>
             </div>
         </div>
     </div>
@@ -72,7 +85,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scaffold</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
                                 <span class="cursor-help inline-flex items-center">
                                     Primary Model

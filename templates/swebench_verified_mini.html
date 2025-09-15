@@ -22,6 +22,19 @@
             OpenAI Blog: <a href="https://openai.com/index/introducing-swe-bench-verified/" class="text-blue-600 hover:text-blue-800">
                 SWE-bench Verified: Introducing SWE-bench Verified</a>
         </p>
+        {% set unique_scaffolds = [] %}
+        {% set unique_models = [] %}
+        {% for row in leaderboard %}
+            {% if row['Agent Name'] not in unique_scaffolds %}
+                {% set _ = unique_scaffolds.append(row['Agent Name']) %}
+            {% endif %}
+            {% for model in row['Models'].split(',') %}
+                {% set model_name = model.strip() %}
+                {% if model_name not in unique_models %}
+                    {% set _ = unique_models.append(model_name) %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">50</div>
@@ -33,7 +46,7 @@
             </div>
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
-                <div class="text-gray-600">Agents Evaluated</div>
+                <div class="text-gray-600">Evaluations ({{ unique_scaffolds|length }} scaffolds, {{ unique_models|length }} models)</div>
             </div>
         </div>
     </div>
@@ -75,12 +88,17 @@
                 <h3 class="text-3xl font-semibold">SWE-Bench Verified Mini Leaderboard</h3>
                 
             </div>
+            <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm text-gray-700">
+                    <strong>Note:</strong> While SWE-Agent uses caching, costs are currently calculated without accounting for caching benefits.
+                </p>
+            </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scaffold</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
                                 <span class="cursor-help inline-flex items-center">
                                     Primary Model
@@ -154,6 +172,7 @@
                                         <span class="font-medium text-gray-900">Total Cost</span>
                                     </div>
                                     <p class="text-gray-600 leading-relaxed">Total API cost for running the agent on all tasks. Confidence intervals show the min-max values across runs for those agents where multiple runs are available</p>
+                                    <p class="text-gray-500 text-xs mt-2 italic">Note: While SWE-Agent uses caching, costs are currently calculated without accounting for caching benefits.</p>
                                 </div>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group relative">
