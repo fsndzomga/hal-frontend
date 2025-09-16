@@ -45,7 +45,7 @@
                     {% endfor %}
                 {% endfor %}
                 <div class="text-3xl font-bold text-blue-600 mb-2">{{ leaderboard|length }}</div>
-                <div class="text-gray-600">Evaluations ({{ unique_scaffolds|length }} scaffolds, {{ unique_models|length }} models)</div>
+                <div class="text-gray-600">Evaluations ({{ unique_scaffolds|length }} scaffold{{ 's' if unique_scaffolds|length != 1 else '' }}, {{ unique_models|length }} model{{ 's' if unique_models|length != 1 else '' }})</div>
             </div>
         </div>
     </div>

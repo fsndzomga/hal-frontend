@@ -1,0 +1,49 @@
+\subsection{SWE-bench Verified Mini}\label{app:swebench}
+
+\paragraph{Benchmark.}
+SWE-bench Verified (Mini) is a random subset of 50 tasks of the original SWE-bench Verified. It is a light-weight version of the original SWE-bench Verified and is thus cheaper to evaluate. The dataset evaluates AI agents on real-world programming tasks from open-source repositories sourced from GitHub.
+Paper: \cite{swebench}.
+
+\paragraph{Agents.}
+Briefly describe the two agents you ran (scaffolds, models, reasoning settings).
+
+
+\begin{table}[t]
+  \centering
+  \caption{SWE-bench Verified Mini Leaderboard (verbatim from the website).}
+  \label{tab:swebench_full}
+  \input{tables/swebench_verified_mini_full_results.tex}
+\end{table}
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{swebench_pareto_accuracy_vs_cost.pdf}
+  \caption{Pareto frontier of accuracy vs.\ cost.}
+  \label{fig:swebench_pareto}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{swebench_total_tokens.pdf}
+  \caption{Total completion tokens used per Agent}
+  \label{fig:swebench_tokens}
+\end{figure}
+
+\begin{figure*}[t]
+  \centering
+  \adjustbox{max width=\textwidth, max height=0.9\textheight}{%
+    \includegraphics{swebench_heatmap_best_vs_any.pdf}%
+  }
+  \caption{Heatmap: best-agent vs.\ any-agent success.}
+  \label{fig:swebench_heatmap}
+\end{figure*}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{swebench_accuracy_vs_release_date.pdf}
+  \caption{Accuracy vs.\ model release date.}
+  \label{fig:swebench_release}
+\end{figure}
+
+\clearpage

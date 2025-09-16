@@ -1,0 +1,49 @@
+\subsection{TAU-bench Airline}\label{app:taubench_airline}
+
+\paragraph{Benchmark.}
+TAU-bench is a benchmark for Tool-Agent-User Interaction in Real-World Domains. TAU-bench Airline evaluates AI agents on tasks in the airline domain, such as changing flights or finding new flights. It tests agents' ability to interact with realistic airline booking systems and handle complex user requests.
+Paper: \cite{taubench}.
+
+\paragraph{Agents.}
+Briefly describe the two agents you ran (scaffolds, models, reasoning settings).
+
+
+\begin{table}[t]
+  \centering
+  \caption{TAU-bench Airline Leaderboard (verbatim from the website).}
+  \label{tab:taubench_airline_full}
+  \input{tables/taubench_airline_full_results.tex}
+\end{table}
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{tau_airline_pareto_accuracy_vs_cost.pdf}
+  \caption{Pareto frontier of accuracy vs.\ cost.}
+  \label{fig:tau_airline_pareto}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{tau_airline_total_tokens.pdf}
+  \caption{Total completion tokens used per Agent}
+  \label{fig:tau_airline_tokens}
+\end{figure}
+
+\begin{figure*}[t]
+  \centering
+  \adjustbox{max width=\textwidth, max height=0.9\textheight}{%
+    \includegraphics{tau_airline_heatmap_best_vs_any.pdf}%
+  }
+  \caption{Heatmap: best-agent vs.\ any-agent success.}
+  \label{fig:tau_airline_heatmap}
+\end{figure*}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{tau_airline_accuracy_vs_release_date.pdf}
+  \caption{Accuracy vs.\ model release date.}
+  \label{fig:tau_airline_release}
+\end{figure}
+
+\clearpage

@@ -29,4 +29,6 @@ hal_traces/
 !preprocessed_traces/
 !preprocessed_traces/*.csv
 .vscode/*
+figs/*
+latex_sections/*
 

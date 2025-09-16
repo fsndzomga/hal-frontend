@@ -1,0 +1,22 @@
+% Unicode and special character handling for LaTeX
+% Include this in your main document preamble
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{adjustbox}  % for figure sizing
+\usepackage{graphicx}   % for includegraphics
+\usepackage{booktabs}   % for professional tables
+\usepackage{float}      % for [H] figure placement
+
+% Define Unicode characters that might appear
+\DeclareUnicodeCharacter{2713}{\checkmark}  % ✓
+\DeclareUnicodeCharacter{2717}{\texttimes}  % ✗
+\DeclareUnicodeCharacter{03C4}{\ensuremath{\tau}}  % τ
+\DeclareUnicodeCharacter{200B}{}  % zero-width space (ignore)
+\DeclareUnicodeCharacter{200C}{}  % zero-width non-joiner (ignore)
+\DeclareUnicodeCharacter{200D}{}  % zero-width joiner (ignore)
+
+% Provide fallbacks for checkmark if not available
+\providecommand{\checkmark}{\ensuremath{\checkmark}}
+\providecommand{\texttimes}{\ensuremath{\times}}
