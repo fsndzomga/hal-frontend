@@ -229,11 +229,21 @@
         <div class="space-y-8 mb-12">
             <!-- Cost vs Accuracy Plot -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for TAU-bench Airline</h3>
-                <p class="text-sm text-gray-500 mb-4">
-                    This plot shows the relationship between an agent's performance and its token cost.
-                    The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
-                </p>
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for TAU-bench Airline</h3>
+                        <p class="text-sm text-gray-500">
+                            This plot shows the relationship between an agent's performance and its token cost.
+                            The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
+                        </p>
+                    </div>
+                    {% if cutoff_applied %}
+                    <button id="toggleCostRange" 
+                            class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm">
+                        Show Full Cost Range
+                    </button>
+                    {% endif %}
+                </div>
                 <div class="overflow-x-auto sm:overflow-x-visible">
                     <div id="costAccuracyPlot" class="w-[800px] sm:w-full h-[500px]"></div>
                 </div>
@@ -445,6 +455,33 @@
     }, {
         responsive: true,
         displayModeBar: false
+    });
+    {% endif %}
+    
+    {% if cutoff_applied %}
+    // Parse the full scatter plot data (only if cutoff was applied)
+    const scatter_plot_full_data = JSON.parse('{{ scatter_plot_full|safe }}');
+    
+    // Handle cost range toggle
+    let showingFullRange = false;
+    const toggleButton = document.getElementById('toggleCostRange');
+    
+    toggleButton.addEventListener('click', function() {
+        const currentData = showingFullRange ? scatter_plot_data : scatter_plot_full_data;
+        const plotDiv = document.getElementById('costAccuracyPlot');
+        
+        Plotly.newPlot(plotDiv, currentData.data, {
+            ...currentData.layout,
+            margin: { t: 10, r: 10, b: 40, l: 60 },
+            width: null,
+            height: null
+        }, {
+            responsive: true,
+            displayModeBar: false
+        });
+        
+        showingFullRange = !showingFullRange;
+        toggleButton.textContent = showingFullRange ? 'Show Cost Cutoff View' : 'Show Full Cost Range';
     });
     {% endif %}
     

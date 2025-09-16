@@ -519,7 +519,7 @@ def create_bar_chart(categories, values, x_label, y_label, title):
 
     return fig
 
-def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = None, hover_data: list = None):
+def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = None, hover_data: list = None, cost_cutoff_multiplier: float = None, return_cutoff_applied: bool = False):
     # Extract model from agent name if token usage is not available
     def extract_model(agent_name):
         # Remove URL part if present
@@ -559,6 +559,34 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
 
     # Set of rounded frontier points for robust matching
     frontier_points = {(round(a.total_cost, 6), round(a.accuracy, 6)) for a in pareto_frontier}
+    
+    # Calculate cost cutoff if specified
+    max_x_range = None
+    cutoff_applied = False
+    if cost_cutoff_multiplier is not None:
+        # Find the maximum accuracy
+        max_accuracy = max(acc for _, acc in agent_means.values())
+        
+        # Define accuracy tolerance (e.g., within 0.5 percentage points)
+        accuracy_tolerance = 0.5
+        
+        # Find all agents within tolerance of max accuracy
+        top_performers = [
+            (cost, acc) for cost, acc in agent_means.values() 
+            if abs(acc - max_accuracy) <= accuracy_tolerance
+        ]
+        
+        if top_performers:
+            # Use the cheapest among top performers as reference
+            reference_cost = min(cost for cost, _ in top_performers)
+            cutoff_threshold = reference_cost * cost_cutoff_multiplier
+            
+            # Check if any agent has cost beyond the threshold
+            max_cost = max(cost for cost, _ in agent_means.values())
+            if max_cost > cutoff_threshold:
+                # Only apply cutoff if there are actually points beyond it
+                max_x_range = cutoff_threshold
+                cutoff_applied = True
 
     fig = go.Figure()
 
@@ -692,7 +720,13 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
     )
 
     fig.update_yaxes(rangemode="tozero")
-    fig.update_xaxes(rangemode="tozero")
+    if max_x_range is not None:
+        fig.update_xaxes(rangemode="tozero", range=[0, max_x_range])
+    else:
+        fig.update_xaxes(rangemode="tozero")
+    
+    if return_cutoff_applied:
+        return fig, cutoff_applied
     return fig
 
 

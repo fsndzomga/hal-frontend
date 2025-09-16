@@ -128,15 +128,31 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs('scienceagentbench')
         leaderboard_df = create_leaderboard(results_df, benchmark_name='scienceagentbench')
 
-        scatter_plot = create_scatter_plot(
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10,
+            return_cutoff_applied=True
         )
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Only create full plot if cost cutoff was applied
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+            scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder)
+        else:
+            scatter_plot_full_json = None
 
         # heatmap = create_task_success_heatmap(
         #     preprocessor.get_task_success_data('scienceagentbench'),
@@ -157,12 +173,14 @@ def create_app():
             'scienceagentbench.html',
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             # heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='scienceagentbench',
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
 
     @app.route('/usaco')
@@ -180,18 +198,34 @@ def create_app():
         leaderboard_df = create_leaderboard(results_df, benchmark_name='usaco')
         
         
-        # Create scatter plot
-        scatter_plot = create_scatter_plot(
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,  # Use the same data as leaderboard (with recalculated costs)
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10,
+            return_cutoff_applied=True
         )
         
         # Convert plot to JSON for rendering
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Only create full plot if cost cutoff was applied
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+            scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder)
+        else:
+            scatter_plot_full_json = None
         
         # Create heatmap
         heatmap = create_task_success_heatmap(
@@ -214,12 +248,14 @@ def create_app():
             'usaco.html',
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='usaco',  # Add benchmark name for failure analysis
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
 
     @app.route('/assistantbench')
@@ -236,18 +272,33 @@ def create_app():
         # Create leaderboard
         leaderboard_df = create_leaderboard(results_df, benchmark_name='assistantbench')
         
-        # Create scatter plot
-        scatter_plot = create_scatter_plot(
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,  # Use the same data as leaderboard (with recalculated costs)
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10.0,  # Cut off at 10x the most accurate agent's cost
+            return_cutoff_applied=True
         )
         
-        # Convert plot to JSON for rendering
+        # Create full scatter plot (without cutoff) for toggle functionality only if cutoff was applied
+        scatter_plot_full = None
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+        
+        # Convert plots to JSON for rendering
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder)
         
         # Create heatmap
         heatmap = create_task_success_heatmap(
@@ -270,12 +321,14 @@ def create_app():
             'assistantbench.html',
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='assistantbench',  # Add benchmark name for failure analysis
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
     
     @app.route('/update_pricing/<benchmark>', methods=['POST'])
@@ -352,15 +405,31 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs('corebench_hard')
         leaderboard_df = create_leaderboard(results_df, benchmark_name='corebench_hard')
         
-        scatter_plot = create_scatter_plot(
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10,
+            return_cutoff_applied=True
         )
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Create full scatter plot (without cutoff) for toggle functionality only if cutoff was applied
+        scatter_plot_full = None
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+        scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder) if scatter_plot_full else None
         
         heatmap = create_task_success_heatmap(
             preprocessor.get_task_success_data('corebench_hard'),
@@ -381,13 +450,15 @@ def create_app():
             'corebench.html',
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             difficulty="Hard",
             benchmark_name='corebench_hard',  # Add benchmark name for failure analysis
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
 
     @app.route('/gaia')
@@ -397,16 +468,34 @@ def create_app():
         
         results_df = preprocessor.get_parsed_results_with_costs('gaia')
         leaderboard_df = create_leaderboard(results_df, benchmark_name='gaia')
-                
-        scatter_plot = create_scatter_plot(
+        
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10.0,
+            return_cutoff_applied=True
         )
+        
+        # Create full scatter plot (without cutoff) for toggle functionality only if cutoff was applied
+        scatter_plot_full = None
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+        
+        # Convert plots to JSON for rendering
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder)
         
         heatmap = create_task_success_heatmap(
             preprocessor.get_task_success_data('gaia'),
@@ -427,12 +516,14 @@ def create_app():
             'gaia.html',  # Will need to create this template
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='gaia',  # Add benchmark name for failure analysis
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
 
     @app.route('/taubench_airline')
@@ -447,18 +538,34 @@ def create_app():
         # Create leaderboard
         leaderboard_df = create_leaderboard(results_df, benchmark_name='taubench_airline')
         
-        # Create scatter plot
-        scatter_plot = create_scatter_plot(
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10,
+            return_cutoff_applied=True
         )
         
         # Convert plot to JSON for rendering
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Only create full plot if cost cutoff was applied
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+            scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder)
+        else:
+            scatter_plot_full_json = None
         
         # Create heatmap
         heatmap = create_task_success_heatmap(
@@ -481,12 +588,14 @@ def create_app():
             'taubench_airline.html',
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='taubench_airline',
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
 
     @app.route('/swebench_verified_mini')
@@ -497,15 +606,31 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs('swebench_verified_mini')
         leaderboard_df = create_leaderboard(results_df, benchmark_name='swebench_verified_mini')
         
-        scatter_plot = create_scatter_plot(
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10,
+            return_cutoff_applied=True
         )
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Create full scatter plot (without cutoff) for toggle functionality only if cutoff was applied
+        scatter_plot_full = None
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+        scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder) if scatter_plot_full else None
         
         heatmap = create_task_success_heatmap(
             preprocessor.get_task_success_data('swebench_verified_mini'),
@@ -526,12 +651,14 @@ def create_app():
             'swebench_verified_mini.html',  # Use the new template
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='swebench_verified_mini',  # Add benchmark name for failure analysis
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
     
     @app.route('/online_mind2web')
@@ -545,15 +672,31 @@ def create_app():
         completion_tokens_fig = create_completion_tokens_bar_chart('online_mind2web')
         completion_tokens_json = json.dumps(completion_tokens_fig, cls=plotly.utils.PlotlyJSONEncoder)
         
-        scatter_plot = create_scatter_plot(
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10,
+            return_cutoff_applied=True
         )
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Create full scatter plot (without cutoff) for toggle functionality only if cutoff was applied
+        scatter_plot_full = None
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+        scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder) if scatter_plot_full else None
         
         heatmap = create_task_success_heatmap(
             preprocessor.get_task_success_data('online_mind2web'),
@@ -571,12 +714,14 @@ def create_app():
             'online_mind2web.html',  # Use the new template
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='online_mind2web',  # Add benchmark name for failure analysis
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
     
     @app.route('/scicode')
@@ -587,15 +732,31 @@ def create_app():
         results_df = preprocessor.get_parsed_results_with_costs('scicode')
         leaderboard_df = create_leaderboard(results_df, benchmark_name='scicode')
         
-        scatter_plot = create_scatter_plot(
+        # Create scatter plot with cost cutoff and check if cutoff was applied
+        scatter_plot, cutoff_applied = create_scatter_plot(
             results_df,
             "Total Cost",
             "Accuracy",
             "Total Cost (in USD)",
             "Accuracy",
-            ["Agent Name"]
+            ["Agent Name"],
+            cost_cutoff_multiplier=10,
+            return_cutoff_applied=True
         )
         scatter_plot_json = json.dumps(scatter_plot, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        # Create full scatter plot (without cutoff) for toggle functionality only if cutoff was applied
+        scatter_plot_full = None
+        if cutoff_applied:
+            scatter_plot_full = create_scatter_plot(
+                results_df,
+                "Total Cost",
+                "Accuracy",
+                "Total Cost (in USD)",
+                "Accuracy",
+                ["Agent Name"]
+            )
+        scatter_plot_full_json = json.dumps(scatter_plot_full, cls=plotly.utils.PlotlyJSONEncoder) if scatter_plot_full else None
         
         heatmap = create_task_success_heatmap(
             preprocessor.get_task_success_data('scicode'),
@@ -616,12 +777,14 @@ def create_app():
             'scicode.html',  # Use the new template
             leaderboard=leaderboard_df.to_dict('records'),
             scatter_plot=scatter_plot_json,
+            scatter_plot_full=scatter_plot_full_json,
             heatmap=heatmap_json,
             last_updated=last_updated,
             pricing=pricing,
             benchmark_name='scicode',  # Add benchmark name for failure analysis
             completion_tokens_bar=completion_tokens_json,
-            timeline_chart=timeline_chart_json
+            timeline_chart=timeline_chart_json,
+            cutoff_applied=cutoff_applied
         )
 
 

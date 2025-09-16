@@ -269,11 +269,21 @@
         <div class="space-y-8 mb-12">
             <!-- Cost vs Accuracy Plot -->
             <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for CORE-Bench</h3>
-                <p class="text-sm text-gray-500 mb-4">
-                    This plot shows the relationship between an agent's performance and its token cost.
-                    The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
-                </p>
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-3xl font-semibold mb-2">Accuracy vs. Cost Frontier for CORE-Bench</h3>
+                        <p class="text-sm text-gray-500">
+                            This plot shows the relationship between an agent's performance and its token cost.
+                            The Pareto frontier (dashed line) represents the current state-of-the-art trade-off. The error bars indicate min-max values across runs.
+                        </p>
+                    </div>
+                    {% if cutoff_applied %}
+                    <button id="toggleCostRange" 
+                            class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm">
+                        Show Full Cost Range
+                    </button>
+                    {% endif %}
+                </div>
                 <div class="overflow-x-auto sm:overflow-x-visible">
                     <div id="costAccuracyPlot" class="w-[800px] sm:w-full h-[500px]"></div>
                 </div>
@@ -430,14 +440,19 @@
 <script>
     // Parse the JSON data from Flask
     const scatter_plot_data = JSON.parse('{{ scatter_plot|safe }}');
+    {% if cutoff_applied %}
+    const scatter_plot_full_data = JSON.parse('{{ scatter_plot_full|safe }}');
+    // Track current plot state
+    let showingFullRange = false;
+    {% endif %}
     const heatmap_data = JSON.parse('{{ heatmap|safe }}');
     
     // Initialize plots with adjusted margins
     Plotly.newPlot('costAccuracyPlot', scatter_plot_data.data, {
         ...scatter_plot_data.layout,
         margin: { t: 10, r: 10, b: 40, l: 60 },
-        width: null,  // Make plot responsive
-        height: null  // Make plot responsive
+        width: window.innerWidth < 640 ? 800 : null,
+        height: 500
     }, {
         responsive: true,
         displayModeBar: false
@@ -607,6 +622,40 @@
         // Trigger the update
         document.getElementById('updatePricing').click();
     });
+    
+    {% if cutoff_applied %}
+    // Handle cost range toggle
+    document.getElementById('toggleCostRange').addEventListener('click', function() {
+        const button = this;
+        showingFullRange = !showingFullRange;
+        
+        if (showingFullRange) {
+            // Show full range
+            Plotly.react('costAccuracyPlot', scatter_plot_full_data.data, {
+                ...scatter_plot_full_data.layout,
+                margin: { t: 10, r: 10, b: 40, l: 60 },
+                width: window.innerWidth < 640 ? 800 : null,
+                height: 500
+            }, {
+                responsive: true,
+                displayModeBar: false
+            });
+            button.textContent = 'Show Focused View';
+        } else {
+            // Show focused view (with cutoff)
+            Plotly.react('costAccuracyPlot', scatter_plot_data.data, {
+                ...scatter_plot_data.layout,
+                margin: { t: 10, r: 10, b: 40, l: 60 },
+                width: window.innerWidth < 640 ? 800 : null,
+                height: 500
+            }, {
+                responsive: true,
+                displayModeBar: false
+            });
+            button.textContent = 'Show Full Cost Range';
+        }
+    });
+    {% endif %}
     
     // Resize plots when window is resized
     window.addEventListener('resize', function() {
