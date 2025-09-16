@@ -113,7 +113,6 @@ def create_app():
     @app.route("/missing")
     def missing_runs_heatmap():
         db = TracePreprocessor()
-        # You may need to adjust this to get all runs with agent/model/benchmark info
         df = db.get_all_runs()  # Should return DataFrame with columns: benchmark_name, model_name, agent_name, run_id
         fig = create_missing_runs_heatmap(df)
         heatmap_json =  json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
