@@ -252,7 +252,7 @@ DEFAULT_PRICING = {
     "Claude-3.7 Sonnet (February 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
     "DeepSeek V3 (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 1.25},
     "DeepSeek V3.1 (August 2025)": {"prompt_tokens": 0.60, "completion_tokens": 1.70},
-    "DeepSeek R1 (January 2025)": {"prompt_tokens": 0.55, "completion_tokens": 2.19},
+    "DeepSeek R1 (January 2025)": {"prompt_tokens": 3, "completion_tokens": 7},
     "DeepSeek R1 (May 2025)": {"prompt_tokens": 0.55, "completion_tokens": 2.19},
     "Gemini 2.0 Flash (February 2025)": {"prompt_tokens": 0.1, "completion_tokens": 0.4},
     "o4-mini Low (April 2025)": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
