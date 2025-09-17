@@ -71,17 +71,17 @@ AGENT_LINKS = {
         "type": "GitHub", 
         "url": "https://github.com/scicode-bench/SciCode"
     },
-    "SAB (Self-Debug)": {
+    "SAB Self-Debug": {
         "type": "Paper",
-        "url": "https://arxiv.org/abs/2410.11114"
+        "url": "https://arxiv.org/abs/2410.05080"
     },
     "SWE-Agent": {
         "type": "GitHub",
         "url": "https://github.com/SWE-agent/SWE-agent"
     },
     "TAU-bench Few Shot": {
-        "type": "Paper",
-        "url": "https://arxiv.org/abs/2308.16744"
+        "type": "GitHub",
+        "url": "https://github.com/princeton-pli/hal-harness/blob/main/agents/taubench_few_shot"
     },
     "USACO Episodic + Semantic": {
         "type": "Paper",
