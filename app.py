@@ -1007,6 +1007,22 @@ def create_app():
             print(f"Error getting agent data: {e}")
             return render_template('error.html', message=f"Error loading data for agent '{agent_name}'")
 
+    @app.route('/insights')
+    def insights():
+        # Twitter embed HTML - these are actual tweets from @halevals and related accounts
+        twitter_embeds = [
+            '''<blockquote class="twitter-tweet"><p lang="en" dir="ltr">How does GPT-5 compare against Claude Opus 4.1 on agentic tasks? <br><br>Since their release, we have been evaluating these models on challenging science, web, service, and code tasks. <br><br>Headline result: While cost-effective, so far GPT-5 never tops agentic leaderboards. More evals 🧵 <a href="https://t.co/KhVcXZN3fc">pic.twitter.com/KhVcXZN3fc</a></p>&mdash; Sayash Kapoor (@sayashk) <a href="https://twitter.com/sayashk/status/1953952498105946594?ref_src=twsrc%5Etfw">August 8, 2025</a></blockquote>''',
+            '''<blockquote class="twitter-tweet"><p lang="en" dir="ltr">GPT-OSS underperforms even on benchmarks that require raw tool calling. For example, CORE-Bench requires agents to run bash commands to reproduce scientific papers. <br><br>DeepSeek V3 scores 18%. <br>GPT-OSS scores 11%.<a href="https://t.co/EVxxSqKFMe">https://t.co/EVxxSqKFMe</a> <a href="https://t.co/tx8rTygUWw">pic.twitter.com/tx8rTygUWw</a></p>&mdash; Sayash Kapoor (@sayashk) <a href="https://twitter.com/sayashk/status/1955298275923210389?ref_src=twsrc%5Etfw">August 12, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>''',
+            '''<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Can AI agents reliably navigate the web? Does the choice of agent scaffold affect web browsing ability? To answer these questions, we added Online Mind2Web, a web browsing benchmark, to the Holistic Agent Leaderboard (HAL). <br><br>We evaluated 9 models (including GPT-5 and Sonnet 4)… <a href="https://t.co/jwS2iFG27E">pic.twitter.com/jwS2iFG27E</a></p>&mdash; Sayash Kapoor (@sayashk) <a href="https://twitter.com/sayashk/status/1963343022252315112?ref_src=twsrc%5Etfw">September 3, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>''',
+            '''<blockquote class="twitter-tweet"><p lang="en" dir="ltr">We have added ScienceAgentBench to HAL and evaluated it with leading models (GPT-5, o3, Opus 4.1). <br><br>o3 tops the leaderboard at a lower cost than GPT-5, Opus 4.1, and Sonnet 3.7 High. o4-mini Low is much cheaper than the crowd, but with similar accuracy.<br><br>Grateful to so many… <a href="https://t.co/Xw6iWhqDoe">https://t.co/Xw6iWhqDoe</a> <a href="https://t.co/1ZNXaLK7kz">pic.twitter.com/1ZNXaLK7kz</a></p>&mdash; Sayash Kapoor (@sayashk) <a href="https://twitter.com/sayashk/status/1966144670561612202?ref_src=twsrc%5Etfw">September 11, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>''',
+            '''<blockquote class="twitter-tweet"><p lang="en" dir="ltr">OpenAI claims hallucinations persist because evaluations reward guessing and that GPT-5 is better calibrated. Do results from HAL support this conclusion? On AssistantBench, a general web search benchmark, GPT-5 has higher precision and lower guess rates than o3! <a href="https://t.co/HxGgVLkIyN">pic.twitter.com/HxGgVLkIyN</a></p>&mdash; Peter Kirgis (@PKirgis) <a href="https://twitter.com/PKirgis/status/1966547382033936577?ref_src=twsrc%5Etfw">September 12, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>''',
+            '''<blockquote class="twitter-tweet"><p lang="en" dir="ltr">We spent the last year evaluating agents for HAL.<br><br>My biggest learning: We live in the Windows 95 era of agent evaluation. <a href="https://t.co/DeIzWm1f0c">pic.twitter.com/DeIzWm1f0c</a></p>&mdash; Sayash Kapoor (@sayashk) <a href="https://twitter.com/sayashk/status/1967998405852152039?ref_src=twsrc%5Etfw">September 16, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>''',
+        ]
+
+        twitter_embeds.reverse()
+
+        return render_template('insights.html', twitter_embeds=twitter_embeds)
+
     @app.route('/press')
     def press():
         # News articles data

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-8 py-16">
+    <!-- Header -->
+    <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Insights</h1>
+        <p class="text-xl text-gray-600">Latest updates and insights from the HAL community on Twitter</p>
+    </div>
+
+    <!-- Tweets Section -->
+    <div class="space-y-8 mb-16">
+        {% for embed in twitter_embeds %}
+        <div class="flex justify-center">
+            {{ embed|safe }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-8 border border-blue-200">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Stay Connected</h3>
+            <p class="text-gray-600 mb-6">
+                Follow us on Twitter for the latest updates on agent evaluations, new benchmarks, and community insights.
+            </p>
+            <div class="flex justify-center space-x-4">
+                <a href="https://x.com/halevals" target="_blank" 
+                   class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    Follow @halevals
+                </a>
+                <a href="/#leaderboards" 
+                   class="inline-flex items-center px-6 py-3 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">
+                    View Leaderboards
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Twitter Widgets Script -->
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<script>
+    // Twitter widgets will automatically render the embedded tweets
+    console.log('Insights page loaded with Twitter embeds');
+    
+    // Optional: Force refresh Twitter widgets if needed
+    if (window.twttr && window.twttr.widgets) {
+        window.twttr.widgets.load();
+    }
+</script>
+{% endblock %}
