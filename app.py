@@ -38,8 +38,24 @@ CONTRIBUTORS = [
     {"name": "Yifan Mai", "affiliation": "Stanford"},
     {"name": "Yu Su", "affiliation": "OSU"},
     {"name": "Zachary Siegel", "affiliation": "Princeton"},
-    {"name": "Ziru (Ron) Chen", "affiliation": "OSU"}
+    {"name": "Ziru (Ron) Chen", "affiliation": "OSU"},
+    {"name": "Felix Chen", "affiliation": "Princeton University"},
+    {"name": "Sophie Luskin", "affiliation": "Princeton University"},
+    {"name": "Saiteja Utpala", "affiliation": "HAL Team"},
+    {"name": "Dheeraj Oruganty", "affiliation": "Amazon"},
+    {"name": "Botao Yu", "affiliation": "The Ohio State University"},
+    {"name": "Dawn Song", "affiliation": "University of California, Berkeley"},
+    {"name": "Dongyoon Hahm", "affiliation": "KAIST"},
+    {"name": "Juyong Lee", "affiliation": "KAIST"},
+    {"name": "Peter Henderson", "affiliation": "Princeton University"},
+    {"name": "Tengjun Jin", "affiliation": "University of Illinois Urbana-Champaign"},
+    {"name": "Yifei Zhou", "affiliation": "xAI, work done before joining xAI"},
+    {"name": "Yuxuan Zhu", "affiliation": "University of Illinois Urbana-Champaign"},
+    {"name": "Charles Teague", "affiliation": "UK AISI"},
+    {"name": "Clémentine Fourrier", "affiliation": "Hugging Face"},
+    {"name": "Kevin Meng", "affiliation": "Transluce"}
 ]
+
 
 # Agent scaffold links mapping
 AGENT_LINKS = {
