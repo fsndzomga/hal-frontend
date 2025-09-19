@@ -99,6 +99,7 @@ def create_app():
     @app.route('/')
     def index():
         total_agents = preprocessor.get_total_agents()
+        total_agent_runs = preprocessor.get_total_agent_runs()
         total_benchmarks = preprocessor.get_total_benchmarks()
 
         # Get highlight results organized by benchmark and agent
@@ -106,6 +107,7 @@ def create_app():
 
         return render_template('index.html', 
                              total_agents=total_agents, 
+                             total_agent_runs=total_agent_runs,
                              total_benchmarks=total_benchmarks,
                              contributors=CONTRIBUTORS,
                              highlights=highlights)

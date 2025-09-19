@@ -1341,6 +1341,22 @@ class TracePreprocessor:
                 # Add each benchmark-agent pair to the set
                 total_agents.update(results)
         return len(total_agents)
+    
+    def get_total_agent_runs(self):
+        """Get the total number of agent runs across all benchmarks"""
+        total_runs = 0
+        for db_file in self.db_dir.glob('*.db'):
+            # skip colbench, scienceagentbench
+            if db_file.stem in ['colbench_backend_programming', 'colbench_frontend_design']:
+                continue # TODO remove hardcoded skip once these benchmarks are added
+            benchmark_name = db_file.stem.replace('_', '/')
+            with self.get_conn(benchmark_name) as conn:
+                query = '''
+                    SELECT COUNT(*) FROM parsed_results
+                '''
+                count = conn.execute(query).fetchone()[0]
+                total_runs += count
+        return total_runs
 
     def get_agent_url(self, agent_name, benchmark_name):
         """Get the URL for an agent from the metadata file."""
