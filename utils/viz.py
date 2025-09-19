@@ -260,6 +260,8 @@ def create_leaderboard(df, benchmark_name = None):
     
     if len(valid_agent_means) > 0:
         agents = [Agent(cost, acc) for cost, acc in valid_agent_means.values()]
+        # Add origin (0,0) to represent "do nothing" baseline
+        agents.append(Agent(0.0, 0.0))
         frontier = compute_pareto_frontier(agents)
         frontier_pts = {(round(a.total_cost, 6), round(a.accuracy, 6)) for a in frontier}
         
