@@ -555,6 +555,10 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         for agent in unique_agents
     }
     agents = [Agent(cost, acc) for cost, acc in agent_means.values()]
+    
+    # Add origin (0,0) to represent "do nothing" baseline
+    agents.append(Agent(0.0, 0.0))
+    
     pareto_frontier = compute_pareto_frontier(agents)
 
     # Set of rounded frontier points for robust matching
@@ -672,6 +676,90 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
         # Annotate ONLY if this point is on the Pareto frontier
         if (round(x_value[0], 6), round(y_value[0], 6)) in frontier_points:
             label = agent_data['Agent Name'].iloc[0]
+            
+            # Get chart bounds for boundary detection
+            all_costs = [a.total_cost for a in agents if a.total_cost > 0]  # Exclude origin
+            all_accuracies = [a.accuracy for a in agents]
+            min_cost, max_cost = min(all_costs) if all_costs else (0, 1), max(all_costs) if all_costs else (0, 1)
+            min_accuracy, max_accuracy = min(all_accuracies), max(all_accuracies)
+            
+            # Calculate relative position of point within chart bounds
+            cost_range = max_cost - min_cost if max_cost > min_cost else 1
+            accuracy_range = max_accuracy - min_accuracy if max_accuracy > min_accuracy else 1
+            
+            relative_x = (x_value[0] - min_cost) / cost_range if cost_range > 0 else 0.5
+            relative_y = (y_value[0] - min_accuracy) / accuracy_range if accuracy_range > 0 else 0.5
+            
+            # Smart label positioning based on chart position
+            # Define potential positions with their anchor settings
+            position_options = [
+                # Format: (ax, ay, xanchor, yanchor, position_name)
+                (65, -15, 'left', 'top', 'right'),       # Right of point
+                (-65, -15, 'right', 'top', 'left'),      # Left of point  
+                (0, -35, 'center', 'top', 'bottom'),     # Below point
+                (0, 35, 'center', 'bottom', 'top'),      # Above point
+                (45, -35, 'left', 'top', 'bottom-right'), # Bottom-right
+                (-45, -35, 'right', 'top', 'bottom-left'), # Bottom-left
+                (45, 35, 'left', 'bottom', 'top-right'),   # Top-right
+                (-45, 35, 'right', 'bottom', 'top-left'),  # Top-left
+            ]
+            
+            # Filter out positions that would be clipped by chart boundaries
+            safe_positions = []
+            for ax, ay, xanchor, yanchor, pos_name in position_options:
+                clipped = False
+                
+                # Left boundary check - avoid left positioning if point is near left edge
+                if relative_x < 0.25 and ax < 0:
+                    clipped = True
+                # Right boundary check - avoid right positioning if point is near right edge
+                if relative_x > 0.75 and ax > 0:
+                    clipped = True
+                # Bottom boundary check - avoid bottom positioning if point is near bottom
+                if relative_y < 0.25 and ay < 0:
+                    clipped = True
+                # Top boundary check - avoid top positioning if point is near top
+                if relative_y > 0.75 and ay > 0:
+                    clipped = True
+                    
+                if not clipped:
+                    safe_positions.append((ax, ay, xanchor, yanchor, pos_name))
+            
+            # If no safe positions, use a conservative right position with smaller offset
+            if not safe_positions:
+                safe_positions = [(40, -10, 'left', 'top', 'right')]
+            
+            # Find position with minimal collisions with existing annotations
+            existing_annotations = list(fig.layout.annotations) if fig.layout.annotations else []
+            best_position = None
+            min_collisions = float('inf')
+            
+            for ax, ay, xanchor, yanchor, pos_name in safe_positions:
+                collision_count = 0
+                
+                # Check collisions with existing annotations
+                for existing in existing_annotations:
+                    # Calculate distance between this position and existing annotation
+                    x_distance = abs(existing.x - x_value[0])
+                    y_distance = abs(existing.y - y_value[0])
+                    
+                    # Consider collision if annotations are close
+                    if x_distance < (cost_range * 0.15) and y_distance < (accuracy_range * 0.08):
+                        collision_count += 1
+                
+                # Prefer positions with fewer collisions, then prefer right/bottom positions
+                if collision_count < min_collisions:
+                    min_collisions = collision_count
+                    best_position = (ax, ay, xanchor, yanchor)
+                elif collision_count == min_collisions and best_position:
+                    # Tie-breaker: prefer right and bottom positions for readability
+                    current_ax, current_ay, current_xanchor, current_yanchor = best_position
+                    if ax > current_ax or (ax == current_ax and ay < current_ay):
+                        best_position = (ax, ay, xanchor, yanchor)
+            
+            # Use the best position found
+            ax, ay, xanchor, yanchor = best_position if best_position else (40, -10, 'left', 'top')
+            
             fig.add_annotation(
                 x=x_value[0],
                 y=y_value[0],
@@ -681,9 +769,11 @@ def create_scatter_plot(df, x: str, y: str, x_label: str = None, y_label: str = 
                 arrowsize=1,
                 arrowwidth=1,
                 arrowcolor="#CCCCCC",
-                ax=60,   # modest offset
-                ay=20,
+                ax=ax,
+                ay=ay,
                 font=dict(size=10),
+                xanchor=xanchor,
+                yanchor=yanchor,
             )
 
     # Legend entries for CI
