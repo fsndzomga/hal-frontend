@@ -128,6 +128,10 @@ def create_app():
                              contributors=CONTRIBUTORS,
                              highlights=highlights)
     
+    @app.route('/health')
+    def health_check():
+        return {'status': 'healthy', 'timestamp': datetime.now().isoformat()}, 200
+    
     @app.route("/missing")
     def missing_runs_heatmap():
         db = TracePreprocessor()
