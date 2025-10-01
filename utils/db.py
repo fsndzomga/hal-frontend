@@ -1366,6 +1366,110 @@ class TracePreprocessor:
                 count = conn.execute(query).fetchone()[0]
                 total_runs += count
         return total_runs
+    
+    def get_total_evaluations(self):
+        """Get the total number of evaluations (rollouts) across all benchmarks"""
+        # Use the same logic as analyze_benchmark_evaluations.py
+        
+        # Known task counts for each benchmark (same as in the script)
+        known_task_counts = {
+            'gaia': 165,
+            'scicode': 65,
+            'usaco': 307,
+            'assistantbench': 33,
+            'corebench_hard': 45,
+            'online_mind2web': 300,
+            'taubench_airline': 50,
+            'scienceagentbench': 102,
+            'swebench_verified_mini': 50,
+        }
+        
+        # List of available benchmarks (same as script)
+        available_benchmarks = [
+            'gaia',
+            'scicode', 
+            'usaco',
+            'assistantbench',
+            'corebench_hard',
+            'online_mind2web',
+            'taubench_airline',
+            'scienceagentbench',
+            'swebench_verified_mini',
+        ]
+        
+        total_evaluations = 0
+        
+        for benchmark_name in available_benchmarks:
+            try:
+                # Get parsed results with costs which contains detailed run information
+                df = self.get_parsed_results_with_costs(benchmark_name, aggregate=False)
+                
+                if df.empty:
+                    continue
+                
+                # Count unique tasks and runs from the parsed results
+                num_tasks = 0
+                num_runs = 0
+                
+                # Method 1: Use known benchmark task counts (most reliable for common benchmarks)
+                if benchmark_name in known_task_counts:
+                    num_tasks = known_task_counts[benchmark_name]
+                
+                # Method 2: Try to get tasks from 'Total Tasks' column (override known values if available)
+                if 'Total Tasks' in df.columns:
+                    # Take the first non-null value or the max if there are variations
+                    total_tasks_values = df['Total Tasks'].dropna()
+                    if len(total_tasks_values) > 0:
+                        actual_count = int(total_tasks_values.iloc[0])
+                        if actual_count > 0:  # Only override if we get a positive value
+                            num_tasks = actual_count
+                
+                # Method 3: Try to determine number of tasks from successful/failed task lists
+                if num_tasks == 0 and 'successful_tasks' in df.columns and 'failed_tasks' in df.columns:
+                    import ast
+                    all_task_ids = set()
+                    
+                    for _, row in df.iterrows():
+                        try:
+                            # Parse successful tasks
+                            if pd.notna(row['successful_tasks']) and row['successful_tasks']:
+                                successful = ast.literal_eval(row['successful_tasks'])
+                                if successful:
+                                    all_task_ids.update(successful)
+                            
+                            # Parse failed tasks  
+                            if pd.notna(row['failed_tasks']) and row['failed_tasks']:
+                                failed = ast.literal_eval(row['failed_tasks'])
+                                if failed:
+                                    all_task_ids.update(failed)
+                        except:
+                            continue
+                    
+                    num_tasks = len(all_task_ids)
+                
+                # Method 4: Look for other task-related columns
+                if num_tasks == 0:
+                    task_cols = [col for col in df.columns if 'task' in col.lower() and col != 'Total Tasks']
+                    for col in task_cols:
+                        try:
+                            unique_count = df[col].nunique()
+                            if unique_count > num_tasks:
+                                num_tasks = unique_count
+                        except:
+                            continue
+                
+                # Count runs - each row in parsed_results represents one agent run
+                num_runs = len(df)
+                
+                # Calculate total evaluations (tasks × runs)
+                benchmark_evaluations = num_tasks * num_runs if num_tasks and num_runs else 0
+                total_evaluations += benchmark_evaluations
+                
+            except Exception as e:
+                # Skip benchmarks that cause errors
+                continue
+        
+        return total_evaluations
 
     def get_agent_url(self, agent_name, benchmark_name):
         """Get the URL for an agent from the metadata file."""
