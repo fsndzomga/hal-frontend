@@ -275,6 +275,8 @@ DEFAULT_PRICING = {
     "GPT-5 Low (August 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
     "GPT-OSS-120B (August 2025)": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
     "GPT-OSS-120B High (August 2025)": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
+    "Claude Sonnet 4.5 (September 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
+    "Claude Sonnet 4.5 High (September 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
 }
 
 
@@ -395,7 +397,14 @@ MODEL_MAPPING = [
     ("claude-sonnet-4-20250514_thinking_high_4096", "Claude Sonnet 4 High (May 2025)", "claude-sonnet-4-20250514_thinking_high_4096"),
     ("claude-sonnet-4-20250514", "Claude Sonnet 4 (May 2025)", "claude-sonnet-4-20250514"),
     ("anthropic/claude-sonnet-4", "Claude Sonnet 4 (May 2025)", "anthropic/claude-sonnet-4"),
-    ("anthropic/claude-sonnet-4 high", "Claude Sonnet 4 High (May 2025)", "anthropic/claude-sonnet-4-high")
+    ("anthropic/claude-sonnet-4 high", "Claude Sonnet 4 High (May 2025)", "anthropic/claude-sonnet-4-high"),
+    ("openrouter/anthropic/claude-sonnet-4.5", "Claude Sonnet 4.5 (September 2025)", "openrouter/anthropic/claude-sonnet-4.5"),
+    ("openrouter/anthropic/claude-sonnet-4.5 high", "Claude Sonnet 4.5 High (September 2025)", "openrouter/anthropic/claude-sonnet-4.5-high"),
+    ("anthropic/claude-sonnet-4.5", "Claude Sonnet 4.5 (September 2025)", "anthropic/claude-sonnet-4.5"),
+    ("anthropic/claude-sonnet-4.5 high", "Claude Sonnet 4.5 High (September 2025)", "anthropic/claude-sonnet-4.5-high"),
+    ("claude-sonnet-4.5", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4.5"),
+    ("claude-sonnet-4.5 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4.5-high"),
+
 
 ]
 
