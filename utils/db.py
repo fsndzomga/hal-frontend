@@ -404,7 +404,10 @@ MODEL_MAPPING = [
     ("anthropic/claude-sonnet-4.5 high", "Claude Sonnet 4.5 High (September 2025)", "anthropic/claude-sonnet-4.5-high"),
     ("claude-sonnet-4.5", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4.5"),
     ("claude-sonnet-4.5 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4.5-high"),
-
+    ("claude-sonnet-4-5", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4-5"),
+    ("claude-sonnet-4-5 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-high"),
+    ("claude-sonnet-4-5-20250929", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4-5-20250929"),
+    ("claude-sonnet-4-5-20250929 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-20250929-high"),
 
 ]
 
@@ -439,7 +442,6 @@ RUNIDS_TO_SKIP = [
     'assistantbench_hal_generalist_agent_o4mini20250416_high_1746217844',
     'assistantbench_hal_generalist_agent_o4mini20250416_low_1746217634',
     'assistantbench_hal_generalist_agent_o320250416_1746219524',
-
 ]
 
 class TracePreprocessor:
