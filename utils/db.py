@@ -418,8 +418,7 @@ MODEL_MAPPING = [
     ("claude-sonnet-4-5", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4-5"),
     ("claude-sonnet-4-5 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-high"),
     ("claude-sonnet-4-5-20250929", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4-5-20250929"),
-    ("claude-sonnet-4-5-20250929 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-20250929-high"),
-
+    ("claude-sonnet-4-5-20250929 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-20250929-high")
 ]
 
 MODELS_TO_SKIP = [
