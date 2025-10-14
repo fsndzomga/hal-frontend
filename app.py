@@ -7,16 +7,46 @@ import json
 import pandas as pd
 from datetime import datetime
 
-# List of contributors from creators.md
-CONTRIBUTORS = [
+# Authors from the paper (in order)
+AUTHORS = [
+    {"name": "Sayash Kapoor", "affiliation": "Princeton University"},
+    {"name": "Benedikt Stroebl", "affiliation": "Princeton University"},
+    {"name": "Peter Kirgis", "affiliation": "Princeton University"},
+    {"name": "Nitya Nadgir", "affiliation": "Brookings Institution"},
+    {"name": "Zachary S Siegel", "affiliation": "Princeton University"},
+    {"name": "Boyi Wei", "affiliation": "Princeton University"},
+    {"name": "Tianci Xue", "affiliation": "The Ohio State University"},
+    {"name": "Ziru Chen", "affiliation": "The Ohio State University"},
+    {"name": "Felix Chen", "affiliation": "Princeton University"},
+    {"name": "Saiteja Utpala", "affiliation": "Microsoft Research"},
+    {"name": "Franck Ndzomga", "affiliation": "Independent Researcher"},
+    {"name": "Dheeraj Oruganty", "affiliation": "Amazon"},
+    {"name": "Sophie Luskin", "affiliation": "Princeton University"},
+    {"name": "Kangheng Liu", "affiliation": "Georgetown University"},
+    {"name": "Botao Yu", "affiliation": "The Ohio State University"},
     {"name": "Amit Arora", "affiliation": "Amazon"},
+    {"name": "Dongyoon Hahm", "affiliation": "KAIST"},
+    {"name": "Harsh Trivedi", "affiliation": "Stony Brook University"},
+    {"name": "Huan Sun", "affiliation": "The Ohio State University"},
+    {"name": "Juyong Lee", "affiliation": "KAIST"},
+    {"name": "Tengjun Jin", "affiliation": "University of Illinois Urbana-Champaign"},
+    {"name": "Yifan Mai", "affiliation": "Stanford University"},
+    {"name": "Yifei Zhou", "affiliation": "xAI"},
+    {"name": "Yuxuan Zhu", "affiliation": "University of Illinois Urbana-Champaign"},
+    {"name": "Rishi Bommasani", "affiliation": "Stanford University"},
+    {"name": "Daniel Kang", "affiliation": "University of Illinois Urbana-Champaign"},
+    {"name": "Dawn Song", "affiliation": "University of California, Berkeley"},
+    {"name": "Peter Henderson", "affiliation": "Princeton University"},
+    {"name": "Yu Su", "affiliation": "The Ohio State University"},
+    {"name": "Percy Liang", "affiliation": "Stanford University"},
+    {"name": "Arvind Narayanan", "affiliation": "Princeton University"}
+]
+
+# Contributors (everyone else who helped with the project)
+CONTRIBUTORS = [
     {"name": "Aymeric Roucher", "affiliation": "Hugging Face"},
     {"name": "Ayush Thakur", "affiliation": "Weights & Biases"},
-    {"name": "Boyi Wei", "affiliation": "Princeton"},
-    {"name": "Daniel Kang", "affiliation": "UIUC"},
     {"name": "Hailey Schoelkopf", "affiliation": "Anthropic"},
-    {"name": "Harsh Trivedi", "affiliation": "Stony Brook"},
-    {"name": "Huan Sun", "affiliation": "OSU"},
     {"name": "Iason Gabriel", "affiliation": "Google DeepMind"},
     {"name": "Jelena Luketina", "affiliation": "UK AISI"},
     {"name": "JJ Allaire", "affiliation": "UK AISI"},
@@ -25,32 +55,12 @@ CONTRIBUTORS = [
     {"name": "Marius Hobbhahn", "affiliation": "Apollo Research"},
     {"name": "Maximillian Kaufmann", "affiliation": "UK AISI"},
     {"name": "Morgan McGuire", "affiliation": "Weights & Biases"},
-    {"name": "Nitya Nadgir", "affiliation": "Brookings"},
     {"name": "Omar Khattab", "affiliation": "MIT"},
     {"name": "Parth Asawa", "affiliation": "UC Berkeley"},
-    {"name": "Percy Liang", "affiliation": "Stanford"},
-    {"name": "Rishi Bommasani", "affiliation": "Stanford"},
     {"name": "Shreya Shankar", "affiliation": "UC Berkeley"},
     {"name": "Shayne Longpre", "affiliation": "MIT"},
-    {"name": "Tianci Xue", "affiliation": "OSU"},
-    {"name": "Veniamin Veselovsky", "affiliation": "Princeton"},
+    {"name": "Veniamin Veselovsky", "affiliation": "Princeton University"},
     {"name": "William Isaac", "affiliation": "Google DeepMind"},
-    {"name": "Yifan Mai", "affiliation": "Stanford"},
-    {"name": "Yu Su", "affiliation": "OSU"},
-    {"name": "Zachary Siegel", "affiliation": "Princeton"},
-    {"name": "Ziru (Ron) Chen", "affiliation": "OSU"},
-    {"name": "Felix Chen", "affiliation": "Princeton University"},
-    {"name": "Sophie Luskin", "affiliation": "Princeton University"},
-    {"name": "Saiteja Utpala", "affiliation": "HAL Team"},
-    {"name": "Dheeraj Oruganty", "affiliation": "Amazon"},
-    {"name": "Botao Yu", "affiliation": "The Ohio State University"},
-    {"name": "Dawn Song", "affiliation": "University of California, Berkeley"},
-    {"name": "Dongyoon Hahm", "affiliation": "KAIST"},
-    {"name": "Juyong Lee", "affiliation": "KAIST"},
-    {"name": "Peter Henderson", "affiliation": "Princeton University"},
-    {"name": "Tengjun Jin", "affiliation": "University of Illinois Urbana-Champaign"},
-    {"name": "Yifei Zhou", "affiliation": "xAI, work done before joining xAI"},
-    {"name": "Yuxuan Zhu", "affiliation": "University of Illinois Urbana-Champaign"},
     {"name": "Charles Teague", "affiliation": "UK AISI"},
     {"name": "Clémentine Fourrier", "affiliation": "Hugging Face"},
     {"name": "Kevin Meng", "affiliation": "Transluce"}
@@ -125,6 +135,7 @@ def create_app():
                              total_agents=total_agents, 
                              total_evaluations=total_evaluations,
                              total_benchmarks=total_benchmarks,
+                             authors=AUTHORS,
                              contributors=CONTRIBUTORS,
                              highlights=highlights)
     
@@ -861,7 +872,7 @@ def create_app():
 
     @app.route('/creators')
     def creators():
-        return render_template('creators.html', contributors=CONTRIBUTORS)
+        return render_template('creators.html', authors=AUTHORS, contributors=CONTRIBUTORS)
 
     @app.route('/about')
     def about():
