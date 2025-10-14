@@ -24,7 +24,7 @@ AUTHORS = [
     {"name": "Sophie Luskin", "affiliation": "Princeton University"},
     {"name": "Kangheng Liu", "affiliation": "Georgetown University"},
     {"name": "Botao Yu", "affiliation": "The Ohio State University"},
-    {"name": "Amit Arora", "affiliation": "Amazon"},
+    {"name": "Amit Arora", "affiliation": "Georgetown University"},
     {"name": "Dongyoon Hahm", "affiliation": "KAIST"},
     {"name": "Harsh Trivedi", "affiliation": "Stony Brook University"},
     {"name": "Huan Sun", "affiliation": "The Ohio State University"},
