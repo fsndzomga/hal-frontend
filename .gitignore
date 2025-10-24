@@ -31,4 +31,5 @@ hal_traces/
 .vscode/*
 figs/*
 latex_sections/*
+task_heatmap_data/*
 

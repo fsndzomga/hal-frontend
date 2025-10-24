@@ -147,9 +147,9 @@ def create_model_benchmark_heatmap(df):
     )
     return fig
 
-def create_completion_tokens_bar_chart(benchmark_name, pricing_config=None, top_n=20):
+def create_completion_tokens_bar_chart(benchmark_name, pricing_config=None, top_n=20, ignore_caching=True):
     db = TracePreprocessor()
-    df = db.get_token_usage_with_costs(benchmark_name, pricing_config)
+    df = db.get_token_usage_with_costs(benchmark_name, pricing_config, ignore_caching=ignore_caching)
     if df.empty:
         return go.Figure()
 

@@ -10,6 +10,7 @@ from scipy import stats
 import yaml
 import numpy as np
 import re
+import argparse
 
 
 # Define column schemas
@@ -279,6 +280,25 @@ DEFAULT_PRICING = {
     "Claude Sonnet 4.5 High (September 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
 }
 
+# Cache token pricing overrides (prices per 1M tokens)
+CACHED_PRICE_OVERRIDES = {
+    "o4-mini Medium (April 2025)": 0.275,
+    "o3-mini Medium (January 2025)": 0.55,
+    "Claude-3.7 Sonnet (February 2025)": 0.30,
+    "Claude-3.7 Sonnet Low (February 2025)": 0.30,
+    "Claude-3.7 Sonnet High (February 2025)": 0.30,
+    "Claude Opus 4 (May 2025)": 1.50,
+    "Claude Opus 4 High (May 2025)": 1.50,
+    "Claude Opus 4.1 (August 2025)": 1.50,
+    "Claude Opus 4.1 High (August 2025)": 1.50,
+    "GPT-4.1 (April 2025)": 0.50,
+    "GPT-5 High (August 2025)": 0.125,
+    "GPT-5 Medium (August 2025)": 0.125,
+    "GPT-5 Low (August 2025)": 0.125,
+    "o3 Medium (April 2025)": 0.5,
+    "o3 Low (April 2025)": 0.5,
+}
+
 
 MODEL_MAPPING = [
     ("o4-mini-2025-04-16", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
@@ -295,7 +315,15 @@ MODEL_MAPPING = [
     ("gemini-2.0-flash", "Gemini 2.0 Flash (February 2025)", "gemini-2.0-flash"),
     ("google/gemini-2.0-flash-001", "Gemini 2.0 Flash (February 2025)", "google/gemini-2.0-flash-001"),
     ("models/gemini-2.0-flash", "Gemini 2.0 Flash (February 2025)", "models/gemini-2.0-flash"),
+    ("google/gemini-2.0-flash-001", "Gemini 2.0 Flash (February 2025)", "google/gemini-2.0-flash-001"),
+    ("google/gemini-2.0-flash-001 high", "Gemini 2.0 Flash High (February 2025)", "google/gemini-2.0-flash-001-high"),
+    ("gemini-2.0-flash-001", "Gemini 2.0 Flash (February 2025)", "google/gemini-2.0-flash-001"),
+    ("gemini-2.0-flash-001 high", "Gemini 2.0 Flash High (February 2025)", "google/gemini-2.0-flash-001-high"),
     ("claude-3-7-sonnet-20250219 high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("anthropic/claude-3.7-sonnet", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("anthropic/claude-3.7-sonnet high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("claude-3.7-sonnet", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("anthropic/claude-3.7-sonnet high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
     ("o3-2025-04-16", "o3 Medium (April 2025)", "o3-2025-04-16"),
     ("claude-3-7-sonnet-2025-02-19", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("claude-opus-4-20250514 high", "Claude Opus 4 High (May 2025)", "claude-opus-4-20250514"),
@@ -313,6 +341,8 @@ MODEL_MAPPING = [
     ("DeepSeek-V3", "DeepSeek V3 (March 2025)", "deepseek-ai/DeepSeek-V3"),
     ("deepseek/deepseek-chat-v3-0324", "DeepSeek V3 (March 2025)", "deepseek-ai/DeepSeek-Chat-V3"),
     ("deepseek-chat-v3-0324", "DeepSeek V3 (March 2025)", "deepseek-ai/DeepSeek-Chat-V3"),
+    ("deepseek/deepseek-chat", "DeepSeek V3 (March 2025)", "deepseek-ai/DeepSeek-Chat-V3"),
+    ("deepseek-chat", "DeepSeek V3 (March 2025)", "deepseek-ai/DeepSeek-Chat-V3"),
     ("openrouter/deepseek/deepseek-chat-v3-0324", "DeepSeek V3 (March 2025)", "deepseek-ai/DeepSeek-Chat-V3"),
     ("deepseek/deepseek-chat-v3-0324", "DeepSeek V3 (March 2025)", "deepseek-ai/DeepSeek-Chat-V3"),
     ("deepseek-r1-0528", "DeepSeek R1 (May 2025)", "deepseek-ai/DeepSeek-R1"),
@@ -332,6 +362,7 @@ MODEL_MAPPING = [
     ("claude-3.7-sonnet", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
     ("claude-3.7-sonnet:thinking:high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219-thinking-high"),
     ("anthropic/claude-3.7-sonnet", "Claude-3.7 Sonnet (February 2025)", "claude-3-7-sonnet-20250219"),
+    ("claude-3.7-sonnet high", "Claude-3.7 Sonnet High (February 2025)", "claude-3-7-sonnet-20250219"),
     ("O4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("o4-mini-high", "o4-mini High (April 2025)", "o4-mini-2025-04-16"),
     ("GPT4.1", "GPT-4.1 (April 2025)", "gpt-4.1-2025-04-14"),
@@ -418,7 +449,7 @@ MODEL_MAPPING = [
     ("claude-sonnet-4-5", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4-5"),
     ("claude-sonnet-4-5 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-high"),
     ("claude-sonnet-4-5-20250929", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4-5-20250929"),
-    ("claude-sonnet-4-5-20250929 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-20250929-high")
+    ("claude-sonnet-4-5-20250929 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-20250929-high"),
 ]
 
 MODELS_TO_SKIP = [
@@ -776,6 +807,9 @@ class TracePreprocessor:
                 elif any(pattern in base_agent_name.lower() for pattern in ['few shot', 'fewshot']):
                     base_agent_name = 'TAU-bench Few Shot'
                 
+                elif 'tool calling' in base_agent_name.lower() or 'toolcalling' in base_agent_name.lower():
+                    base_agent_name = 'TAU-bench Tool Calling'
+                
                 # USACO patterns
                 elif 'usaco' in base_agent_name.lower():
                     if 'episodic' in base_agent_name.lower() and 'semantic' in base_agent_name.lower():
@@ -826,6 +860,7 @@ class TracePreprocessor:
                         'Taubench FewShot High Reasoning': 'TAU-bench Few Shot',
                         'Taubench FewShot No Reasoning': 'TAU-bench Few Shot',
                         'TAU-bench Few Shot High Reasoning': 'TAU-bench Few Shot',
+                        'Taubench ToolCalling': 'TAU-bench Tool Calling',
                         'Assistantbench Browser Agent': 'Browser-Use',
                         'Browser Agent': 'Browser-Use',
                         'coreagent': 'CORE-Agent',
@@ -863,8 +898,8 @@ class TracePreprocessor:
                             usage.get('input_tokens', 0),
                             usage.get('output_tokens', 0),
                             usage.get('total_tokens', 0),
-                            usage.get('input_tokens_cache_write', 0),
-                            usage.get('input_tokens_cache_read', 0),
+                            usage.get('cache_creation_input_tokens', 0),
+                            usage.get('cache_read_input_tokens', 0),
                             1 if model_name == primary_model_name else 0
                         ))
                         print(f"{benchmark_name + agent_name + config['run_id'] + model_name}")
@@ -1130,8 +1165,49 @@ class TracePreprocessor:
         
         return verified_agents
 
-    def get_token_usage_with_costs(self, benchmark_name, pricing_config=None):
-        """Get token usage data with configurable pricing"""
+    def _normalize_usage(self, token_data):
+        """Normalize token usage data from different API formats"""
+        # Handle different token naming conventions
+        if "prompt_tokens" in token_data or "completion_tokens" in token_data:
+            # OpenAI-style
+            prompt_tokens = token_data.get("prompt_tokens", 0)
+            cached_input = token_data.get("prompt_tokens_details", {}).get("cached_tokens", 0) if isinstance(token_data.get("prompt_tokens_details"), dict) else 0
+            cache_creation = 0  # OpenAI doesn't report cache writes separately
+            
+        elif "input_tokens" in token_data or "output_tokens" in token_data:
+            # Anthropic-style
+            fresh_input = token_data.get("input_tokens", 0)
+            cached_input = token_data.get("cache_read_input_tokens", token_data.get("input_tokens_cache_read", 0))
+            cache_creation = token_data.get("cache_creation_input_tokens", token_data.get("input_tokens_cache_write", 0))
+            prompt_tokens = fresh_input + cached_input
+            
+        elif "inputTokens" in token_data or "outputTokens" in token_data:
+            # Bedrock-style
+            prompt_tokens = token_data.get("inputTokens", 0)
+            cached_input = token_data.get("cacheReadInputTokens", token_data.get("input_tokens_cache_read", 0))
+            cache_creation = token_data.get("cacheWriteInputTokens", token_data.get("input_tokens_cache_write", 0))
+            
+        else:
+            prompt_tokens = 0
+            cached_input = 0
+            cache_creation = 0
+        
+        completion = (
+            token_data.get("completion_tokens", 0)
+            + token_data.get("output_tokens", 0)
+            + token_data.get("outputTokens", 0)
+        )
+        
+        return prompt_tokens, cached_input, cache_creation, completion
+
+    def get_token_usage_with_costs(self, benchmark_name, pricing_config=None, ignore_caching=True):
+        """Get token usage data with configurable pricing
+        
+        Args:
+            benchmark_name: Name of the benchmark
+            pricing_config: Custom pricing configuration
+            ignore_caching: If True, treats all tokens as regular prompt/completion tokens (old logic)
+        """
         if pricing_config is None:
             pricing_config = DEFAULT_PRICING
 
@@ -1151,18 +1227,38 @@ class TracePreprocessor:
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
                     
-        # Calculate costs based on pricing config (prices are per 1M tokens)
+        # Calculate costs based on pricing config
         df['total_cost'] = 0.0
         for model, prices in pricing_config.items():
             mask = df['model_name'] == model
-            df.loc[mask, 'total_cost'] = (
-                df.loc[mask, 'input_tokens'] * prices['prompt_tokens'] / 1e6 +
-                df.loc[mask, 'output_tokens'] * prices['completion_tokens'] / 1e6 +
-                df.loc[mask, 'input_tokens_cache_read'] * prices['prompt_tokens'] / 1e6 +
-                df.loc[mask, 'input_tokens_cache_write'] * prices['prompt_tokens'] / 1e6 +
-                df.loc[mask, 'prompt_tokens'] * prices['prompt_tokens'] / 1e6 +
-                df.loc[mask, 'completion_tokens'] * prices['completion_tokens'] / 1e6
-            )
+            if mask.any():
+                if ignore_caching:
+                    # Old logic: treat all tokens as regular prompt/completion tokens
+                    df.loc[mask, 'total_cost'] = (
+                        df.loc[mask, 'input_tokens'].fillna(0) * prices['prompt_tokens'] / 1e6 +
+                        df.loc[mask, 'output_tokens'].fillna(0) * prices['completion_tokens'] / 1e6 +
+                        df.loc[mask, 'prompt_tokens'].fillna(0) * prices['prompt_tokens'] / 1e6 +
+                        df.loc[mask, 'completion_tokens'].fillna(0) * prices['completion_tokens'] / 1e6
+                    )
+                else:
+                    # New logic: use cache-specific pricing
+                    cache_create_price = CACHED_PRICE_OVERRIDES.get(model, prices.get("prompt_tokens", 0))
+                    cache_read_price = CACHED_PRICE_OVERRIDES.get(model, prices.get("prompt_tokens", 0))
+                    
+                    # Calculate fresh input tokens (total input - cached reads)
+                    fresh_input_tokens = (
+                        df.loc[mask, 'input_tokens'].fillna(0) + 
+                        df.loc[mask, 'prompt_tokens'].fillna(0) - 
+                        df.loc[mask, 'input_tokens_cache_read'].fillna(0)
+                    )
+                    
+                    # Calculate total cost with proper cache pricing
+                    df.loc[mask, 'total_cost'] = (
+                        fresh_input_tokens * prices['prompt_tokens'] / 1e6 +
+                        df.loc[mask, 'input_tokens_cache_write'].fillna(0) * cache_create_price / 1e6 +
+                        df.loc[mask, 'input_tokens_cache_read'].fillna(0) * cache_read_price / 1e6 +
+                        (df.loc[mask, 'output_tokens'].fillna(0) + df.loc[mask, 'completion_tokens'].fillna(0)) * prices['completion_tokens'] / 1e6
+                    )
             
         # Sum total_cost for each run_id (if agents use multiple models, this will be the total cost for that run)
         df_temp = df.groupby('run_id')['total_cost'].sum().reset_index()
@@ -1173,14 +1269,14 @@ class TracePreprocessor:
                                 
         return df
 
-    def get_parsed_results_with_costs(self, benchmark_name, pricing_config=None, aggregate=False):
+    def get_parsed_results_with_costs(self, benchmark_name, pricing_config=None, aggregate=False, ignore_caching=True):
         """Get parsed results with recalculated costs based on token usage"""
         # Get base results with URLs
         results_df = self.get_parsed_results(benchmark_name, aggregate=False)
         benchmark_name = results_df['benchmark_name'].iloc[0]
         
         # Get token usage with new costs
-        token_costs = self.get_token_usage_with_costs(benchmark_name, pricing_config)
+        token_costs = self.get_token_usage_with_costs(benchmark_name, pricing_config, ignore_caching=ignore_caching)
         # import pdb; pdb.set_trace()
 
         for agent_name in results_df['Agent Name'].unique():
@@ -1752,14 +1848,127 @@ class TracePreprocessor:
             'is_pareto': is_pareto
         }
     
+    def calculate_cost_with_cache_tokens(self, benchmark_name, run_id=None, pricing_config=None, ignore_caching=True):
+        """
+        Calculate costs with proper cache token handling similar to Weave's approach.
+        
+        Args:
+            benchmark_name: Name of the benchmark
+            run_id: Optional specific run ID to calculate costs for
+            pricing_config: Optional custom pricing configuration
+            ignore_caching: If True, treats all tokens as regular prompt/completion tokens (old logic)
+            
+        Returns:
+            dict: Contains total_cost, token_usage breakdown, and number of entries
+        """
+        if pricing_config is None:
+            pricing_config = DEFAULT_PRICING
+            
+        with self.get_conn(benchmark_name) as conn:
+            if run_id:
+                query = '''
+                    SELECT model_name, 
+                    SUM(prompt_tokens) as prompt_tokens,
+                    SUM(completion_tokens) as completion_tokens,
+                    SUM(input_tokens) as input_tokens,
+                    SUM(output_tokens) as output_tokens,
+                    SUM(input_tokens_cache_write) as input_tokens_cache_write,
+                    SUM(input_tokens_cache_read) as input_tokens_cache_read
+                    FROM token_usage
+                    WHERE benchmark_name = ? AND run_id = ?
+                    GROUP BY model_name
+                '''
+                df = pd.read_sql_query(query, conn, params=(benchmark_name, run_id))
+            else:
+                query = '''
+                    SELECT model_name, 
+                    SUM(prompt_tokens) as prompt_tokens,
+                    SUM(completion_tokens) as completion_tokens,
+                    SUM(input_tokens) as input_tokens,
+                    SUM(output_tokens) as output_tokens,
+                    SUM(input_tokens_cache_write) as input_tokens_cache_write,
+                    SUM(input_tokens_cache_read) as input_tokens_cache_read
+                    FROM token_usage
+                    WHERE benchmark_name = ?
+                    GROUP BY model_name
+                '''
+                df = pd.read_sql_query(query, conn, params=(benchmark_name,))
+        
+        total_cost = 0
+        token_usage = {}
+        
+        for _, row in df.iterrows():
+            model_name = row['model_name']
+            
+            if model_name not in pricing_config:
+                print(f"Warning: Model '{model_name}' not found in pricing config. Skipping cost calculation.")
+                continue
+                
+            # Initialize token usage tracking
+            if model_name not in token_usage:
+                token_usage[model_name] = {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "cache_creation_input_tokens": 0,
+                    "cache_read_input_tokens": 0,
+                }
+            
+            # Normalize token counts (handle NaN values)
+            prompt_tokens = (row.get('prompt_tokens', 0) or 0) + (row.get('input_tokens', 0) or 0)
+            completion_tokens = (row.get('completion_tokens', 0) or 0) + (row.get('output_tokens', 0) or 0)
+            cache_creation = row.get('input_tokens_cache_write', 0) or 0
+            cache_read = row.get('input_tokens_cache_read', 0) or 0
+            
+            # Update token usage
+            token_usage[model_name]["prompt_tokens"] += prompt_tokens
+            token_usage[model_name]["completion_tokens"] += completion_tokens
+            token_usage[model_name]["cache_creation_input_tokens"] += cache_creation
+            token_usage[model_name]["cache_read_input_tokens"] += cache_read
+            
+            # Get pricing information
+            prices = pricing_config[model_name]
+            
+            if ignore_caching:
+                # Old logic: treat all tokens as regular prompt/completion tokens
+                model_cost = (
+                    prompt_tokens * prices.get("prompt_tokens", 0) / 1e6 +
+                    completion_tokens * prices.get("completion_tokens", 0) / 1e6
+                )
+            else:
+                # New logic: use cache-specific pricing
+                cache_create_price = CACHED_PRICE_OVERRIDES.get(model_name, prices.get("prompt_tokens", 0))
+                cache_read_price = CACHED_PRICE_OVERRIDES.get(model_name, prices.get("prompt_tokens", 0))
+                
+                # Calculate fresh input tokens (total input - cached reads)
+                fresh_input_tokens = prompt_tokens - cache_read
+                
+                # Calculate model cost with proper cache pricing
+                model_cost = (
+                    fresh_input_tokens * prices.get("prompt_tokens", 0) / 1e6 +
+                    cache_creation * cache_create_price / 1e6 +
+                    cache_read * cache_read_price / 1e6 +
+                    completion_tokens * prices.get("completion_tokens", 0) / 1e6
+                )
+            
+            total_cost += model_cost
+        
+        return {
+            "total_cost": total_cost,
+            "token_usage": token_usage,
+            "num_models": len(df)
+        }
+
     def get_model_pricing(self, model_name):
-        """Get pricing information for a model from DEFAULT_PRICING"""
+        """Get pricing information for a model from DEFAULT_PRICING with cache token support"""
         # First try exact match
         if model_name in DEFAULT_PRICING:
             pricing_info = DEFAULT_PRICING[model_name]
+            cache_price = CACHED_PRICE_OVERRIDES.get(model_name, pricing_info.get('prompt_tokens', 0))
             return {
                 'prompt_tokens': pricing_info.get('prompt_tokens', 0),
                 'completion_tokens': pricing_info.get('completion_tokens', 0),
+                'cache_creation_tokens': cache_price,
+                'cache_read_tokens': cache_price,
                 'unit': 'per 1M tokens'
             }
         
@@ -1769,15 +1978,20 @@ class TracePreprocessor:
         for pricing_key, pricing_info in DEFAULT_PRICING.items():
             clean_key = pricing_key.lower().replace('-', '').replace('_', '').replace(' ', '')
             if clean_model in clean_key or clean_key in clean_model:
+                cache_price = CACHED_PRICE_OVERRIDES.get(pricing_key, pricing_info.get('prompt_tokens', 0))
                 return {
                     'prompt_tokens': pricing_info.get('prompt_tokens', 0),
                     'completion_tokens': pricing_info.get('completion_tokens', 0),
+                    'cache_creation_tokens': cache_price,
+                    'cache_read_tokens': cache_price,
                     'unit': 'per 1M tokens'
                 }
         
         return {
             'prompt_tokens': 0,
-            'completion_tokens': 0, 
+            'completion_tokens': 0,
+            'cache_creation_tokens': 0,
+            'cache_read_tokens': 0,
             'unit': 'per 1M tokens'
         }
 
@@ -1830,5 +2044,19 @@ class TracePreprocessor:
         return pareto_data
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Database and cost calculation utilities')
+    parser.add_argument('--with_caching', action='store_true',
+                        help='Use new cost calculation logic with cache token considerations')
+    args = parser.parse_args()
+    
+    # Set global flag for ignore_caching (reversed logic - True by default, False when --with_caching is used)
+    IGNORE_CACHING = not args.with_caching
+    
+    if IGNORE_CACHING:
+        print("Using old cost calculation logic (ignoring cache token pricing)")
+    else:
+        print("Using new cost calculation logic (with cache token pricing)")
+    
     preprocessor = TracePreprocessor()
+    # Run the preprocessing
     preprocessor.preprocess_traces()
