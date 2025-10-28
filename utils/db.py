@@ -278,6 +278,10 @@ DEFAULT_PRICING = {
     "GPT-OSS-120B High (August 2025)": {"prompt_tokens": 0.15, "completion_tokens": 0.6},
     "Claude Sonnet 4.5 (September 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
     "Claude Sonnet 4.5 High (September 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
+    "Claude Haiku 4.5 (October 2025)": {"prompt_tokens": 1, "completion_tokens": 5},
+    "Claude Haiku 4.5 High (October 2025)": {"prompt_tokens": 1, "completion_tokens": 5},
+    "Claude Haiku 4.5 Low (October 2025)": {"prompt_tokens": 1, "completion_tokens": 5},
+    "Claude Haiku 4.5 Medium (October 2025)": {"prompt_tokens": 1, "completion_tokens": 5},
 }
 
 # Cache token pricing overrides (prices per 1M tokens)
@@ -450,6 +454,26 @@ MODEL_MAPPING = [
     ("claude-sonnet-4-5 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-high"),
     ("claude-sonnet-4-5-20250929", "Claude Sonnet 4.5 (September 2025)", "claude-sonnet-4-5-20250929"),
     ("claude-sonnet-4-5-20250929 high", "Claude Sonnet 4.5 High (September 2025)", "claude-sonnet-4-5-20250929-high"),
+    ("claude-haiku-4-5-20251001", "Claude Haiku 4.5 (October 2025)", "claude-haiku-4-5-20251001"),
+    ("claude-haiku-4-5-20251001 high", "Claude Haiku 4.5 High (October 2025)", "claude-haiku-4-5-20251001-high"),
+    ("claude-haiku-4-5-20251001 low", "Claude Haiku 4.5 Low (October 2025)", "claude-haiku-4-5-20251001-low"),
+    ("claude-haiku-4-5-20251001 medium", "Claude Haiku 4.5 Medium (October 2025)", "claude-haiku-4-5-20251001-medium"),
+    ("anthropic/claude-haiku-4-5", "Claude Haiku 4.5 (October 2025)", "anthropic/claude-haiku-4.5"),
+    ("anthropic/claude-haiku-4-5 high", "Claude Haiku 4.5 High (October 2025)", "anthropic/claude-haiku-4-5-high"),
+    ("anthropic/claude-haiku-4-5 low", "Claude Haiku 4.5 Low (October 2025)", "anthropic/claude-haiku-4-5-low"),
+    ("anthropic/claude-haiku-4-5 medium", "Claude Haiku 4.5 Medium (October 2025)", "anthropic/claude-haiku-4-5-medium"),
+    ("claude-haiku-4-5", "Claude Haiku 4.5 (October 2025)", "claude-haiku-4-5"),
+    ("claude-haiku-4-5 high", "Claude Haiku 4.5 High (October 2025)", "claude-haiku-4-5-high"),
+    ("claude-haiku-4-5 low", "Claude Haiku 4.5 Low (October 2025)", "claude-haiku-4-5-low"),
+    ("claude-haiku-4-5 medium", "Claude Haiku 4.5 Medium (October 2025)", "claude-haiku-4-5-medium"),
+    ("anthropic/claude-haiku-4-5", "Claude Haiku 4.5 (October 2025)", "anthropic/claude-haiku-4-5"),
+    ("anthropic/claude-haiku-4-5 high", "Claude Haiku 4.5 High (October 2025)", "anthropic/claude-haiku-4-5-high"),
+    ("anthropic/claude-haiku-4-5 low", "Claude Haiku 4.5 Low (October 2025)", "anthropic/claude-haiku-4-5-low"),
+    ("anthropic/claude-haiku-4-5 medium", "Claude Haiku 4.5 Medium (October 2025)", "anthropic/claude-haiku-4-5-medium"),
+    ("Claude-Haiku-4-5", "Claude Haiku 4.5 (October 2025)", "claude-haiku-4-5"),
+    ("Claude-Haiku-4-5 High", "Claude Haiku 4.5 High (October 2025)", "claude-haiku-4-5-high"),
+    ("Claude-Haiku-4-5 Low", "Claude Haiku 4.5 Low (October 2025)", "claude-haiku-4-5-low"),
+    ("Claude-Haiku-4-5 Medium", "Claude Haiku 4.5 Medium (October 2025)", "claude-haiku-4-5-medium"),
 ]
 
 MODELS_TO_SKIP = [
@@ -807,7 +831,7 @@ class TracePreprocessor:
                 elif any(pattern in base_agent_name.lower() for pattern in ['few shot', 'fewshot']):
                     base_agent_name = 'TAU-bench Few Shot'
                 
-                elif 'tool calling' in base_agent_name.lower() or 'toolcalling' in base_agent_name.lower():
+                elif ('tool calling' in base_agent_name.lower() or 'toolcalling' in base_agent_name.lower()) and 'tau' in base_agent_name.lower():
                     base_agent_name = 'TAU-bench Tool Calling'
                 
                 # USACO patterns

@@ -32,4 +32,5 @@ hal_traces/
 figs/*
 latex_sections/*
 task_heatmap_data/*
+preprocessed_traces/bis/*
 
