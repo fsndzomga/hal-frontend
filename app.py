@@ -12,7 +12,7 @@ AUTHORS = [
     {"name": "Sayash Kapoor", "affiliation": "Princeton University"},
     {"name": "Benedikt Stroebl", "affiliation": "Princeton University"},
     {"name": "Peter Kirgis", "affiliation": "Princeton University"},
-    {"name": "Nitya Nadgir", "affiliation": "Brookings Institution"},
+    {"name": "Nitya Nadgir", "affiliation": "Independent Researcher"},
     {"name": "Zachary S Siegel", "affiliation": "Princeton University"},
     {"name": "Boyi Wei", "affiliation": "Princeton University"},
     {"name": "Tianci Xue", "affiliation": "The Ohio State University"},
