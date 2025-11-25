@@ -322,7 +322,7 @@ CACHED_PRICE_OVERRIDES = {
     "o3 Low (April 2025)": 0.5,
 }
 
-
+# Model name mappings: (input name, display name, canonical name)
 MODEL_MAPPING = [
     ("o4-mini-2025-04-16", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
     ("openai/o4-mini-2025-04-16", "o4-mini Medium (April 2025)", "o4-mini-2025-04-16"),
