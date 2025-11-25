@@ -263,6 +263,7 @@ DEFAULT_PRICING = {
     "o3-mini Low (January 2025)": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "o3-mini High (January 2025)": {"prompt_tokens": 1.1, "completion_tokens": 4.4},
     "Gemini 2.5 Pro Preview (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "Gemini 2.5 Pro (June 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
     "Claude-3.7 Sonnet High (February 2025)": {"prompt_tokens": 3, "completion_tokens": 15},
     "gpt-4.5-preview-2025-02-27": {"prompt_tokens": 75, "completion_tokens": 150},
     "Claude Opus 4 (May 2025)": {"prompt_tokens": 15, "completion_tokens": 75},
@@ -282,6 +283,24 @@ DEFAULT_PRICING = {
     "Claude Haiku 4.5 High (October 2025)": {"prompt_tokens": 1, "completion_tokens": 5},
     "Claude Haiku 4.5 Low (October 2025)": {"prompt_tokens": 1, "completion_tokens": 5},
     "Claude Haiku 4.5 Medium (October 2025)": {"prompt_tokens": 1, "completion_tokens": 5},
+    "Claude Opus 4.5 High (November 2025)": {"prompt_tokens": 5, "completion_tokens": 25},
+    "Claude Opus 4.5 Medium (November 2025)": {"prompt_tokens": 5, "completion_tokens": 25},
+    "Claude Opus 4.5 Low (November 2025)": {"prompt_tokens": 5, "completion_tokens": 25},
+    "Claude Opus 4.5 (November 2025)": {"prompt_tokens": 5, "completion_tokens": 25},
+
+    "Gemini 3 Pro Preview High (November 2025)": {"prompt_tokens": 2, "completion_tokens": 12},
+    "Gemini 3 Pro Preview Medium (November 2025)": {"prompt_tokens": 2, "completion_tokens": 12},
+    "Gemini 3 Pro Preview Low (November 2025)": {"prompt_tokens": 2, "completion_tokens": 12},
+    "Gemini 3 Pro Preview (November 2025)": {"prompt_tokens": 2, "completion_tokens": 12},
+
+    "Gemini 2.5 Pro High (June 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "Gemini 2.5 Pro Medium (June 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "Gemini 2.5 Pro Low (June 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "Gemini 2.5 Pro (June 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+
+    "Gemini 2.5 Pro Preview High (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "Gemini 2.5 Pro Preview Medium (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
+    "Gemini 2.5 Pro Preview Low (March 2025)": {"prompt_tokens": 1.25, "completion_tokens": 10},
 }
 
 # Cache token pricing overrides (prices per 1M tokens)
@@ -474,6 +493,38 @@ MODEL_MAPPING = [
     ("Claude-Haiku-4-5 High", "Claude Haiku 4.5 High (October 2025)", "claude-haiku-4-5-high"),
     ("Claude-Haiku-4-5 Low", "Claude Haiku 4.5 Low (October 2025)", "claude-haiku-4-5-low"),
     ("Claude-Haiku-4-5 Medium", "Claude Haiku 4.5 Medium (October 2025)", "claude-haiku-4-5-medium"),
+    ("claude-opus-4-5-20251101", "Claude Opus 4.5 (November 2025)", "claude-opus-4-5-20251101"),
+    ("claude-opus-4-5-20251101 high", "Claude Opus 4.5 High (November 2025)", "claude-opus-4-5-20251101"),
+    ("claude-opus-4-5-20251101 low", "Claude Opus 4.5 Low (November 2025)", "claude-opus-4-5-20251101"),
+    ("claude-opus-4-5-20251101 medium", "Claude Opus 4.5 Medium (November 2025)", "claude-opus-4-5-20251101"),
+    ("claude-opus-4-5-20251101", "Claude Opus 4.5 (November 2025)", "claude-opus-4-5-20251101"),
+    ("claude-opus-4-5-20251101 high", "Claude Opus 4.5 High (November 2025)", "claude-opus-4-5-20251101"),
+    ("claude-opus-4-5-20251101 medium", "Claude Opus 4.5 Medium (November 2025)", "claude-opus-4-5-20251101"),
+    ("claude-opus-4-5-20251101 low", "Claude Opus 4.5 Low (November 2025)", "claude-opus-4-5-20251101"),
+    ("anthropic/claude-opus-4-5-20251101", "Claude Opus 4.5 (November 2025)", "claude-opus-4-5-20251101"),
+    ("anthropic/claude-opus-4-5-20251101 high", "Claude Opus 4.5 High (November 2025)", "claude-opus-4-5-20251101"),
+    ("anthropic/claude-opus-4-5-20251101 medium", "Claude Opus 4.5 Medium (November 2025)", "claude-opus-4-5-20251101"),
+    ("anthropic/claude-opus-4-5-20251101 low", "Claude Opus 4.5 Low (November 2025)", "claude-opus-4-5-20251101"),
+
+    ("gemini-3-pro-preview", "Gemini 3 Pro Preview (November 2025)", "gemini-3-pro-preview"),
+    ("gemini-3-pro-preview high", "Gemini 3 Pro Preview High (November 2025)", "gemini-3-pro-preview"),
+    ("gemini-3-pro-preview medium", "Gemini 3 Pro Preview Medium (November 2025)", "gemini-3-pro-preview"),
+    ("gemini-3-pro-preview low", "Gemini 3 Pro Preview Low (November 2025)", "gemini-3-pro-preview"),
+    ("google/gemini-3-pro-preview", "Gemini 3 Pro Preview (November 2025)", "gemini-3-pro-preview"),
+    ("google/gemini-3-pro-preview high", "Gemini 3 Pro Preview High (November 2025)", "gemini-3-pro-preview"),
+    ("google/gemini-3-pro-preview medium", "Gemini 3 Pro Preview Medium (November 2025)", "gemini-3-pro-preview"),
+    ("google/gemini-3-pro-preview low", "Gemini 3 Pro Preview Low (November 2025)", "gemini-3-pro-preview"),
+
+    ("models/gemini-2.5-pro-preview-03-25", "Gemini 2.5 Pro Preview (March 2025)", "gemini-2.5-pro-preview-03-25"),
+    ("gemini-2.5-pro-preview-03-25", "Gemini 2.5 Pro Preview (March 2025)", "gemini-2.5-pro-preview-03-25"),
+    ("google/gemini-2.5-pro-preview-03-25", "Gemini 2.5 Pro Preview (March 2025)", "gemini-2.5-pro-preview-03-25"),
+
+    ("models/gemini-2.5-pro", "Gemini 2.5 Pro (June 2025)", "models/gemini-2.5-pro"),
+    ("gemini-2.5-pro", "Gemini 2.5 Pro (June 2025)", "models/gemini-2.5-pro"),
+    ("google/gemini-2.5-pro", "Gemini 2.5 Pro (June 2025)", "models/gemini-2.5-pro"),
+    ("gemini-2.5-pro high", "Gemini 2.5 Pro High (June 2025)", "models/gemini-2.5-pro"),
+    ("gemini-2.5-pro medium", "Gemini 2.5 Pro Medium (June 2025)", "models/gemini-2.5-pro"),
+    ("gemini-2.5-pro low", "Gemini 2.5 Pro Low (June 2025)", "models/gemini-2.5-pro"),
 ]
 
 MODELS_TO_SKIP = [
@@ -846,7 +897,7 @@ class TracePreprocessor:
                     base_agent_name = 'Browser-Use'
                 
                 # CORE-Agent patterns
-                elif 'coreagent' in base_agent_name.lower() or 'core-agent' in base_agent_name.lower():
+                elif 'coreagent' in base_agent_name.lower() or 'core-agent' in base_agent_name.lower() or 'Core Agent' in base_agent_name.lower():
                     base_agent_name = 'CORE-Agent'
                 
                 # Col-bench patterns
@@ -895,6 +946,9 @@ class TracePreprocessor:
                         'SAB Example Agent': 'SAB Self-Debug',
                         'SciCode Tool Calling Agent': 'Scicode Tool Calling Agent',
                         'colbench_backend_programming colbench_example_agent': 'Col-bench Text',
+                        'Core Agent Opus 4.5': 'CORE-Agent',
+                        'Core Agent Opus 4.5 high': 'CORE-Agent',
+                        'Core Agent': 'CORE-Agent',
                     }
                     
                     # Apply exact mappings
