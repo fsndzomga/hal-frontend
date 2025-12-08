@@ -34,6 +34,27 @@
 </div>
 
 <div class="mx-auto max-w-[1500]px px-8 py-6">
+    <!-- Changelog Notice -->
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-6 mb-8 rounded-r-xl">
+        <div class="flex items-start">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-amber-400 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-amber-800">Changelog: Removal of TAU-bench Few Shot Agent (December 8, 2025)</h3>
+                <p class="mt-2 text-sm text-amber-700">
+                    We have removed the TAU-bench Few Shot agent results from the leaderboard due to a critical data leakage issue. 
+                    The Few Shot scaffold contained test set examples in its demonstration file, compromising evaluation integrity. 
+                    For technical details, see Section 4.2 and Appendix A5 of the 
+                    <a href="https://arxiv.org/abs/2411.05663" class="underline hover:text-amber-900">HAL paper</a>. 
+                    All results now use the valid TAU-bench Tool Calling agent.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Results Section -->
     <div class="mb-16">
         <!-- Leaderboard Table -->

@@ -1124,6 +1124,10 @@ class TracePreprocessor:
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
 
+        # Filter out TAU-bench Few Shot agents due to data leakage issue
+        # See Appendix A5 of HAL paper for detailed explanation
+        df = df[~df['agent_name'].str.contains('TAU-bench Few Shot', case=False, na=False)]
+
         # Load metadata
         with open('agents_metadata.yaml', 'r') as f:
             metadata = yaml.safe_load(f)
