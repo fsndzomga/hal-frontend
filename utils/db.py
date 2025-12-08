@@ -1095,6 +1095,12 @@ class TracePreprocessor:
 
         return pickle.loads(df['failure_report'][0])
 
+    def _filter_invalid_agents(self, df):
+        """Filter out agents with known data leakage issues"""
+        # Filter out TAU-bench Few Shot agents due to data leakage issue
+        # See Appendix A5 of HAL paper for detailed explanation
+        return df[~df['agent_name'].str.contains('TAU-bench Few Shot', case=False, na=False)]
+
     def _calculate_ci(self, data, confidence=0.95, type='minmax'):
         data = data[np.isfinite(data)]
 
@@ -1198,6 +1204,9 @@ class TracePreprocessor:
                 WHERE benchmark_name = ?
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
+        
+        # Filter out invalid agents
+        df = self._filter_invalid_agents(df)
         
         # Get all unique task IDs
         task_ids = set()
@@ -1308,6 +1317,9 @@ class TracePreprocessor:
                 GROUP BY agent_name, model_name, run_id
             '''
             df = pd.read_sql_query(query, conn, params=(benchmark_name,))
+        
+        # Filter out invalid agents
+        df = self._filter_invalid_agents(df)
                     
         # Calculate costs based on pricing config
         df['total_cost'] = 0.0
@@ -1719,6 +1731,9 @@ class TracePreprocessor:
             try:
                 # Use get_parsed_results_with_costs to ensure consistent cost calculations
                 df = self.get_parsed_results_with_costs(benchmark_name, aggregate=False)
+                # Additional filtering for highlights to ensure no invalid agents
+                if not df.empty:
+                    df = df[~df['Agent Name'].str.contains('TAU-bench Few Shot', case=False, na=False)]
                 
                 if df.empty:
                     continue
